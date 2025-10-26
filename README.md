@@ -7,6 +7,28 @@ Un portale innovativo per l'acquisizione di immobili in esclusiva, pensato per m
 
 ---
 
+## Indice
+
+1. [Descrizione](#descrizione)
+2. [Struttura del Progetto](#struttura-del-progetto)
+3. [Stack Tecnologico](#stack-tecnologico)
+4. [Funzionalità Principali](#funzionalità-principali)
+5. [Team](#team)
+6. [Target e Area Geografica](#target-e-area-geografica)
+7. [Budget e Timeline](#budget-e-timeline)
+8. [Media e Canali di Comunicazione](#media-e-canali-di-comunicazione)
+9. [SEO Strategy](#seo-strategy)
+10. [KPI e Metriche di Successo](#kpi-e-metriche-di-successo)
+11. [Stato del Progetto](#stato-del-progetto)
+12. [Come Iniziare](#come-iniziare)
+13. [Documentazione](#documentazione)
+14. [Sicurezza e Privacy](#sicurezza-e-privacy)
+15. [Contribuire al Progetto](#contribuire-al-progetto)
+16. [Licenza](#licenza)
+17. [Note di Sviluppo](#note-di-sviluppo)
+
+---
+
 ## Descrizione
 
 Immobiliaris è un'agenzia immobiliare attiva nel territorio piemontese, parte del gruppo Indomus, specializzata nella compravendita di immobili con particolare attenzione all'acquisizione di nuove proprietà da vendere.
@@ -258,27 +280,27 @@ Note: Alla fine del progetto il cliente valuterà il rinnovo e il budget per gli
 
 ---
 
-## 📌 Stato del Progetto
+## Stato del Progetto
 
-🚀 **In Avvio** – Fase di Planning e Setup Iniziale
+In Avvio – Fase di Planning e Setup Iniziale
 
 ### Milestone Completate
-- ✅ Briefing iniziale ricevuto
-- ✅ Team assemblato
-- ✅ Repository GitHub creato
-- ✅ Documentazione README iniziale
+1. Briefing iniziale ricevuto
+2. Team assemblato
+3. Repository GitHub creato
+4. Documentazione README iniziale
 
 ### Prossimi Step
-- ⏳ Analisi competitor e buyer persona
-- ⏳ Definizione architettura tecnica
-- ⏳ Creazione mockup e wireframe
-- ⏳ Setup ambiente di sviluppo
-- ⏳ Configurazione database MySQL
-- ⏳ Definizione USP e visual identity
+1. Analisi competitor e buyer persona
+2. Definizione architettura tecnica
+3. Creazione mockup e wireframe
+4. Setup ambiente di sviluppo
+5. Configurazione database MySQL
+6. Definizione USP e visual identity
 
 ---
 
-## 🚀 Come Iniziare
+## Come Iniziare
 
 ### Prerequisiti
 ```bash
