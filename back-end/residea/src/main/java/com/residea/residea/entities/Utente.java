@@ -39,8 +39,7 @@ public class Utente {
     // --- COSTRUTTORI ---
     public Utente() {}
 
-    public Utente(String nome, String cognome, String telefono, String email,
-                  String passwordHash, Ruolo ruolo, boolean verificaEmail, boolean consensoPrivacy) {
+    public Utente(String nome, String cognome, String telefono, String email, String passwordHash, Ruolo ruolo, boolean verificaEmail, boolean consensoPrivacy) {
         this.nome = nome;
         this.cognome = cognome;
         this.telefono = telefono;
