@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-ResideaApplication<residea>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.residea.residea.ResideaApplication",
+            "projectName": "residea",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

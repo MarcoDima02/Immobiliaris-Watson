@@ -1,68 +1,96 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+/* Supporto per dark mode (class .dark su <html> o <body>) */
+@custom-variant dark (&:is(.dark *));
+
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+  /* === PALETTE PRINCIPALE === */
+  --background: #C0C0C0;
+  --foreground: #5E223E;
+  --card: #F2E9E4;
+  --card-foreground: #5E223E;
+  --popover: #F2E9E4;
+  --popover-foreground: #5E223E;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  --primary: #5E223E;
+  --primary-foreground: #F2E9E4;
+  --secondary: #C9ADA7;
+  --secondary-foreground: #5E223E;
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+  --muted: #888282;
+  --muted-foreground: #F2E9E4;
+  --accent: #C9ADA7;
+  --accent-foreground: #5E223E;
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
+  --destructive: #880E4F;
+  --destructive-foreground: #F2E9E4;
 
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
+  --border: #C9ADA7;
+  --input: #C9ADA7;
+  --ring: #5E223E;
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
+  /* === FONT E RAGGI === */
+  --font-sans: 'Poppins', ui-sans-serif, system-ui, sans-serif;
+  --radius: 0.5rem;
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  /* === OMBRE === */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+
+  --tracking-normal: 0.025em;
+  --spacing: 0.25rem;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+/* === DARK MODE === */
+.dark {
+  --background: #2A2A2A;
+  --foreground: #F2E9E4;
+  --card: #3A3A3A;
+  --card-foreground: #F2E9E4;
+  --popover: #444;
+  --popover-foreground: #F2E9E4;
+
+  --primary: #C9ADA7;
+  --primary-foreground: #2A2A2A;
+  --secondary: #5E223E;
+  --secondary-foreground: #F2E9E4;
+
+  --muted: #555;
+  --muted-foreground: #C9ADA7;
+  --accent: #5E223E;
+  --accent-foreground: #F2E9E4;
+
+  --border: #555;
+  --input: #666;
+  --ring: #C9ADA7;
+}
+
+/* === COLLEGAMENTO CON TAILWIND === */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-border: var(--border);
+  --color-ring: var(--ring);
+
+  --font-sans: var(--font-sans);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+
+  --tracking-normal: var(--tracking-normal);
 }
