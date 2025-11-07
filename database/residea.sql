@@ -1,3 +1,10 @@
+-- Passaggi creazione database e utente autorizzato
+-- CREATE DATABASE residea_db;
+-- Use residea_db;
+-- CREATE USER 'residea_user'@'localhost' IDENTIFIED BY 'ResideaP@ss';
+-- GRANT ALL PRIVILEGES ON residea_db.* TO 'residea_user'@'localhost';
+-- FLUSH PRIVILEGES;
+
 -- ========================
 -- TABELLA: Utente
 -- ========================
@@ -178,7 +185,7 @@ CREATE TABLE Leads (
     FOREIGN KEY (idRichiesta) REFERENCES Richiesta(idRichiesta)
     ON DELETE SET NULL ON UPDATE CASCADE,
     FOREIGN KEY (assegnatoA) REFERENCES Utente(idUtente)
-    ON DELETE SET NULL ON UPDATE CASCADE;
+    ON DELETE SET NULL ON UPDATE CASCADE
 );
 
 
