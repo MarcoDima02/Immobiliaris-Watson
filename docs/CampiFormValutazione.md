@@ -1,0 +1,72 @@
+- Campi obbligatori
+  - propertyType
+    - tipo: enum/string (Appartamento, Villa, Casa indipendente, Monolocale, ...)
+    - validazione: non vuoto
+    - DB: Immobile.tipologia
+  - area
+    - tipo: number (m²), > 0, decimali consentiti
+    - validazione: > 0, <= 20000
+    - DB: Superfici.superficieMq
+  - indirizzo
+    - tipo: string non vuoto
+    - DB: Immobile.indirizzo
+  - provincia
+    - tipo: string (sigla provincia italiana, es. "RM", "MI")
+    - DB: Immobile.provincia
+  - citta
+    - tipo: string (nome della città)
+    - DB: Immobile.citta
+  - cap
+    - tipo: string (CAP italiano, preferibile 5 cifre)
+    - validazione: pattern /^\d{5}$/ se disponibile
+    - DB: Immobile.cap
+  - rooms (stanze)
+    - tipo: integer >= 0
+    - DB: DettagliImmobile.nStanze
+  - bathrooms
+    - tipo: integer >= 0
+    - DB: DettagliImmobile.nBagni
+  - requestedPurpose
+    - tipo: enum (estimate | officialDocument)
+    - DB: ValutazioneImmobile.requestedPurpose
+
+- Campi raccomandati (migliorano accuratezza)
+  - floor (piano)
+    - tipo: integer
+    - DB: DettagliImmobile.nPiano
+  - totalFloors (piani totali edificio)
+    - tipo: integer
+    - DB: DettagliImmobile.nPianiImmobile
+  - elevator
+    - tipo: boolean
+    - DB: DettagliImmobile.ascensore
+  - garage
+    - tipo: boolean; se true: garageArea (m²)
+    - DB: DettagliImmobile.garage, Superfici.superficieGarage
+  - balconyTerraceArea
+    - tipo: number (m²)
+    - DB: Superfici.superficieBalconeTerrazzo
+  - garden
+    - tipo: boolean; se true: gardenArea (m²)
+    - DB: DettagliImmobile.giardino, Superfici.superficieGiardino
+  - cantina
+    - tipo: boolean; se true: cantinaArea (m²)
+    - DB: DettagliImmobile.cantina, Superfici.superficieCantina
+  - heatingType
+    - tipo: enum (No, Autonomo, Condominiale, Pompe di calore, Pavimento, altro)
+    - DB: DettagliImmobile.tipoRiscaldamento
+  - energyClass
+    - tipo: enum (A+, A, B, C, D, E, F, G) o null
+    - DB: DettagliImmobile.classeEnergetica
+  - yearBuilt
+    - tipo: integer (anno)
+    - validazione: 1800 <= yearBuilt <= currentYear
+    - DB: DettagliImmobile.annoCostruzione
+  - condition
+    - tipo: enum (Nuovo, Ristrutturato, Parzialmente ristrutturato, Non ristrutturato)
+    - DB: DettagliImmobile.condizioneImmobile
+
+  - exposure(renderebbe la valutazione ancor più precisa, ma non obbligatorio)
+    - tipo: enum (N, S, E, W, NE, NW, SE, SW, Doppia)
+    - DB: DettagliImmobile.esposizioneDettaglio
+    

@@ -3,12 +3,12 @@
 -- ========================
 CREATE TABLE Utente (
     idUtente INT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(100) NOT NULL,
-    cognome VARCHAR(100) NOT NULL,
-    telefono VARCHAR(20),
-    email VARCHAR(150) NOT NULL UNIQUE,
+    nome VARCHAR(20) NOT NULL,
+    cognome VARCHAR(20) NOT NULL,
+    telefono VARCHAR(9) NOT NULL UNIQUE,
+    email VARCHAR(100) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
-    ruolo ENUM('proprietario', 'utente') DEFAULT 'utente',
+    ruolo ENUM('proprietario', 'agente', 'amministratore') DEFAULT 'proprietario',
     verifica_email BOOLEAN DEFAULT FALSE,
     consenso_privacy BOOLEAN DEFAULT FALSE
 );
@@ -19,14 +19,14 @@ CREATE TABLE Utente (
 CREATE TABLE Immobile (
     idImmobile INT AUTO_INCREMENT PRIMARY KEY,
     idProprietario INT NOT NULL,
-    tipologia ENUM('Appartamento', 'Villa', 'Terratetto', 'Monolocale', 'Bilocale', 'Trilocale', 'Quadrilocale', 'Attico'),
-    indirizzo VARCHAR(255),
-    citta VARCHAR(100),
-    provincia VARCHAR(100),
-    cap INT(10),
+    tipologia ENUM('Appartamento', 'Villa', 'Casa indipendente', 'Monolocale'),
+    indirizzo VARCHAR(200) NOT NULL,
+    citta VARCHAR(100) NOT NULL,
+    provincia VARCHAR(3) NOT NULL,
+    cap VARCHAR(5) NOT NULL,
     latitudine DECIMAL(10, 8),
     longitudine DECIMAL(11, 8),
-    stato VARCHAR(50),
+    stato ENUM('Disponibile', 'Venduto'),
     FOREIGN KEY (idProprietario) REFERENCES Utente(idUtente) ON DELETE CASCADE
 );
 
@@ -35,22 +35,50 @@ CREATE TABLE Immobile (
 -- ========================
 CREATE TABLE DettagliImmobile (
     idImmobile INT PRIMARY KEY,
-    nLocali INT,
-    nCamere INT,
-    nBagni INT,
-    nPiano INT,
-    balconeTerrazzo BOOLEAN,
-    giardino BOOLEAN,
-    garage BOOLEAN,
-    ascensore BOOLEAN,
-    cantina BOOLEAN,
-    tipoRiscaldamento ENUM('No','Autonomo','Condominiale','Pompe di calore','Pavimento') DEFAULT 'No',
-    annoCostruzione YEAR,
-    esposizioneSolare BOOLEAN,
-    condizioneImmobile ENUM('Nuovo', 'Ristrutturato','Parzialmente ristrutturato','Non ristrutturato'),
-    classeEnergetica VARCHAR(50),
-    prezzo DECIMAL(15, 2),
+    nStanze INT(2) NOT NULL,
+    nBagni INT(2) NOT NULL,
+    nPiano INT(2) NOT NULL,
+    nPianiImmobile INT(2) NOT NULL,
+    balconeTerrazzo BOOLEAN NOT NULL DEFAULT FALSE,
+    giardino BOOLEAN NOT NULL DEFAULT FALSE,
+    garage BOOLEAN NOT NULL DEFAULT FALSE,
+    ascensore BOOLEAN NOT NULL DEFAULT FALSE,
+    cantina BOOLEAN NOT NULL DEFAULT FALSE,
+    tipoRiscaldamento ENUM('No','Autonomo','Condominiale','Pompe di calore','Pavimento') DEFAULT 'No' NOT NULL,
+    annoCostruzione YEAR NOT NULL,
+    condizioneImmobile ENUM('Nuovo', 'Ristrutturato','Parzialmente ristrutturato','Non ristrutturato') NOT NULL,
+    classeEnergetica ENUM('A+', 'A', 'B', 'C', 'D', 'E', 'F', 'G') NOT NULL,
+    prezzo INT(9),
     FOREIGN KEY (idImmobile) REFERENCES Immobile(idImmobile) ON DELETE CASCADE
+);
+
+
+-- ========================
+-- TABELLA: Citta
+-- ========================
+CREATE TABLE Citta (
+    idCitta INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    provincia VARCHAR(3) NOT NULL,
+    regione VARCHAR(100) DEFAULT 'Piemonte',
+    codice_istat VARCHAR(10),
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- ========================
+-- TABELLA: PrezzoPerCAP
+-- ========================
+CREATE TABLE PrezzoPerCAP (
+    cap VARCHAR(10) PRIMARY KEY,
+    idCitta INT DEFAULT NULL,
+    prezzo_mq DECIMAL(10, 2) NOT NULL,
+    fonte VARCHAR(150) DEFAULT NULL,
+    valid_from DATE DEFAULT NULL,
+    valid_to DATE DEFAULT NULL,
+    quality_score DECIMAL(3,2) DEFAULT 0.0,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (idCitta) REFERENCES Citta(idCitta) ON DELETE SET NULL
 );
 
 -- ========================
@@ -71,13 +99,13 @@ CREATE TABLE Immagine (
 -- ========================
 -- TABELLA: Prenotazione
 -- ========================
-CREATE TABLE Prenotazione (
-    idPrenotazione INT AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE Richiesta (
+    idRichiesta INT AUTO_INCREMENT PRIMARY KEY,
     idUtente INT NOT NULL,
     idImmobile INT NOT NULL,
-    dataPrenotazione DATETIME NOT NULL,
+    dataRichiesta DATETIME NOT NULL,
     dataAppuntamento DATETIME,
-    stato VARCHAR(50),
+    stato ENUM('In attesa', 'In elaborazione', 'Completata', 'Annullata') DEFAULT 'In attesa',
     noteUtente TEXT,
     motivoAnnullamento TEXT,
     FOREIGN KEY (idUtente) REFERENCES Utente(idUtente) ON DELETE CASCADE,
@@ -85,7 +113,48 @@ CREATE TABLE Prenotazione (
 );
 
 -- ========================
--- TABELLA: Leads
+-- TABELLA: Superfici
+-- ========================
+CREATE TABLE Superfici (
+    idImmobile INT PRIMARY KEY,
+    superficieMq INT(4),
+    superficieBalconeTerrazzo INT(4),
+    superficieGiardino INT(4),
+    superficieGarage INT(4),
+    superficieCantina INT(4),
+    FOREIGN KEY (idImmobile) REFERENCES Immobile(idImmobile) ON DELETE CASCADE
+);
+
+-- ========================
+-- TABELLA: ValutazioneImmobile
+-- ========================
+CREATE TABLE ValutazioneImmobile (
+    idValutazione INT AUTO_INCREMENT PRIMARY KEY,
+    idImmobile INT NOT NULL,
+    valoreBase INT(9),
+    fattoreAggiustamento DECIMAL(5, 2),
+    valoreMedio INT(9),
+    valoreMin INT(9),
+    valoreMax INT(9),
+    confidence DECIMAL(5, 2),
+    FOREIGN KEY (idImmobile) REFERENCES Immobile(idImmobile) ON DELETE CASCADE
+);
+
+-- ========================
+-- TABELLA: Contratti
+-- ========================
+CREATE TABLE Contratti (
+    idContratto INT AUTO_INCREMENT PRIMARY KEY,
+    idImmobile INT NOT NULL,
+    tipoContratto ENUM ('Esclusivo', 'altro'),
+    dataContratto DATE,
+    dataScadenzaContratto DATE,
+    pathContrattoPDF VARCHAR(255),
+    FOREIGN KEY (idImmobile) REFERENCES Immobile(idImmobile) ON DELETE CASCADE
+);
+
+-- ========================
+-- TABELLA: Leads - contatti generati, da revisionare
 -- ========================
 CREATE TABLE Leads (
     idLead INT AUTO_INCREMENT PRIMARY KEY,
@@ -105,34 +174,13 @@ CREATE TABLE Leads (
     note TEXT,
     createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
     updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (idUtente) REFERENCES Utente(idUtente) ON DELETE SET NULL
+    FOREIGN KEY (idUtente) REFERENCES Utente(idUtente) ON DELETE SET NULL,
+    FOREIGN KEY (idRichiesta) REFERENCES Richiesta(idRichiesta)
+    ON DELETE SET NULL ON UPDATE CASCADE,
+    FOREIGN KEY (assegnatoA) REFERENCES Utente(idUtente)
+    ON DELETE SET NULL ON UPDATE CASCADE;
 );
 
--- ========================
--- TABELLA: Superfici
--- ========================
-CREATE TABLE Superfici (
-    idImmobile INT PRIMARY KEY,
-    superficieMq DECIMAL(10, 2),
-    superficieBalconeTerrazzo DECIMAL(10, 2),
-    superficieGiardino DECIMAL(10, 2),
-    superficieGarage DECIMAL(10, 2),
-    superficieCantina DECIMAL(10, 2),
-    FOREIGN KEY (idImmobile) REFERENCES Immobile(idImmobile) ON DELETE CASCADE
-);
-
--- ========================
--- TABELLA: Contratti
--- ========================
-CREATE TABLE Contratti (
-    idContratto INT AUTO_INCREMENT PRIMARY KEY,
-    idImmobile INT NOT NULL,
-    tipoContratto ENUM ('Esclusivo', 'altro'),
-    dataContratto DATE,
-    dataScadenzaContratto DATE,
-    pathContrattoPDF VARCHAR(255),
-    FOREIGN KEY (idImmobile) REFERENCES Immobile(idImmobile) ON DELETE CASCADE
-);
 
 -- ========================
 -- TABELLA: Vendite
@@ -148,15 +196,3 @@ CREATE TABLE Vendite (
     FOREIGN KEY (idUtente) REFERENCES Utente(idUtente) ON DELETE CASCADE
 );
 
--- ========================
--- TABELLA: Amministrazione
--- ========================
-CREATE TABLE Amministrazione (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(100),
-    cognome VARCHAR(100),
-    telefono VARCHAR(20),
-    email VARCHAR(150) NOT NULL UNIQUE,
-    password_hash VARCHAR(255) NOT NULL,
-    ruolo ENUM('agente', 'amministratore') DEFAULT 'agente'
-);
