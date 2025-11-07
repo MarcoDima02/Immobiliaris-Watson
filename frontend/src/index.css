@@ -30,11 +30,12 @@
   --input: #C9ADA7;
   --ring: #5E223E;
 
-  /* === FONT E RAGGI === */
-  --font-sans: 'Poppins', ui-sans-serif, system-ui, sans-serif;
+  /* === FONT E RADIUS === */
+  --font-sans: 'Montserrat', ui-sans-serif, system-ui, sans-serif;
+
   --radius: 0.5rem;
 
-  /* === OMBRE === */
+  /* === SHADOWS === */
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
@@ -93,4 +94,10 @@
   --shadow-lg: var(--shadow-lg);
 
   --tracking-normal: var(--tracking-normal);
+}
+
+@layer base {
+  body {
+    @apply font-sans;
+  }
 }
