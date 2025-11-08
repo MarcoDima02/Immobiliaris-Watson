@@ -10,6 +10,7 @@ import { Outlet } from 'react-router';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import Loader from '@/components/Loader';
+import { Toaster } from '@/components/ui/sonner';
 
 const RootLayout = () => {
   return (
@@ -20,7 +21,7 @@ const RootLayout = () => {
           <Outlet />
         </Suspense>
       </main>
-
+      <Toaster />
       <Footer />
     </div>
   );
