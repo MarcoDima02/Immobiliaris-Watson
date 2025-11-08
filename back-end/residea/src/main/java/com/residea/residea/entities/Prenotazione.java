@@ -36,11 +36,7 @@ public class Prenotazione {
     private String motivoAnnullamento;
 
     // --- COSTRUTTORI ---
-    public Prenotazione() {}
-
-    public Prenotazione(Utente utente, Immobile immobile, LocalDateTime dataPrenotazione,
-                        LocalDateTime dataAppuntamento, String stato,
-                        String noteUtente, String motivoAnnullamento) {
+    public Prenotazione(Utente utente, Immobile immobile, LocalDateTime dataPrenotazione, LocalDateTime dataAppuntamento, String stato, String noteUtente, String motivoAnnullamento) {
         this.utente = utente;
         this.immobile = immobile;
         this.dataPrenotazione = dataPrenotazione;

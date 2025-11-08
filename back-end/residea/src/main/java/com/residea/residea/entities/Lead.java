@@ -61,9 +61,7 @@ public class Lead {
     // --- COSTRUTTORI ---
     public Lead() {}
 
-    public Lead(Utente utente, String nome, String email, String telefono, String citta, String fonte,
-                String campagna, String utmSource, String utmMedium, String utmCampaign,
-                boolean convertitoInRichiesta, Integer idRichiesta, Integer assegnatoA, String note) {
+    public Lead(Utente utente, String nome, String email, String telefono, String citta, String fonte,String campagna, String utmSource, String utmMedium, String utmCampaign,boolean convertitoInRichiesta, Integer idRichiesta, Integer assegnatoA, String note) {
         this.utente = utente;
         this.nome = nome;
         this.email = email;

@@ -23,5 +23,5 @@ public interface UtentiService {
     Utente cambiaRuoloUtente(String idUtente, Ruolo ruoloNuovo);
 
     //Delete
-     boolean eliminaUtente(Integer idUtente);
+    //  boolean eliminaUtente(Integer idUtente);
 }

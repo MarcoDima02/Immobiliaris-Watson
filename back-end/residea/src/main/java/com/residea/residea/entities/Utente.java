@@ -36,8 +36,6 @@ public class Utente {
     @Column(name = "consenso_privacy", nullable = false)
     private boolean consensoPrivacy = false;
 
-    // --- COSTRUTTORI ---
-    public Utente() {}
 
     public Utente(String nome, String cognome, String telefono, String email, String passwordHash, Ruolo ruolo, boolean verificaEmail, boolean consensoPrivacy) {
         this.nome = nome;

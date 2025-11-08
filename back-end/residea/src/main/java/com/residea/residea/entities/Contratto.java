@@ -27,8 +27,6 @@ public class Contratto {
     private String pathContrattoPDF;
 
     // --- COSTRUTTORI ---
-    public Contratto() {}
-
     public Contratto(Immobile immobile, TipoContratto tipoContratto, LocalDate dataContratto, LocalDate dataScadenzaContratto, String pathContrattoPDF) {
         this.immobile = immobile;
         this.tipoContratto = tipoContratto;

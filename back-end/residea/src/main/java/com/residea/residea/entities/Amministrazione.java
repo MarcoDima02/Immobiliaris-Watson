@@ -30,8 +30,6 @@ public class Amministrazione {
     private Ruolo ruolo = Ruolo.AGENTE;
 
     // --- COSTRUTTORI ---
-    public Amministrazione() {}
-
     public Amministrazione(String nome, String cognome, String telefono, String email, String passwordHash, Ruolo ruolo) {
         this.nome = nome;
         this.cognome = cognome;

@@ -45,8 +45,6 @@ public class DettagliImmobile {
     private BigDecimal prezzo;
 
     // --- COSTRUTTORI ---
-    public DettagliImmobile() {}
-
     public DettagliImmobile(Immobile immobile, Integer nLocali, Integer nCamere, Integer nBagni, Integer nPiano,boolean balconeTerrazzo, boolean giardino, boolean garage, boolean ascensore, boolean cantina,TipoRiscaldamento tipoRiscaldamento, Integer annoCostruzione, boolean esposizioneSolare,CondizioneImmobile condizioneImmobile, String classeEnergetica, BigDecimal prezzo) {
         this.immobile = immobile;
         this.nLocali = nLocali;
