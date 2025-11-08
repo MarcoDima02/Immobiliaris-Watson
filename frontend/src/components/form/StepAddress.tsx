@@ -60,7 +60,10 @@ const StepAddress = ({ onNext }: { onNext: () => void }) => {
   });
 
   const address = watch('address');
+
   const [suggestions, setSuggestions] = useState<any[]>([]);
+  const [selectedAddress, setSelectedAddress] = useState<string | null>(null);
+
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const markerRef = useRef<mapboxgl.Marker | null>(null);
@@ -109,8 +112,12 @@ const StepAddress = ({ onNext }: { onNext: () => void }) => {
   }, 400);
 
   useEffect(() => {
+    if (!address || address === selectedAddress) {
+      setSuggestions([]);
+      return;
+    }
     geocode(address);
-  }, [address]);
+  }, [address, selectedAddress]);
 
   const onSelectSuggestion = (feature: any) => {
     const selectedAddress = feature.place_name;
@@ -141,6 +148,8 @@ const StepAddress = ({ onNext }: { onNext: () => void }) => {
     });
 
     setMarker(longitude, latitude);
+    
+    setSelectedAddress(selectedAddress);
     setSuggestions([]);
   };
 
@@ -181,9 +190,9 @@ const StepAddress = ({ onNext }: { onNext: () => void }) => {
 
                   {suggestions && suggestions.length > 0 && (
                     <ul className="bg-white border rounded mt-2 max-h-48 overflow-auto shadow-sm">
-                      {suggestions.map((suggestion) => (
+                      {suggestions.map((suggestion, index) => (
                         <li
-                          key={suggestion.id}
+                          key={`${suggestion.id}-${index}`}
                           className="p-2 hover:bg-gray-100 cursor-pointer text-sm"
                           onClick={() => onSelectSuggestion(suggestion)}
                         >
@@ -194,7 +203,7 @@ const StepAddress = ({ onNext }: { onNext: () => void }) => {
                   )}
                 </Field>
               )}
-            ></Controller>
+            />
 
             <Controller
               name="city"
@@ -213,7 +222,7 @@ const StepAddress = ({ onNext }: { onNext: () => void }) => {
                   )}
                 </Field>
               )}
-            ></Controller>
+            />
 
             <Controller
               name="province"
@@ -233,7 +242,7 @@ const StepAddress = ({ onNext }: { onNext: () => void }) => {
                   )}
                 </Field>
               )}
-            ></Controller>
+            />
 
             <Controller
               name="cap"
@@ -252,7 +261,7 @@ const StepAddress = ({ onNext }: { onNext: () => void }) => {
                   )}
                 </Field>
               )}
-            ></Controller>
+            />
 
             <Field>
               <FieldLabel>Posizione sulla mappa</FieldLabel>
@@ -267,7 +276,10 @@ const StepAddress = ({ onNext }: { onNext: () => void }) => {
       </CardContent>
 
       <CardFooter>
-        <Field orientation="horizontal">
+        <Field
+          orientation="horizontal"
+          className="flex justify-between"
+        >
           <Button
             type="button"
             variant="outline"

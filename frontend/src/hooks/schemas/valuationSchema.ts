@@ -11,8 +11,8 @@ export const addressSchema = z.object({
     .max(2, 'Sigla procincia (2 caratteri)'),
   cap: z.string().regex(/^\d{5}$/, 'Inserisci un CAP valido (5 cifre)'),
   address: z.string().min(3, "Inserisci l' indirizzo"),
-  latitude: z.number().nullable().optional(),
-  longitude: z.number().nullable().optional(),
+  latitude: z.number().optional(),
+  longitude: z.number().optional(),
 });
 
 export const propertySchema = z.object({
@@ -21,34 +21,26 @@ export const propertySchema = z.object({
     .number({ error: 'Inserisci la superficie' })
     .min(0.01, 'La superficie deve essere > 0')
     .max(20000, 'Superficie troppo grande'),
-  rooms: z.number().int().min(0).nullable(),
-  bathrooms: z.number().int().min(0).nullable(),
+  rooms: z.number().int().min(0),
+  bathrooms: z.number().int().min(0),
   requestedPurpose: z.enum(['estimate', 'officialDocument']),
-  floor: z.number().int().nullable().optional(),
-  totalFloors: z.number().int().nullable().optional(),
+  floor: z.number().int().optional(),
+  totalFloors: z.number().int().optional(),
   elevator: z.boolean().optional(),
   garage: z.boolean().optional(),
-  balconyTerraceArea: z.number().nullable().optional(),
+  balconyTerraceArea: z.number().optional(),
   garden: z.boolean().optional(),
-  gardenArea: z.number().nullable().optional(),
+  gardenArea: z.number().optional(),
   basement: z.boolean().optional(),
-  basementArea: z.number().nullable().optional(),
-  heatingType: z.string().nullable().optional(),
-  energyClass: z
-    .enum(['A+', 'A', 'B', 'C', 'D', 'E', 'F', 'G'])
-    .nullable()
-    .optional(),
-  yearBuilt: z
-    .number()
-    .int()
-    .min(1800)
-    .max(new Date().getFullYear())
-    .nullable(),
-  condition: z.string().nullable().optional(),
-  exposure: z.string().nullable().optional(),
+  basementArea: z.number().optional(),
+  heatingType: z.string().optional(),
+  energyClass: z.enum(['A+', 'A', 'B', 'C', 'D', 'E', 'F', 'G']).optional(),
+  yearBuilt: z.number().int().min(1800).max(new Date().getFullYear()),
+  condition: z.string().optional(),
+  exposure: z.string().optional(),
 });
 
 export const ownerSchema = z.object({
-  contactEmail: z.email().nullable().optional(),
-  contactPhone: z.string().nullable().optional(),
+  contactEmail: z.email('Email non valida').optional(),
+  contactPhone: z.string().optional(),
 });

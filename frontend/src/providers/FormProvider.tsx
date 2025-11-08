@@ -2,59 +2,55 @@
  * Node modules
  */
 import { useState, type ReactNode } from 'react';
-
-/**
- * Context
- */
 import FormContext from '@/context/FormContext';
 
 export type FormPayload = {
   // mandatory
   propertyType: string;
-  area: number | null;
+  area?: number;
   address: string;
   province: string;
   city: string;
   cap: string;
-  rooms: number | null;
-  bathrooms: number | null;
+  rooms?: number;
+  bathrooms?: number;
   requestedPurpose: 'estimate' | 'officialDocument';
 
   // optional
-  floor?: number | null;
-  totalFloors?: number | null;
+  floor?: number;
+  totalFloors?: number;
   elevator?: boolean;
   garage?: boolean;
-  garageArea?: number | null;
-  balconyTerraceArea?: number | null;
+  garageArea?: number;
+  balconyTerraceArea?: number;
   garden?: boolean;
-  gardernArea?: number | null;
+  gardenArea?: number; 
   basement?: boolean;
-  basementArea?: number | null;
-  heatingType?: string | null;
-  energyClasee?: string | null;
-  yearBuilt?: number | null;
-  condition?: string | null;
-  exposure?: string | null;
+  basementArea?: number;
+  heatingType?: string;
+  energyClass?: string; 
+  yearBuilt?: number;
+  condition?: string;
+  exposure?: string;
 
   // geolocation from mapbox
-  latitude?: number | null;
-  longitude?: number | null;
+  latitude?: number;
+  longitude?: number;
 
   // contacts
-  contactEmail?: string | null;
-  contactPhone?: string | null;
+  contactEmail?: string;
+  contactPhone?: string;
 };
 
 const defaultPayload: FormPayload = {
   propertyType: '',
-  area: null,
+  area: undefined,
   address: '',
   province: '',
   city: '',
   cap: '',
-  rooms: null,
-  bathrooms: null,
+  rooms: undefined,
+  bathrooms: undefined,
   requestedPurpose: 'estimate',
 };
 
