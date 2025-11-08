@@ -51,8 +51,8 @@ public class ImmobileServiceImpl implements ImmobileService {
     }
 
     // --- DELETE ---
-    @Override
-    public void eliminaImmobile(Integer idImmobile) {
-        immobileRepo.deleteById(idImmobile);
-    }
+    // @Override
+    // public void eliminaImmobile(Integer idImmobile) {
+    //     immobileRepo.deleteById(idImmobile);
+    // }
 }

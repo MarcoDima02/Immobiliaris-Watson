@@ -1,6 +1,7 @@
 package com.residea.residea.services;
 
 import java.util.List;
+
 import com.residea.residea.entities.Immobile;
 import com.residea.residea.entities.Utente;
 
@@ -19,5 +20,5 @@ public interface ImmobileService {
     Immobile aggiornaImmobile(Immobile immobileAggiornato);
 
     // --- DELETE ---
-    void eliminaImmobile(Integer idImmobile);
+    //void eliminaImmobile(Integer idImmobile);
 }
