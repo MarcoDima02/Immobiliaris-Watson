@@ -32,9 +32,7 @@ public class Superfici {
     private BigDecimal superficieCantina;
 
     // --- COSTRUTTORI ---
-
-    public Superfici(Immobile immobile, BigDecimal superficieMq, BigDecimal superficieBalconeTerrazzo,
-                     BigDecimal superficieGiardino, BigDecimal superficieGarage, BigDecimal superficieCantina) {
+    public Superfici(Immobile immobile, BigDecimal superficieMq, BigDecimal superficieBalconeTerrazzo,BigDecimal superficieGiardino, BigDecimal superficieGarage, BigDecimal superficieCantina) {
         this.immobile = immobile;
         this.superficieMq = superficieMq;
         this.superficieBalconeTerrazzo = superficieBalconeTerrazzo;

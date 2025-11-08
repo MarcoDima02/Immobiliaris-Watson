@@ -46,10 +46,6 @@ public class UtentiServiceImpl implements UtentiService{
         throw new UnsupportedOperationException("Unimplemented method 'cambiaRuoloUtente'");
     }
 
-    @Override
-    public boolean eliminaUtente(Integer idUtente) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'eliminaUtente'");
-    }
+   
 
 }

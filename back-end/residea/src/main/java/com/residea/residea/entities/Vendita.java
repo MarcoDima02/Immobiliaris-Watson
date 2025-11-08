@@ -28,8 +28,6 @@ public class Vendita {
     private BigDecimal commissionePercentuale;
 
     // --- COSTRUTTORI ---
-    public Vendita() {}
-
     public Vendita(Contratto contratto, Immobile immobile, Utente utente, BigDecimal commissionePercentuale) {
         this.contratto = contratto;
         this.immobile = immobile;

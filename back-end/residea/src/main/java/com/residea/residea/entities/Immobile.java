@@ -42,8 +42,6 @@ public class Immobile {
     private String stato;
 
     // --- COSTRUTTORI ---
-    public Immobile() {}
-
     public Immobile(Utente proprietario, Tipologia tipologia, String indirizzo,String citta, String provincia, String cap,BigDecimal latitudine, BigDecimal longitudine, String stato) {
         this.proprietario = proprietario;
         this.tipologia = tipologia;

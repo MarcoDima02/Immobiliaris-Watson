@@ -33,9 +33,7 @@ public class Immagine {
     private Integer dimensioneKb;
 
     // --- COSTRUTTORI ---
-    public Immagine() {}
-
-    public Immagine(Immobile immobile, String url, String nomeFile, String descrizione,boolean copertina, Integer ordinamento, Integer dimensioneKb) {
+        public Immagine(Immobile immobile, String url, String nomeFile, String descrizione,boolean copertina, Integer ordinamento, Integer dimensioneKb) {
         this.immobile = immobile;
         this.url = url;
         this.nomeFile = nomeFile;
