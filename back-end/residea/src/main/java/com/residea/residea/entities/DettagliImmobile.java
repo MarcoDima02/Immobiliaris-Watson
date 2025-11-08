@@ -1,7 +1,16 @@
 package com.residea.residea.entities;
 
-import jakarta.persistence.*;
 import java.math.BigDecimal;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.MapsId;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "dettagli_immobile")
@@ -38,14 +47,15 @@ public class DettagliImmobile {
     @Column(length = 30)
     private CondizioneImmobile condizioneImmobile;
 
-    @Column(length = 50)
-    private String classeEnergetica;
+    @Enumerated(EnumType.STRING)
+    @Column(length = 1)
+    private ClasseEnergetica classeEnergetica;
 
-    @Column(precision = 15, scale = 2)
+    @Column(precision = 10, scale = 2)
     private BigDecimal prezzo;
 
     // --- COSTRUTTORI ---
-    public DettagliImmobile(Immobile immobile, Integer nLocali, Integer nCamere, Integer nBagni, Integer nPiano,boolean balconeTerrazzo, boolean giardino, boolean garage, boolean ascensore, boolean cantina,TipoRiscaldamento tipoRiscaldamento, Integer annoCostruzione, boolean esposizioneSolare,CondizioneImmobile condizioneImmobile, String classeEnergetica, BigDecimal prezzo) {
+    public DettagliImmobile(Immobile immobile, Integer nLocali, Integer nCamere, Integer nBagni, Integer nPiano,boolean balconeTerrazzo, boolean giardino, boolean garage, boolean ascensore, boolean cantina,TipoRiscaldamento tipoRiscaldamento, Integer annoCostruzione, boolean esposizioneSolare,CondizioneImmobile condizioneImmobile, ClasseEnergetica classeEnergetica, BigDecimal prezzo) {
         this.immobile = immobile;
         this.nLocali = nLocali;
         this.nCamere = nCamere;
@@ -185,11 +195,11 @@ public class DettagliImmobile {
         this.condizioneImmobile = condizioneImmobile;
     }
 
-    public String getClasseEnergetica() {
+    public ClasseEnergetica getClasseEnergetica(ClasseEnergetica classeEnergetica) {
         return classeEnergetica;
     }
 
-    public void setClasseEnergetica(String classeEnergetica) {
+    public void setClasseEnergetica(ClasseEnergetica classeEnergetica) {
         this.classeEnergetica = classeEnergetica;
     }
 
@@ -238,5 +248,17 @@ public class DettagliImmobile {
         RISTRUTTURATO,
         PARZIALMENTE_RISTRUTTURATO,
         NON_RISTRUTTURATO
+    }
+
+    // --- ENUM per classe energetica ---
+    public enum ClasseEnergetica {
+        APlus,
+        A,
+        B,
+        C,
+        D,
+        E,
+        F,
+        G
     }
 }

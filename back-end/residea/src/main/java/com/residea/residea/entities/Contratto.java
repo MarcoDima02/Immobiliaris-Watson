@@ -14,7 +14,7 @@ public class Contratto {
 
     @ManyToOne
     @JoinColumn(name = "idImmobile", nullable = false)
-    private Immobile immobile;
+    private Immobile idImmobile;
 
     @Enumerated(EnumType.STRING)
     @Column(length = 20)
@@ -27,8 +27,8 @@ public class Contratto {
     private String pathContrattoPDF;
 
     // --- COSTRUTTORI ---
-    public Contratto(Immobile immobile, TipoContratto tipoContratto, LocalDate dataContratto, LocalDate dataScadenzaContratto, String pathContrattoPDF) {
-        this.immobile = immobile;
+    public Contratto(Immobile idImmobile, TipoContratto tipoContratto, LocalDate dataContratto, LocalDate dataScadenzaContratto, String pathContrattoPDF) {
+        this.idImmobile = idImmobile;
         this.tipoContratto = tipoContratto;
         this.dataContratto = dataContratto;
         this.dataScadenzaContratto = dataScadenzaContratto;
@@ -44,12 +44,12 @@ public class Contratto {
         this.idContratto = idContratto;
     }
 
-    public Immobile getImmobile() {
-        return immobile;
+    public Immobile getIdImmobile() {
+        return idImmobile;
     }
 
-    public void setImmobile(Immobile immobile) {
-        this.immobile = immobile;
+    public void setIdImmobile(Immobile idImmobile) {
+        this.idImmobile = idImmobile;
     }
 
     public TipoContratto getTipoContratto() {
@@ -88,7 +88,7 @@ public class Contratto {
     public String toString() {
         return "Contratto{" +
                 "idContratto=" + idContratto +
-                ", immobile=" + (immobile != null ? immobile.getIdImmobile() : null) +
+                ", idImmobile=" + (idImmobile != null ? idImmobile.getIdImmobile() : null) +
                 ", tipoContratto=" + tipoContratto +
                 ", dataContratto=" + dataContratto +
                 ", dataScadenzaContratto=" + dataScadenzaContratto +

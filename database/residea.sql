@@ -14,7 +14,7 @@ CREATE TABLE Utente (
     cognome VARCHAR(20) NOT NULL,
     telefono VARCHAR(9) NOT NULL UNIQUE,
     email VARCHAR(100) NOT NULL UNIQUE,
-    password_hash VARCHAR(255) NOT NULL,
+    passwordHash VARCHAR(255) NOT NULL,
     ruolo ENUM('proprietario', 'agente', 'amministratore') DEFAULT 'proprietario',
     verifica_email BOOLEAN DEFAULT FALSE,
     consenso_privacy BOOLEAN DEFAULT FALSE
@@ -55,41 +55,39 @@ CREATE TABLE DettagliImmobile (
     annoCostruzione YEAR NOT NULL,
     condizioneImmobile ENUM('Nuovo', 'Ristrutturato','Parzialmente ristrutturato','Non ristrutturato') NOT NULL,
     classeEnergetica ENUM('A+', 'A', 'B', 'C', 'D', 'E', 'F', 'G') NOT NULL,
-    prezzo INT(9),
+    prezzo DECIMAL(10, 2),
     FOREIGN KEY (idImmobile) REFERENCES Immobile(idImmobile) ON DELETE CASCADE
 );
 
 
 -- ========================
--- TABELLA: Citta
+-- TABELLA: Citta - CRUD Completa
 -- ========================
 CREATE TABLE Citta (
     idCitta INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
     provincia VARCHAR(3) NOT NULL,
-    regione VARCHAR(100) DEFAULT 'Piemonte',
-    codice_istat VARCHAR(10),
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    regione VARCHAR(20) DEFAULT 'Piemonte',
+    codiceIstat VARCHAR(10)
 );
 
 -- ========================
--- TABELLA: PrezzoPerCAP
+-- TABELLA: PrezzoPerCAP - CRUD Completa
 -- ========================
 CREATE TABLE PrezzoPerCAP (
     cap VARCHAR(10) PRIMARY KEY,
     idCitta INT DEFAULT NULL,
-    prezzo_mq DECIMAL(10, 2) NOT NULL,
+    prezzoMq DECIMAL(10, 2) NOT NULL,
     fonte VARCHAR(150) DEFAULT NULL,
-    valid_from DATE DEFAULT NULL,
-    valid_to DATE DEFAULT NULL,
-    quality_score DECIMAL(3,2) DEFAULT 0.0,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    validFrom DATE DEFAULT NULL,
+    validTo DATE DEFAULT NULL,
+    qualityScore DECIMAL(3,2) DEFAULT 0.0,
+    updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (idCitta) REFERENCES Citta(idCitta) ON DELETE SET NULL
 );
 
 -- ========================
--- TABELLA: Immagine
+-- TABELLA: Immagine - CRUD Completa
 -- ========================
 CREATE TABLE Immagine (
     idImmagine INT AUTO_INCREMENT PRIMARY KEY,
@@ -143,7 +141,7 @@ CREATE TABLE ValutazioneImmobile (
     valoreMedio INT(9),
     valoreMin INT(9),
     valoreMax INT(9),
-    confidence DECIMAL(5, 2),
+    confidence DECIMAL(3, 2),
     FOREIGN KEY (idImmobile) REFERENCES Immobile(idImmobile) ON DELETE CASCADE
 );
 

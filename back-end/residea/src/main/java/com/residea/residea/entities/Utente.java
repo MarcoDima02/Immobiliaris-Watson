@@ -1,6 +1,13 @@
 package com.residea.residea.entities;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "utenti")
@@ -11,24 +18,24 @@ public class Utente {
     @Column(name = "idUtente")
     private Integer idUtente;
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, length = 20)
     private String nome;
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, length = 20)
     private String cognome;
 
-    @Column(length = 20)
+    @Column(length = 9)
     private String telefono;
 
-    @Column(nullable = false, length = 150, unique = true)
+    @Column(nullable = false, length = 100, unique = true)
     private String email;
 
-    @Column(name = "password_hash", nullable = false, length = 255)
+    @Column(name = "passwordHash", nullable = false, length = 255)
     private String passwordHash;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
-    private Ruolo ruolo = Ruolo.UTENTE;
+    @Column(name = "ruolo", nullable = false, length = 20)
+    private Ruolo ruolo = Ruolo.PROPRIETARIO;
 
     @Column(name = "verifica_email", nullable = false)
     private boolean verificaEmail = false;
@@ -93,6 +100,7 @@ public class Utente {
     // --- ENUM interno ---
     public enum Ruolo {
         PROPRIETARIO,
-        UTENTE
+        AGENTE,
+        AMMINISTRATORE, 
     }
 }
