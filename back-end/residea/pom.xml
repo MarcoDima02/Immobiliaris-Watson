@@ -43,6 +43,13 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
+				<!--Per la verifica della psw-->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-crypto</artifactId>
+			<version>6.2.0</version> <!-- o la versione Spring che stai usando -->
+		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
