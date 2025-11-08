@@ -76,7 +76,7 @@ const StepProperty = ({
       bathrooms: data.bathrooms ?? undefined,
 
       // optional
-      condition: data.condition ?? '',
+      condition: data.condition ?? 'new',
       heatingType: data.heatingType ?? '',
       balconyTerraceArea: data.balconyTerraceArea ?? undefined,
       gardenArea: data.gardenArea ?? undefined,
@@ -113,7 +113,7 @@ const StepProperty = ({
           onSubmit={handleSubmit(onSubmit)}
         >
           <FieldGroup>
-            {/* ✅ propertyType */}
+         
             <div className="grid grid-cols-2 gap-3 mb-4">
               {propertyTypes.map((type) => (
                 <Button
@@ -121,11 +121,11 @@ const StepProperty = ({
                   type="button"
                   onClick={() => {
                     setSelectedType(type.value);
-                    setValue('propertyType', type.value); // ✅ IMPORTANT!
+                    setValue('propertyType', type.value); 
                   }}
                   className={clsx('p-3 rounded-lg border transition', {
-                    'border-primary bg-primary/10': selectedType === type.value,
-                    'border-border hover:bg-muted/20':
+                    'border-primary bg-primary/10 text-primary': selectedType === type.value,
+                    'border-border':
                       selectedType !== type.value,
                   })}
                 >
@@ -137,7 +137,7 @@ const StepProperty = ({
 
             {selectedType && (
               <>
-                {/* ✅ area */}
+             
                 <Controller
                   name="area"
                   control={control}
@@ -161,7 +161,7 @@ const StepProperty = ({
                 />
 
                 <div className="grid grid-cols-2 gap-3">
-                  {/* ✅ rooms */}
+                
                   <Controller
                     name="rooms"
                     control={control}
@@ -182,7 +182,7 @@ const StepProperty = ({
                     )}
                   />
 
-                  {/* ✅ bathrooms */}
+                  
                   <Controller
                     name="bathrooms"
                     control={control}
@@ -229,7 +229,6 @@ const StepProperty = ({
                 <Controller
                   name="condition"
                   control={control}
-                  defaultValue='new'
                   render={({ field }) => (
                     <Field className=''>
                       <FieldLabel>Stato immobile</FieldLabel>
@@ -241,8 +240,8 @@ const StepProperty = ({
                         <SelectTrigger>
                           <SelectValue placeholder="Seleziona" />
                         </SelectTrigger>
-                        <SelectContent className='w-0.5'>
-                          <SelectItem value="new">Nuovo</SelectItem>
+                        <SelectContent >
+                          <SelectItem value="new" className=''>Nuovo</SelectItem>
                           <SelectItem value="renovated">
                             Ristrutturato
                           </SelectItem>
