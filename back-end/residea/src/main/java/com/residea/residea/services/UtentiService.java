@@ -1,8 +1,9 @@
 package com.residea.residea.services;
 
 import java.util.List;
-import com.residea.residea.entities.Utente.Ruolo;
+
 import com.residea.residea.entities.Utente;
+import com.residea.residea.entities.Utente.Ruolo;
 
 public interface UtentiService {
 
@@ -21,5 +22,5 @@ public interface UtentiService {
     Utente cambiaRuoloUtente(Integer idUtente, Ruolo ruoloNuovo);
 
     //Delete
-    void eliminaUtente(Integer idUtente);
+    //void eliminaUtente(Integer idUtente);
 }

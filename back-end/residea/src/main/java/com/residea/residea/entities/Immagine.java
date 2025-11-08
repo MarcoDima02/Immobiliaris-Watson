@@ -13,7 +13,7 @@ public class Immagine {
 
     @ManyToOne
     @JoinColumn(name = "idImmobile", nullable = false)
-    private Immobile immobile;
+    private Immobile immobile; // rinominato da idImmobile
 
     @Column(length = 255)
     private String url;
@@ -33,8 +33,8 @@ public class Immagine {
     private Integer dimensioneKb;
 
     // --- COSTRUTTORI ---
-        public Immagine(Immobile immobile, String url, String nomeFile, String descrizione,boolean copertina, Integer ordinamento, Integer dimensioneKb) {
-        this.immobile = immobile;
+        public Immagine(Immobile idImmobile, String url, String nomeFile, String descrizione,boolean copertina, Integer ordinamento, Integer dimensioneKb) {
+        this.immobile = idImmobile;
         this.url = url;
         this.nomeFile = nomeFile;
         this.descrizione = descrizione;
@@ -56,8 +56,8 @@ public class Immagine {
         return immobile;
     }
 
-    public void setImmobile(Immobile immobile) {
-        this.immobile = immobile;
+    public void setImmobile(Immobile Immobile) {
+        this.immobile = Immobile;
     }
 
     public String getUrl() {
