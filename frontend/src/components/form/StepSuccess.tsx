@@ -25,7 +25,7 @@ const StepSuccess = () => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-muted-foreground">
+          <p>
             Ti contatteremo al più presto con una{' '}
             <strong>stima indicativa</strong> del tuo immobile. Un nostro agente
             ti seguirà per una valutazione reale e gratuita.

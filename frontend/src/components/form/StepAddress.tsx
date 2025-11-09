@@ -63,6 +63,7 @@ const StepAddress = ({ onNext }: { onNext: () => void }) => {
 
   const [suggestions, setSuggestions] = useState<any[]>([]);
   const [selectedAddress, setSelectedAddress] = useState<string | null>(null);
+  const [activeIndex, setActiveIndex] = useState<number>(-1);
 
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
@@ -148,7 +149,7 @@ const StepAddress = ({ onNext }: { onNext: () => void }) => {
     });
 
     setMarker(longitude, latitude);
-    
+
     setSelectedAddress(selectedAddress);
     setSuggestions([]);
   };
@@ -157,6 +158,10 @@ const StepAddress = ({ onNext }: { onNext: () => void }) => {
     setData(formValues);
     onNext();
   };
+
+  useEffect(() => {
+    setActiveIndex(-1);
+  }, [address]);
 
   return (
     <Card className="w-full sm:maxw-md">
@@ -182,6 +187,31 @@ const StepAddress = ({ onNext }: { onNext: () => void }) => {
                     placeholder="Es. Via Roma 10, Milano"
                     aria-invalid={fieldState.invalid}
                     autoComplete="off"
+                    onKeyDown={(e) => {
+                      if (!suggestions || suggestions.length === 0) return;
+
+                      if (e.key === 'ArrowDown') {
+                        e.preventDefault();
+                        setActiveIndex(
+                          (prev) => (prev + 1) % suggestions.length
+                        );
+                      } else if (e.key === 'ArrowUp') {
+                        e.preventDefault();
+                        setActiveIndex(
+                          (prev) =>
+                            (prev - 1 + suggestions.length) % suggestions.length
+                        );
+                      } else if (e.key === 'Enter') {
+                        e.preventDefault();
+                        if (
+                          activeIndex >= 0 &&
+                          activeIndex < suggestions.length
+                        ) {
+                          onSelectSuggestion(suggestions[activeIndex]);
+                          setActiveIndex(-1);
+                        }
+                      }
+                    }}
                   />
 
                   {fieldState.invalid && (
@@ -193,7 +223,12 @@ const StepAddress = ({ onNext }: { onNext: () => void }) => {
                       {suggestions.map((suggestion, index) => (
                         <li
                           key={`${suggestion.id}-${index}`}
-                          className="p-2 hover:bg-gray-100 cursor-pointer text-sm"
+                          className={`p-2 cursor-pointer text-sm ${
+                            index === activeIndex
+                              ? 'bg-gray-200'
+                              : 'hover:bg-gray-100'
+                          }`}
+                          onMouseEnter={() => setActiveIndex(index)}
                           onClick={() => onSelectSuggestion(suggestion)}
                         >
                           {suggestion.place_name}

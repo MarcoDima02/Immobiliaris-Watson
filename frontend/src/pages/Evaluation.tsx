@@ -11,9 +11,9 @@ const Evaluation = () => {
   const steps = [StepAddress, StepProperty, StepUserType, StepSuccess];
 
   return (
-    <>
+    <div className='p-4'>
       <MultiStepForm steps={steps} />
-    </>
+    </div>
   );
 };
 
