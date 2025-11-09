@@ -7,8 +7,8 @@ import { homeJpg } from '@/assets';
 
 const Home = () => {
   return (
-    <section className="absolute top-0 lef-0">
-      <figure className="relative inline-block overflow-hidden">
+    <section className="absolute top-0 left-0 w-full">
+      <figure className="relative inline-block overflow-hidden w-full">
         <picture>
           <source
             srcSet={homeAvif}
@@ -22,7 +22,7 @@ const Home = () => {
             src={homeJpg}
             alt="Immagine di un appartamento"
             loading="lazy"
-            className="masked-img "
+            className="md:max-h-[50vh] w-full object-cover"
           />
         </picture>
 

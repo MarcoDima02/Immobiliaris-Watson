@@ -123,22 +123,3 @@ input:-webkit-autofill {
 .container-fluid {
   @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16
 }
-
-.masked-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-
-  /* Maschera che sfuma a sinistra e in basso */
-  -webkit-mask-image: linear-gradient(to top, black 70%, transparent 100%), 
-                      linear-gradient(to right, black 70%, transparent 100%);
-  -webkit-mask-repeat: no-repeat;
-  -webkit-mask-position: bottom left, bottom left;
-  -webkit-mask-size: 100% 100%, 100% 100%;
-
-  mask-image: linear-gradient(to top, black 70%, transparent 100%), 
-              linear-gradient(to right, black 70%, transparent 100%);
-  mask-repeat: no-repeat;
-  mask-position: bottom left, bottom left;
-  mask-size: 100% 100%, 100% 100%;
-}
