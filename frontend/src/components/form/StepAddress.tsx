@@ -324,6 +324,7 @@ const StepAddress = ({ onNext }: { onNext: () => void }) => {
           <Button
             type="submit"
             form="address-form"
+            className='hover:bg-card'
           >
             Avanti
           </Button>

@@ -295,6 +295,7 @@ const StepProperty = ({
         <Button
           form="property-form"
           type="submit"
+          className='hover:bg-card'
         >
           Avanti
         </Button>
