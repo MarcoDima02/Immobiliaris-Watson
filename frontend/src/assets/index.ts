@@ -1,5 +1,10 @@
-import homeAvif from '@/assets/home.avif';
-import homeWebp from '@/assets/home.webp';
-import homeJpg from '@/assets/home.jpg';
 
-export { homeAvif, homeWebp, homeJpg };
+/**
+ * Images
+ */
+import heroAvif from '@/assets/hero-alt.avif';
+import heroWebp from '@/assets/hero-alt.jpg';
+import heroJpg from '@/assets/hero-alt.jpg';
+
+
+export { heroAvif, heroWebp, heroJpg };
