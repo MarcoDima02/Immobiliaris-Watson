@@ -5,6 +5,17 @@
 -- GRANT ALL PRIVILEGES ON residea_db.* TO 'residea_user'@'localhost';
 -- FLUSH PRIVILEGES;
 
+-- ============================================
+-- Comandi reset tabelle in caso sia necessario
+-- SET FOREIGN_KEY_CHECKS = 0;
+-- TRUNCATE TABLE Superfici;
+-- TRUNCATE TABLE DettagliImmobile;
+-- TRUNCATE TABLE ValutazioneImmobile;
+-- TRUNCATE TABLE Immobile;
+-- SET FOREIGN_KEY_CHECKS = 1;
+-- ============================================
+
+
 -- ========================
 -- TABELLA: Utente
 -- ========================
@@ -25,7 +36,7 @@ CREATE TABLE Utente (
 -- ========================
 CREATE TABLE Immobile (
     idImmobile INT AUTO_INCREMENT PRIMARY KEY,
-    idProprietario INT NOT NULL,
+    idProprietario INT NULL,
     tipologia ENUM('Appartamento', 'Villa', 'Casa indipendente', 'Monolocale'),
     indirizzo VARCHAR(200) NOT NULL,
     citta VARCHAR(100) NOT NULL,

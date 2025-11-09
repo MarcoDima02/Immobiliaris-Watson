@@ -3,9 +3,8 @@ package com.residea.residea.entities;
 import java.math.BigDecimal;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MapsId;
@@ -43,18 +42,18 @@ public class DettagliImmobile {
     private boolean ascensore;
     private boolean cantina;
 
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = com.residea.residea.entities.converters.TipoRiscaldamentoConverter.class)
     @Column(nullable = false, length = 20)
     private TipoRiscaldamento tipoRiscaldamento = TipoRiscaldamento.NO;
 
     private Integer annoCostruzione;
 
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = com.residea.residea.entities.converters.CondizioneImmobileConverter.class)
     @Column(length = 30)
     private CondizioneImmobile condizioneImmobile;
 
-    @Enumerated(EnumType.STRING)
-    @Column(length = 1)
+    @Convert(converter = com.residea.residea.entities.converters.ClasseEnergeticaConverter.class)
+    @Column(length = 2)
     private ClasseEnergetica classeEnergetica;
 
     @Column(precision = 10, scale = 2)
@@ -95,6 +94,10 @@ public class DettagliImmobile {
 
     public Immobile getImmobile() {
         return immobile;
+    }
+
+    public void setImmobile(Immobile immobile) {
+        this.immobile = immobile;
     }
 
     public Integer getNStanze() {

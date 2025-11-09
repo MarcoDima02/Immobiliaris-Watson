@@ -3,9 +3,8 @@ package com.residea.residea.entities;
 import java.math.BigDecimal;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -22,11 +21,11 @@ public class Immobile {
     @Column(name = "idImmobile")
     private Integer idImmobile;
 
-    @ManyToOne
-    @JoinColumn(name = "idProprietario", nullable = false)
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "idProprietario", nullable = true)
     private Utente proprietario;
 
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = com.residea.residea.entities.converters.TipologiaConverter.class)
     @Column(nullable = false, length = 30)
     private Tipologia tipologia;
 
@@ -48,7 +47,7 @@ public class Immobile {
     @Column(precision = 11, scale = 8)
     private BigDecimal longitudine;
 
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = com.residea.residea.entities.converters.StatoConverter.class)
     @Column(length = 50)
     private Stato stato;
 
