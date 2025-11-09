@@ -22,7 +22,7 @@ type LinkItemProps = {
 
 const LinkItem = ({ to, href, label, setIsOpen }: LinkItemProps) => {
   const baseClasses =
-    'relative font-semibold text-primary/75 hover:text-primary transition-colors duration-150';
+    'relative font-semibold text-primary/80 hover:text-primary transition-colors duration-150';
 
   if (to) {
     return (
