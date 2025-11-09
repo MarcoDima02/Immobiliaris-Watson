@@ -51,9 +51,9 @@ const Header = () => {
         {/* Navigation */}
         <ul
           className={cn(
-            'text-center flex flex-col md:flex-row gap-6 md:gap-8 fixed md:static top-16 md:top-0 left-0 md:left-auto w-full md:w-auto bg-background md:bg-transparent shadow-md md:shadow-none py-6 md:py-0 items-center md:items-center justify-center md:justify-end transform md:transition-none opacity-0 md:opacity-100 pointer-events-none md:pointer-events-auto -translate-y-full md:translate-y-0 z-40',
+            'text-center flex flex-col md:flex-row gap-6 md:gap-8 fixed md:static top-16 md:top-0 left-0 md:left-auto w-full md:w-auto bg-transparent md:bg-transparent shadow-md md:shadow-none py-6 md:py-0 items-center md:items-center justify-center md:justify-end transform -translate-y-full md:translate-y-0 opacity-0 md:opacity-100 pointer-events-none md:pointer-events-auto z-40 backdrop-blur-xl',
             isOpen
-              ? 'opacity-100 pointer-events-auto translate-y-0 transition-all duration-300 ease-in-out'
+              ? 'translate-y-0 opacity-100 pointer-events-auto transition-all duration-300 ease-in-out'
               : 'transition-none'
           )}
         >
@@ -62,7 +62,10 @@ const Header = () => {
               key={link.label}
               className="not-[last-of-type]:mt-4"
             >
-              <LinkItem setIsOpen={setIsOpen} {...link} />
+              <LinkItem
+                setIsOpen={setIsOpen}
+                {...link}
+              />
             </li>
           ))}
         </ul>
