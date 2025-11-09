@@ -129,6 +129,7 @@ const StepUserType = ({
         <Button
           type="submit"
           form="user-form"
+          className='hover:bg-card'
         >
           Avanti
         </Button>
