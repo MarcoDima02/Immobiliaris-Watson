@@ -1,10 +1,17 @@
 package com.residea.residea.entities;
 
-import jakarta.persistence.*;
 import java.math.BigDecimal;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.MapsId;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+
 @Entity
-@Table(name = "superfici")
+@Table(name = "Superfici")
 public class Superfici {
 
     @Id
@@ -32,7 +39,10 @@ public class Superfici {
     private BigDecimal superficieCantina;
 
     // --- COSTRUTTORI ---
-    public Superfici(Immobile immobile, BigDecimal superficieMq, BigDecimal superficieBalconeTerrazzo,BigDecimal superficieGiardino, BigDecimal superficieGarage, BigDecimal superficieCantina) {
+    public Superfici() {}
+
+    public Superfici(Immobile immobile, BigDecimal superficieMq, BigDecimal superficieBalconeTerrazzo,
+                     BigDecimal superficieGiardino, BigDecimal superficieGarage, BigDecimal superficieCantina) {
         this.immobile = immobile;
         this.superficieMq = superficieMq;
         this.superficieBalconeTerrazzo = superficieBalconeTerrazzo;

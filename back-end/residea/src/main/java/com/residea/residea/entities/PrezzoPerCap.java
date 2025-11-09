@@ -8,8 +8,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.MapsId;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -18,12 +17,12 @@ import jakarta.persistence.Table;
 public class PrezzoPerCap {
 
     @Id
+    @Column(name = "cap", length = 10)
     private String cap;
 
-    @OneToOne
-    @MapsId
+    @ManyToOne
     @JoinColumn(name = "idCitta")
-    private Citta idCitta;
+    private Citta citta;
 
     @Column(name = "prezzoMq", precision = 10, scale = 2, nullable = false)
     private BigDecimal prezzoMq;
@@ -51,12 +50,12 @@ public class PrezzoPerCap {
         this.cap = cap;
     }
 
-    public Citta getIdCitta() {
-        return idCitta;
+    public Citta getCitta() {
+        return citta;
     }
 
-    public void setIdCitta(Citta idCitta) {
-        this.idCitta = idCitta;
+    public void setCitta(Citta citta) {
+        this.citta = citta;
     }
 
     public BigDecimal getPrezzoMq() {
@@ -110,7 +109,7 @@ public class PrezzoPerCap {
     @Override
     public String toString() {
         return "PrezzoPerCap [cap=" + cap + 
-                ", idCitta=" + idCitta + 
+                ", citta=" + (citta != null ? citta.getIdCitta() : null) + 
                 ", prezzoMq=" + prezzoMq + 
                 ", fonte=" + fonte + 
                 ", validFrom=" + validFrom + 

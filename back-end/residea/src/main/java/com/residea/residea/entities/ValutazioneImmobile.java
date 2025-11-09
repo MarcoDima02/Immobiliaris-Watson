@@ -4,18 +4,24 @@ import java.math.BigDecimal;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.MapsId;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "ValutazioneImmobile")
 public class ValutazioneImmobile {
 
-    @OneToOne
-    @MapsId
-    @JoinColumn(name = "idImmobile")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "idValutazione")
+    private Integer idValutazione;
+
+    @ManyToOne
+    @JoinColumn(name = "idImmobile", nullable = false)
     private Immobile immobile;
 
     @Column(name ="valoreBase")
@@ -37,6 +43,8 @@ public class ValutazioneImmobile {
     private BigDecimal confidence;
 
     // --- COSTRUTTORI ---
+    public ValutazioneImmobile() {}
+
     public ValutazioneImmobile(Immobile immobile, Integer valoreBase, BigDecimal fattoreAggiustamento, Integer valoreMedio, Integer valoreMin, Integer valoreMax, BigDecimal confidence) {
         this.immobile = immobile;
         this.valoreBase = valoreBase;
@@ -45,6 +53,15 @@ public class ValutazioneImmobile {
         this.valoreMin = valoreMin;
         this.valoreMax = valoreMax;
         this.confidence = confidence;
+    }
+
+    // --- GETTER & SETTER ---
+    public Integer getIdValutazione() {
+        return idValutazione;
+    }
+
+    public void setIdValutazione(Integer idValutazione) {
+        this.idValutazione = idValutazione;
     }
 
     public Immobile getImmobile() {
@@ -105,7 +122,8 @@ public class ValutazioneImmobile {
 
     @Override
     public String toString() {
-        return "ValutazioneImmobile [immobile=" + immobile + 
+        return "ValutazioneImmobile [idValutazione=" + idValutazione + 
+                ", immobile=" + (immobile != null ? immobile.getIdImmobile() : null) + 
                 ", valoreBase=" + valoreBase + 
                 ", fattoreAggiustamento="+ fattoreAggiustamento + 
                 ", valoreMedio=" + valoreMedio + 
@@ -113,6 +131,5 @@ public class ValutazioneImmobile {
                 ", valoreMax=" + valoreMax + 
                 ", confidence=" + confidence + "]";
     }
-
 
 }

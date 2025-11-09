@@ -1,9 +1,11 @@
 package com.residea.residea.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.Id;
 import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 
 @Entity
@@ -11,6 +13,7 @@ import jakarta.persistence.Column;
 public class Citta {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idCitta")
     private Integer idCitta;
 
@@ -20,20 +23,20 @@ public class Citta {
     @Column(name = "provincia")
     private String provincia;
 
-    @Column(name = "regione")
+    @Column(name = "regione", length = 20)
     private String regione;
 
-    @Column(name = "codiceIstat")
+    @Column(name = "codiceIstat", length = 10)
     private String codiceIstat;
 
     // --- COSTRUTTORI ---
+    public Citta() {}
 
-    public Citta(String codiceIstat, Integer idCitta, String nome, String provincia, String regione) {
-        this.codiceIstat = codiceIstat;
-        this.idCitta = idCitta;
+    public Citta(String nome, String provincia, String regione, String codiceIstat) {
         this.nome = nome;
         this.provincia = provincia;
         this.regione = regione;
+        this.codiceIstat = codiceIstat;
     }
     
     // --- GETTER & SETTER ---

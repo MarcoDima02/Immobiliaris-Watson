@@ -14,7 +14,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "immobili")
+@Table(name = "Immobile")
 public class Immobile {
 
     @Id
@@ -53,7 +53,10 @@ public class Immobile {
     private Stato stato;
 
     // --- COSTRUTTORI ---
-    public Immobile(Utente proprietario, Tipologia tipologia, String indirizzo,String citta, String provincia, String cap,BigDecimal latitudine, BigDecimal longitudine, Stato stato) {
+    public Immobile() {}
+
+    public Immobile(Utente proprietario, Tipologia tipologia, String indirizzo, String citta, String provincia, String cap,
+                    BigDecimal latitudine, BigDecimal longitudine, Stato stato) {
         this.proprietario = proprietario;
         this.tipologia = tipologia;
         this.indirizzo = indirizzo;

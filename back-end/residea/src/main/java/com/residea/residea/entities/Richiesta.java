@@ -1,16 +1,26 @@
 package com.residea.residea.entities;
 
-import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+
 @Entity
-@Table(name = "prenotazioni")
-public class Prenotazione {
+@Table(name = "Richiesta")
+public class Richiesta {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idPrenotazione")
-    private Integer idPrenotazione;
+    @Column(name = "idRichiesta")
+    private Integer idRichiesta;
 
     @ManyToOne
     @JoinColumn(name = "idUtente", nullable = false)
@@ -20,14 +30,15 @@ public class Prenotazione {
     @JoinColumn(name = "idImmobile", nullable = false)
     private Immobile immobile;
 
-    @Column(name = "dataPrenotazione", nullable = false)
-    private LocalDateTime dataPrenotazione;
+    @Column(name = "dataRichiesta", nullable = false)
+    private LocalDateTime dataRichiesta;
 
     @Column(name = "dataAppuntamento")
     private LocalDateTime dataAppuntamento;
 
+    @Enumerated(EnumType.STRING)
     @Column(length = 50)
-    private String stato;
+    private Stato stato;
 
     @Column(columnDefinition = "TEXT")
     private String noteUtente;
@@ -36,10 +47,12 @@ public class Prenotazione {
     private String motivoAnnullamento;
 
     // --- COSTRUTTORI ---
-    public Prenotazione(Utente utente, Immobile immobile, LocalDateTime dataPrenotazione, LocalDateTime dataAppuntamento, String stato, String noteUtente, String motivoAnnullamento) {
+    public Richiesta() {}
+
+    public Richiesta(Utente utente, Immobile immobile, LocalDateTime dataRichiesta, LocalDateTime dataAppuntamento, Stato stato, String noteUtente, String motivoAnnullamento) {
         this.utente = utente;
         this.immobile = immobile;
-        this.dataPrenotazione = dataPrenotazione;
+        this.dataRichiesta = dataRichiesta;
         this.dataAppuntamento = dataAppuntamento;
         this.stato = stato;
         this.noteUtente = noteUtente;
@@ -47,12 +60,12 @@ public class Prenotazione {
     }
 
     // --- GETTER & SETTER ---
-    public Integer getIdPrenotazione() {
-        return idPrenotazione;
+    public Integer getIdRichiesta() {
+        return idRichiesta;
     }
 
-    public void setIdPrenotazione(Integer idPrenotazione) {
-        this.idPrenotazione = idPrenotazione;
+    public void setIdRichiesta(Integer idRichiesta) {
+        this.idRichiesta = idRichiesta;
     }
 
     public Utente getUtente() {
@@ -71,12 +84,12 @@ public class Prenotazione {
         this.immobile = immobile;
     }
 
-    public LocalDateTime getDataPrenotazione() {
-        return dataPrenotazione;
+    public LocalDateTime getDataRichiesta() {
+        return dataRichiesta;
     }
 
-    public void setDataPrenotazione(LocalDateTime dataPrenotazione) {
-        this.dataPrenotazione = dataPrenotazione;
+    public void setDataRichiesta(LocalDateTime dataRichiesta) {
+        this.dataRichiesta = dataRichiesta;
     }
 
     public LocalDateTime getDataAppuntamento() {
@@ -87,11 +100,11 @@ public class Prenotazione {
         this.dataAppuntamento = dataAppuntamento;
     }
 
-    public String getStato() {
+    public Stato getStato() {
         return stato;
     }
 
-    public void setStato(String stato) {
+    public void setStato(Stato stato) {
         this.stato = stato;
     }
 
@@ -114,14 +127,32 @@ public class Prenotazione {
     @Override
     public String toString() {
         return "Prenotazione{" +
-                "idPrenotazione=" + idPrenotazione +
+                "idRichiesta=" + idRichiesta +
                 ", utente=" + (utente != null ? utente.getIdUtente() : null) +
                 ", immobile=" + (immobile != null ? immobile.getIdImmobile() : null) +
-                ", dataPrenotazione=" + dataPrenotazione +
+                ", dataRichiesta=" + dataRichiesta +
                 ", dataAppuntamento=" + dataAppuntamento +
                 ", stato='" + stato + '\'' +
                 ", noteUtente='" + noteUtente + '\'' +
                 ", motivoAnnullamento='" + motivoAnnullamento + '\'' +
                 '}';
+    }
+
+    // --- ENUM per stato ---
+    public enum Stato {
+        IN_ATTESA("In attesa"),
+        IN_ELABORAZIONE("In elaborazione"),
+        COMPLETATA("Completata"),
+        ANNULLATA("Annullata");
+
+        private final String displayValue;
+
+        Stato(String displayValue) {
+            this.displayValue = displayValue;
+        }
+
+        public String getDisplayValue() {
+            return displayValue;
+        }
     }
 }

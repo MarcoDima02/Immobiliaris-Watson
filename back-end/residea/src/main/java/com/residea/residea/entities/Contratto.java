@@ -1,10 +1,20 @@
 package com.residea.residea.entities;
 
-import jakarta.persistence.*;
 import java.time.LocalDate;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+
 @Entity
-@Table(name = "contratti")
+@Table(name = "Contratti")
 public class Contratto {
 
     @Id
@@ -27,6 +37,8 @@ public class Contratto {
     private String pathContrattoPDF;
 
     // --- COSTRUTTORI ---
+    public Contratto() {}
+
     public Contratto(Immobile idImmobile, TipoContratto tipoContratto, LocalDate dataContratto, LocalDate dataScadenzaContratto, String pathContrattoPDF) {
         this.idImmobile = idImmobile;
         this.tipoContratto = tipoContratto;
