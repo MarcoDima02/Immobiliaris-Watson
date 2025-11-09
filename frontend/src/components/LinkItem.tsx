@@ -9,17 +9,18 @@ import { NavLink } from 'react-router';
 import { cn } from '@/lib/utils';
 
 /**
- * Constants
+ * Types
  */
-import { links } from '@/constants';
+import type { Dispatch, SetStateAction } from 'react';
 
 type LinkItemProps = {
   to?: string;
   href?: string;
   label: string;
+  setIsOpen: Dispatch<SetStateAction<boolean>>;
 };
 
-const LinkItem = ({ to, href, label }: LinkItemProps) => {
+const LinkItem = ({ to, href, label, setIsOpen }: LinkItemProps) => {
   const baseClasses =
     'relative font-semibold text-primary/75 hover:text-primary transition-colors duration-150';
 
@@ -28,6 +29,7 @@ const LinkItem = ({ to, href, label }: LinkItemProps) => {
       <NavLink
         to={to}
         viewTransition
+        onClick={() => setIsOpen(false)}
         className={({ isActive }) =>
           cn(
             baseClasses,
@@ -46,6 +48,7 @@ const LinkItem = ({ to, href, label }: LinkItemProps) => {
       <a
         href={href}
         className={baseClasses}
+        onClick={() => setIsOpen(false)}
       >
         {label}
       </a>

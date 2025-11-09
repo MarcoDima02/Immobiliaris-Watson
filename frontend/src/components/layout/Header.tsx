@@ -62,7 +62,7 @@ const Header = () => {
               key={link.label}
               className="not-[last-of-type]:mt-4"
             >
-              <LinkItem {...link} />
+              <LinkItem setIsOpen={setIsOpen} {...link} />
             </li>
           ))}
         </ul>
