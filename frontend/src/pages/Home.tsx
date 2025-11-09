@@ -37,7 +37,7 @@ const Home = () => {
         </figure>
       </section>
 
-      <div className="absolute top-[20%] z-10 left-4 sm:left-6 lg:left-8 right-4 sm:right-6 lg:right-8 max-w-max mx-auto p-8 bg-background/90 rounded-xl">
+      <div className="absolute top-[20%] z-10 left-4 sm:left-6 lg:left-8 right-4 sm:right-6 lg:right-8 max-w-max mx-auto p-8 rounded-xl bg-linear-to-b from-background  from-40% via-background via-55% to-transparent">
         <h1 className="text-3xl font-semibold mb-3 max-w-[20ch] md:max-w-[35ch]">
           Vuoi vendere casa senza stress?
         </h1>
