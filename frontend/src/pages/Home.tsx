@@ -38,7 +38,7 @@ const Home = () => {
         </figure>
       </section>
 
-      <div className="absolute top-[20%] z-10  px-4 sm:px-6 lg:px-8 w-full max-w-3xl xl:max-w[1700px] left-1/2 -translate-x-1/2  bg-linear-to-b ">
+      <div className="absolute top-[20%] z-10  px-6 sm:px-8 lg:px-12 w-full max-w-3xl xl:max-w[1700px] left-1/2 -translate-x-1/2  bg-linear-to-b ">
         <h1 className="text-black text-3xl md:text-4xl lg:text-5xl font-bold mb-3 max-w-[20ch]">
           Vuoi vendere casa senza stress?
         </h1>
