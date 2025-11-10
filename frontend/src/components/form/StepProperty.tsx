@@ -41,7 +41,7 @@ import {
 /**
  * Icons
  */
-import { Building, House, School, Building2 } from 'lucide-react';
+import { Building, House, School, Building2, ChevronDown } from 'lucide-react';
 
 /**
  * Types
@@ -113,7 +113,6 @@ const StepProperty = ({
           onSubmit={handleSubmit(onSubmit)}
         >
           <FieldGroup>
-         
             <div className="grid grid-cols-2 gap-3 mb-4">
               {propertyTypes.map((type) => (
                 <Button
@@ -121,12 +120,12 @@ const StepProperty = ({
                   type="button"
                   onClick={() => {
                     setSelectedType(type.value);
-                    setValue('propertyType', type.value); 
+                    setValue('propertyType', type.value);
                   }}
                   className={clsx('p-3 rounded-lg border transition', {
-                    'border-primary bg-primary/10 text-primary': selectedType === type.value,
-                    'border-border':
-                      selectedType !== type.value,
+                    'border-primary bg-primary/10 text-primary':
+                      selectedType === type.value,
+                    'border-border': selectedType !== type.value,
                   })}
                 >
                   <span className="text-2xl">{type.icon}</span>
@@ -137,7 +136,6 @@ const StepProperty = ({
 
             {selectedType && (
               <>
-             
                 <Controller
                   name="area"
                   control={control}
@@ -161,13 +159,12 @@ const StepProperty = ({
                 />
 
                 <div className="grid grid-cols-2 gap-3">
-                
                   <Controller
                     name="rooms"
                     control={control}
                     render={({ field }) => (
                       <Field>
-                        <FieldLabel>Locali</FieldLabel>
+                        <FieldLabel>Numero di locali</FieldLabel>
                         <Input
                           className="w-1/2 min-w-1"
                           type="number"
@@ -182,13 +179,12 @@ const StepProperty = ({
                     )}
                   />
 
-                  
                   <Controller
                     name="bathrooms"
                     control={control}
                     render={({ field }) => (
                       <Field>
-                        <FieldLabel>Bagni</FieldLabel>
+                        <FieldLabel>Numero di bagni</FieldLabel>
                         <Input
                           type="number"
                           className="w-1/2 min-w-1"
@@ -230,18 +226,22 @@ const StepProperty = ({
                   name="condition"
                   control={control}
                   render={({ field }) => (
-                    <Field className=''>
-                      <FieldLabel>Stato immobile</FieldLabel>
+                    <Field className="">
+                      <FieldLabel>Seleziona lo stato immobile</FieldLabel>
                       <Select
                         {...field}
                         onValueChange={field.onChange}
-                  
                       >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Seleziona" />
+                        <SelectTrigger className="cursor-pointer ">
+                          <SelectValue />
                         </SelectTrigger>
-                        <SelectContent >
-                          <SelectItem value="new" className=''>Nuovo</SelectItem>
+                        <SelectContent>
+                          <SelectItem
+                            value="new"
+                            className=""
+                          >
+                            Nuovo
+                          </SelectItem>
                           <SelectItem value="renovated">
                             Ristrutturato
                           </SelectItem>
@@ -254,7 +254,7 @@ const StepProperty = ({
                   )}
                 />
 
-                <Controller
+                {/* <Controller
                   name="requestedPurpose"
                   control={control}
                   render={({ field }) => (
@@ -276,7 +276,7 @@ const StepProperty = ({
                       </Select>
                     </Field>
                   )}
-                />
+                /> */}
               </>
             )}
           </FieldGroup>
@@ -295,7 +295,7 @@ const StepProperty = ({
         <Button
           form="property-form"
           type="submit"
-          className='hover:bg-card'
+          className="hover:bg-card"
         >
           Avanti
         </Button>

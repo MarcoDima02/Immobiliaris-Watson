@@ -166,7 +166,7 @@ const StepAddress = ({ onNext }: { onNext: () => void }) => {
   return (
     <Card className="w-full sm:maxw-md">
       <CardHeader>
-        <CardTitle>Dove si trova l'immobile?</CardTitle>
+        <CardTitle className='font-bold'>Dove si trova l'immobile?</CardTitle>
       </CardHeader>
 
       <CardContent>
@@ -292,7 +292,7 @@ const StepAddress = ({ onNext }: { onNext: () => void }) => {
                   />
 
                   {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
+                    <FieldError className='' errors={[fieldState.error]} />
                   )}
                 </Field>
               )}

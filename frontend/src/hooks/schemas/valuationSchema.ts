@@ -35,7 +35,7 @@ export const propertySchema = z.object({
   basementArea: z.number().optional(),
   heatingType: z.string().optional(),
   energyClass: z.enum(['A+', 'A', 'B', 'C', 'D', 'E', 'F', 'G']).optional(),
-  yearBuilt: z.number().int().min(1800).max(new Date().getFullYear()),
+  yearBuilt: z.number({ error: 'Inserisci l\'anno di costruzione' }).int().min(1800, 'L\'anno deve essere superiore al 1800').max(new Date().getFullYear()),
   condition: z.string().optional(),
   exposure: z.string().optional(),
 });
