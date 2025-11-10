@@ -7,6 +7,12 @@ import { heroAltAvif, heroAltWebp, heroAltJpg } from '@/assets';
  * Components
  */
 import { Button } from '@/components/ui/button';
+import Functionality from '@/components/Functionality';
+
+/**
+ * Icons
+ */
+import { File, Euro, UserRound } from 'lucide-react';
 
 const Home = () => {
   return (
@@ -39,19 +45,55 @@ const Home = () => {
       </section>
 
       <div className="absolute top-[20%] z-10  px-6 sm:px-8 lg:px-12 w-full max-w-3xl xl:max-w[1700px] left-1/2 -translate-x-1/2  bg-linear-to-b ">
-        <h1 className="text-black text-3xl md:text-4xl lg:text-5xl font-bold mb-3 max-w-[20ch]">
-          Vuoi vendere casa senza stress?
-        </h1>
-        <h2 className="font-semibold mb-4 md:text-lg max-w-[30ch] md:max-w-[45ch]">
+        <h1 className="title">Vuoi vendere casa senza stress?</h1>
+        <h2 className="title-secondary">
           Con noi, il tuo immobile trova presto il suo nuovo proprietario.
         </h2>
         <div className="flex">
-          <Button size='lg' className="text-md lg:text-lg">Valuta ora</Button>
+          <Button
+            size="lg"
+            className="text-md lg:text-lg"
+          >
+            Valuta ora
+          </Button>
         </div>
       </div>
 
-      <section className='container-fluid'>
-        <h2>Come funziona</h2>
+      <section className="container-fluid mt-8 flex flex-col justify-center items-center text-center">
+        <h2 className="title">Come funziona</h2>
+        <h3 className="title-secondary">
+          Ricevi in tre step la valutazione del tuo immobile!
+        </h3>
+
+        <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6 mt-8">
+          <Functionality
+            icon={File}
+            desc={
+              <>
+                <strong>Compila il form</strong> con i dati dell’abitazione in
+                pochi minuti
+              </>
+            }
+          />
+          <Functionality
+            icon={Euro}
+            desc={
+              <>
+                <strong>Ricevi una fascia di valutazione</strong> in base ai
+                tuoi dati
+              </>
+            }
+          />
+          <Functionality
+            icon={UserRound}
+            desc={
+              <>
+                <strong>Consulenza</strong> e valutazione precisa da parte di uno{' '}
+                <strong>dei nostri agenti</strong>
+              </>
+            }
+          />
+        </div>
       </section>
     </>
   );
