@@ -7,4 +7,7 @@ import heroWebp from '@/assets/hero-alt.jpg';
 import heroJpg from '@/assets/hero-alt.jpg';
 
 
-export { heroAvif, heroWebp, heroJpg };
+import heroSecondJpg from '@/assets/hero-alt-2.jpg';
+
+
+export { heroAvif, heroWebp, heroJpg, heroSecondJpg };
