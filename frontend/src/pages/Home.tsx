@@ -61,9 +61,9 @@ const Home = () => {
             <h3 className='text-lg font-semibold text-zinc-800'>Ricevi in tre step la valutazione del tuo immobile!</h3>
           </div>
 
-          <div className='row flex flex-row'>
+          <div className='row flex flex-row flex-wrap justify-center items-start gap-10 lg:gap-0'>
 
-            <div className='flex flex-col w-[33%] justify-center items-center px-25'>
+            <div className='flex lg:flex-col w-full lg:w-[33%] justify-center items-center px-10 lg:px-25 gap-10 '>
               <div>
                 <div className='bg-card rounded-full p-3 shadow-xl w-20 h-20 flex justify-center items-center'><File className='h-10 w-10 text-foreground' /></div>
               </div>
@@ -72,7 +72,7 @@ const Home = () => {
               </div>
             </div>
 
-            <div className='flex flex-col w-[33%] justify-center items-center px-25'>
+            <div className='flex lg:flex-col w-full lg:w-[33%] justify-center items-center px-10 lg:px-25 gap-10 '>
               <div>
                 <div className='bg-card rounded-full p-3 shadow-xl w-20 h-20 flex justify-center items-center'><Euro className='h-10 w-10 text-foreground' /></div>
               </div>
@@ -81,7 +81,7 @@ const Home = () => {
               </div>
             </div>
 
-            <div className='flex flex-col w-[33%] justify-center items-center px-25'>
+            <div className='flex lg:flex-col  w-full lg:w-[33%] justify-center items-center px-10 lg:px-25 gap-10 '>
               <div>
                 <div className='bg-card rounded-full p-3 shadow-xl w-20 h-20 flex justify-center items-center'><UserRound className='h-10 w-10 text-foreground' /></div>
               </div>
@@ -96,8 +96,10 @@ const Home = () => {
         </div>
 
       </section>
-    </>
-  );
+
+      
+        </>
+        );
 };
 
-export default Home;
+        export default Home;
