@@ -18,7 +18,7 @@
   --primary: #5e223e;
   --primary-foreground: #f2e9e4;
   --secondary: #c9ada7;
-  --secondary-light: #E7D4D0;
+  --secondary-light: #e7d4d0;
   --secondary-foreground: #5e223e;
 
   /* --muted: #888282; */
@@ -116,11 +116,15 @@ input[type='number']::-webkit-outer-spin-button {
 }
 
 input:-webkit-autofill {
-  -webkit-box-shadow: 0 0 0px 1000px var(--secondary-light) inset; 
-  -webkit-text-fill-color: #5e223e; 
-  transition: background-color 5000s ease-in-out 0s; 
+  -webkit-box-shadow: 0 0 0px 1000px var(--secondary-light) inset;
+  -webkit-text-fill-color: #5e223e;
+  transition: background-color 5000s ease-in-out 0s;
 }
 
+/* .container-fluid {
+  @apply container mx-auto px-4 sm:px-6 lg:px-8 h-16
+} */
+
 .container-fluid {
-  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16
+  @apply mx-auto px-4 sm:px-6 lg:px-8 max-w-3xl xl:max-w-7xl;
 }

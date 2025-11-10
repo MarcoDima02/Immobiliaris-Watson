@@ -33,13 +33,13 @@ const Home = () => {
             />
           </picture>
 
-          <div className="absolute inset-0 pointer-events-none bg-linear-to-t from-background via-transparent "></div>
+          {/* <div className="absolute inset-0 pointer-events-none bg-linear-to-t from-background via-transparent "></div> */}
           <div className="absolute inset-0 pointer-events-none bg-linear-to-r from-background via-transparent"></div>
         </figure>
       </section>
 
-      <div className="absolute top-[20%] z-10 left-0 sm:left-16 md:left-[90px] lg:left-[120px]  xl:left-[325px] p-8 rounded-xl bg-linear-to-b ">
-        <h1 className="text-black text-3xl md:text-4xl lg:text-5xl font-semibold mb-3 max-w-[20ch]">
+      <div className="absolute top-[20%] z-10  px-4 sm:px-6 lg:px-8 w-full max-w-3xl xl:max-w[1700px] left-1/2 -translate-x-1/2  bg-linear-to-b ">
+        <h1 className="text-black text-3xl md:text-4xl lg:text-5xl font-bold mb-3 max-w-[20ch]">
           Vuoi vendere casa senza stress?
         </h1>
         <h2 className="font-semibold mb-4 md:text-lg max-w-[30ch] md:max-w-[45ch]">
@@ -49,6 +49,10 @@ const Home = () => {
           <Button size='lg' className="text-md lg:text-lg">Valuta ora</Button>
         </div>
       </div>
+
+      <section className='container-fluid'>
+        <h2>Come funziona</h2>
+      </section>
     </>
   );
 };
