@@ -26,7 +26,10 @@ const Home = () => {
               src={heroAltJpg}
               alt="Immagine di un appartamento"
               loading="lazy"
-              className="md:max-h-[50vh] w-full h-full object-cover"
+              className="w-full h-full object-cover scale-x-[-1]
+          md:mask-[linear-gradient(to_right,white_0%,transparent_100%)]
+          md:[-webkit-mask-image:linear-gradient(to_right,white_0%,transparent_90%)]
+          opacity-20 md:opacity-80 lg:object-top"
             />
           </picture>
 
@@ -35,14 +38,14 @@ const Home = () => {
         </figure>
       </section>
 
-      <div className="absolute top-[20%] z-10 left-4 sm:left-6 lg:left-8 right-4 sm:right-6 lg:right-8 max-w-max mx-auto p-8 rounded-xl bg-linear-to-b from-background  from-40% via-background via-55% to-transparent">
-        <h1 className="text-3xl font-semibold mb-3 max-w-[20ch] md:max-w-[35ch]">
+      <div className="absolute top-[20%] z-10 left-0 sm:left-16 md:left-[90px] lg:left-[120px]  xl:left-[325px] p-8 rounded-xl bg-linear-to-b ">
+        <h1 className="text-black text-3xl font-semibold mb-3 max-w-[20ch] lg:max-w-[35ch]">
           Vuoi vendere casa senza stress?
         </h1>
-        <h2 className="font-semibold mb-4 max-w-[30ch] md:max-w-[45ch] md:text-center">
+        <h2 className="font-semibold mb-4 max-w-[30ch] md:max-w-[45ch]">
           Con noi, il tuo immobile trova presto il suo nuovo proprietario.
         </h2>
-        <div className="flex md:justify-center">
+        <div className="flex">
           <Button className="">Valuta ora</Button>
         </div>
       </div>
