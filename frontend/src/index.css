@@ -6,7 +6,8 @@
 
 :root {
   /* === PALETTE PRINCIPALE === */
-  --background: #c0c0c0;
+  /* --background: #c0c0c0; */
+  --background: #fff;
   --foreground: #5e223e;
   --card: #f2e9e4;
   /* --card: red; */

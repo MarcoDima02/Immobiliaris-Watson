@@ -1,9 +1,7 @@
 /**
  * Immages
  */
-import { heroAvif } from '@/assets';
-import { heroWebp } from '@/assets';
-import { heroJpg } from '@/assets';
+import { heroAltAvif, heroAltWebp, heroAltJpg } from '@/assets';
 
 /**
  * Components
@@ -17,15 +15,15 @@ const Home = () => {
         <figure className="absolute inset-0 w-full h-full">
           <picture>
             <source
-              srcSet={heroAvif}
+              srcSet={heroAltAvif}
               type="image/avif"
             />
             <source
-              srcSet={heroWebp}
+              srcSet={heroAltWebp}
               type="image/webp"
             />
             <img
-              src={heroJpg}
+              src={heroAltJpg}
               alt="Immagine di un appartamento"
               loading="lazy"
               className="md:max-h-[50vh] w-full h-full object-cover"
@@ -44,7 +42,7 @@ const Home = () => {
         <h2 className="font-semibold mb-4 max-w-[30ch] md:max-w-[45ch] md:text-center">
           Con noi, il tuo immobile trova presto il suo nuovo proprietario.
         </h2>
-        <div className='flex md:justify-center'>
+        <div className="flex md:justify-center">
           <Button className="">Valuta ora</Button>
         </div>
       </div>
