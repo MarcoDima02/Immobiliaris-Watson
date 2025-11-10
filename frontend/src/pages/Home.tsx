@@ -39,14 +39,14 @@ const Home = () => {
       </section>
 
       <div className="absolute top-[20%] z-10 left-0 sm:left-16 md:left-[90px] lg:left-[120px]  xl:left-[325px] p-8 rounded-xl bg-linear-to-b ">
-        <h1 className="text-black text-3xl font-semibold mb-3 max-w-[20ch] lg:max-w-[35ch]">
+        <h1 className="text-black text-3xl md:text-4xl lg:text-5xl font-semibold mb-3 max-w-[20ch]">
           Vuoi vendere casa senza stress?
         </h1>
-        <h2 className="font-semibold mb-4 max-w-[30ch] md:max-w-[45ch]">
+        <h2 className="font-semibold mb-4 md:text-lg max-w-[30ch] md:max-w-[45ch]">
           Con noi, il tuo immobile trova presto il suo nuovo proprietario.
         </h2>
         <div className="flex">
-          <Button className="">Valuta ora</Button>
+          <Button size='lg' className="text-md lg:text-lg">Valuta ora</Button>
         </div>
       </div>
     </>
