@@ -41,7 +41,7 @@ import {
 /**
  * Icons
  */
-import { Building, House, School, Building2, ChevronDown } from 'lucide-react';
+import { Building, House, School, Building2 } from 'lucide-react';
 
 /**
  * Types
