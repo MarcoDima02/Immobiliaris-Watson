@@ -63,29 +63,29 @@ const Home = () => {
 
           <div className='row flex flex-row flex-wrap justify-center items-start gap-10 lg:gap-0'>
 
-            <div className='flex lg:flex-col w-full lg:w-[33%] justify-center items-center px-10 lg:px-25 gap-10 '>
+            <div className='flex lg:flex-col w-full lg:w-[33%] justify-center items-center px-10 md:px-25 lg:px-10 xl:px-25 gap-10 '>
               <div>
                 <div className='bg-card rounded-full p-3 shadow-xl w-20 h-20 flex justify-center items-center'><File className='h-10 w-10 text-foreground' /></div>
               </div>
-              <div className='pt-5 text-left text-lg font-medium text-zinc-800'>
+              <div className=' text-left text-lg font-medium text-zinc-800'>
                 <p><b>Compila il form</b> con i dati dell’abitazione in pochi minuti</p>
               </div>
             </div>
 
-            <div className='flex lg:flex-col w-full lg:w-[33%] justify-center items-center px-10 lg:px-25 gap-10 '>
+            <div className='flex lg:flex-col w-full lg:w-[33%] justify-center items-center px-10 md:px-25 lg:px-10 xl:px-25 gap-10 align-center'>
               <div>
                 <div className='bg-card rounded-full p-3 shadow-xl w-20 h-20 flex justify-center items-center'><Euro className='h-10 w-10 text-foreground' /></div>
               </div>
-              <div className='pt-5 text-left text-lg font-medium text-zinc-800'>
+              <div className=' text-left text-lg font-medium text-zinc-800'>
                 <p><b>Ricevi una fascia di valutazione</b> in base ai tuoi dati</p>
               </div>
             </div>
 
-            <div className='flex lg:flex-col  w-full lg:w-[33%] justify-center items-center px-10 lg:px-25 gap-10 '>
+            <div className='flex lg:flex-col  w-full lg:w-[33%] justify-center items-center px-10 md:px-25 lg:px-10 xl:px-25 gap-10 '>
               <div>
                 <div className='bg-card rounded-full p-3 shadow-xl w-20 h-20 flex justify-center items-center'><UserRound className='h-10 w-10 text-foreground' /></div>
               </div>
-              <div className='pt-5 text-left text-lg font-medium text-zinc-800'>
+              <div className=' text-left text-lg font-medium text-zinc-800'>
                 <p><b>Consulenza</b> e valutazione precisa da parte di uno <b>dei nostri agenti</b></p>
               </div>
             </div>
