@@ -3,7 +3,7 @@
  */
 import { heroAvif } from '@/assets';
 import { heroWebp } from '@/assets';
-import { heroJpg, heroSecondJpg } from '@/assets';
+import { heroJpg, heroSecondJpg, heroThirdJpg } from '@/assets';
 
 /**
  * Components
@@ -27,10 +27,10 @@ const Home = () => {
                 type="image/webp"
               />
               <img
-                src={heroSecondJpg}
+                src={heroThirdJpg}
                 alt="Immagine di un appartamento"
                 loading="lazy"
-                className="md:max-h-[60vh] w-full h-full object-cover "
+                className="md:max-h-[60vh] w-full h-full object-cover opacity-40 lg:opacity-100 scale-x-[-1]"
               />
             </picture>
             <div className="absolute inset-0 pointer-events-none bg-linear-to-r from-background to-transparent" />
@@ -39,15 +39,15 @@ const Home = () => {
         </div>
       </section>
 
-      <div className="absolute top-[25%] z-10 left-4 sm:left-6 right-4 sm:right-6 md:left-40 max-w-max p-8 rounded-xl  text-center md:text-left">
-        <h1 className="text-3xl font-semibold mb-3 max-w-[20ch] md:max-w-[35ch]">
+      <div className="absolute top-[25%] z-10 left-1/2 lg:left-50 transform -translate-x-1/2 lg:translate-x-0 px-4 sm:px-6 w-full max-w-sm sm:max-w-md md:max-w-lg p-8 rounded-xl text-center lg:text-left">
+        <h1 className="text-4xl font-bold text-zinc-800 mb-3 max-w-[20ch] md:max-w-[35ch]">
           Vuoi vendere casa senza stress?
         </h1>
-        <h2 className="font-semibold mb-4 max-w-[30ch] md:max-w-[45ch] ">
+        <h2 className="text-lg font-semibold mb-4 max-w-[30ch] md:max-w-[45ch]">
           Con noi, il tuo immobile trova presto il suo nuovo proprietario.
         </h2>
-        <div className='flex md:justify-start justify-center'>
-          <Button className="">Valuta ora</Button>
+        <div className="flex justify-center lg:justify-start">
+          <Button>Valuta ora</Button>
         </div>
       </div>
     </>
