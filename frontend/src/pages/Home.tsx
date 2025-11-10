@@ -9,6 +9,7 @@ import { heroJpg, heroSecondJpg, heroThirdJpg } from '@/assets';
  * Components
  */
 import { Button } from '@/components/ui/button';
+import { Euro, File, UserRound } from 'lucide-react';
 
 const Home = () => {
   return (
@@ -40,7 +41,7 @@ const Home = () => {
       </section>
 
       <div className="absolute top-[25%] z-10 left-1/2 lg:left-50 transform -translate-x-1/2 lg:translate-x-0 px-4 sm:px-6 w-full max-w-sm sm:max-w-md md:max-w-lg p-8 rounded-xl text-center lg:text-left">
-        <h1 className="text-4xl font-bold text-zinc-800 mb-3 max-w-[20ch] md:max-w-[35ch]">
+        <h1 className="text-5xl font-bold text-zinc-800 mb-3 max-w-[20ch] md:max-w-[35ch]">
           Vuoi vendere casa senza stress?
         </h1>
         <h2 className="text-lg font-semibold mb-4 max-w-[30ch] md:max-w-[45ch]">
@@ -50,6 +51,51 @@ const Home = () => {
           <Button>Valuta ora</Button>
         </div>
       </div>
+
+      <section className='py-25 container mx-auto'>
+
+        <div className="flex justify-center flex-col items-center gap-10">
+
+          <div className='text-center'>
+            <h2 className='text-4xl font-bold text-zinc-800'>Come funziona</h2>
+            <h3 className='text-lg font-semibold text-zinc-800'>Ricevi in tre step la valutazione del tuo immobile!</h3>
+          </div>
+
+          <div className='row flex flex-row'>
+
+            <div className='flex flex-col w-[33%] justify-center items-center px-25'>
+              <div>
+                <div className='bg-card rounded-full p-3 shadow-xl w-20 h-20 flex justify-center items-center'><File className='h-10 w-10 text-foreground' /></div>
+              </div>
+              <div className='pt-5 text-left text-lg font-medium text-zinc-800'>
+                <p><b>Compila il form</b> con i dati dell’abitazione in pochi minuti</p>
+              </div>
+            </div>
+
+            <div className='flex flex-col w-[33%] justify-center items-center px-25'>
+              <div>
+                <div className='bg-card rounded-full p-3 shadow-xl w-20 h-20 flex justify-center items-center'><Euro className='h-10 w-10 text-foreground' /></div>
+              </div>
+              <div className='pt-5 text-left text-lg font-medium text-zinc-800'>
+                <p><b>Ricevi una fascia di valutazione</b> in base ai tuoi dati</p>
+              </div>
+            </div>
+
+            <div className='flex flex-col w-[33%] justify-center items-center px-25'>
+              <div>
+                <div className='bg-card rounded-full p-3 shadow-xl w-20 h-20 flex justify-center items-center'><UserRound className='h-10 w-10 text-foreground' /></div>
+              </div>
+              <div className='pt-5 text-left text-lg font-medium text-zinc-800'>
+                <p><b>Consulenza</b> e valutazione precisa da parte di uno <b>dei nostri agenti</b></p>
+              </div>
+            </div>
+
+          </div>
+
+          <div className='mx-auto'><Button>Valuta ora</Button></div>
+        </div>
+
+      </section>
     </>
   );
 };
