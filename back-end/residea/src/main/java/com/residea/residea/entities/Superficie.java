@@ -12,7 +12,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "Superfici")
-public class Superfici {
+public class Superficie {
 
     @Id
     @Column(name = "idImmobile")
@@ -39,9 +39,9 @@ public class Superfici {
     private BigDecimal superficieCantina;
 
     // --- COSTRUTTORI ---
-    public Superfici() {}
+    public Superficie() {}
 
-    public Superfici(Immobile immobile, BigDecimal superficieMq, BigDecimal superficieBalconeTerrazzo,
+    public Superficie(Immobile immobile, BigDecimal superficieMq, BigDecimal superficieBalconeTerrazzo,
                      BigDecimal superficieGiardino, BigDecimal superficieGarage, BigDecimal superficieCantina) {
         this.immobile = immobile;
         this.superficieMq = superficieMq;
