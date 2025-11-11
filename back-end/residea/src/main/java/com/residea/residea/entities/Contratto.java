@@ -36,9 +36,6 @@ public class Contratto {
     @Column(length = 255)
     private String pathContrattoPDF;
 
-    // --- COSTRUTTORI ---
-    public Contratto() {}
-
     public Contratto(Immobile idImmobile, TipoContratto tipoContratto, LocalDate dataContratto, LocalDate dataScadenzaContratto, String pathContrattoPDF) {
         this.idImmobile = idImmobile;
         this.tipoContratto = tipoContratto;
