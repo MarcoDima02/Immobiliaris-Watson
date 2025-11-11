@@ -35,8 +35,8 @@ const Home = () => {
         </div>
       </div>
 
-      <div className="relative w-full overflow-hidden rounded-full">
-        <figure className="w-full h-full">
+      <div className="w-full overflow-hidden">
+        <figure className="w-full absolute top-0 h-[50vh]">
           <picture>
             <source
               srcSet={heroAltAvif}
@@ -50,12 +50,12 @@ const Home = () => {
               src={heroAltJpg}
               alt="Immagine di un appartamento"
               loading="lazy"
-              className=""
+              className="object-cover w-full h-full"
             />
           </picture>
 
           {/* <div className="absolute inset-0 pointer-events-none bg-linear-to-t from-background via-transparent "></div> */}
-          {/* <div className="absolute inset-0 pointer-events-none bg-linear-to-r from-background from-0% via-transparent"></div> */}
+          <div className="absolute inset-0 pointer-events-none bg-linear-to-r from-background via-transparent"></div>
         </figure>
       </div>
 
@@ -112,7 +112,7 @@ const Home = () => {
 
             <div>
               <p>
-                Immobiliaris è una giovane realtà nata per rivoluzionare il modo in cui si vendono e si valutano gli immobili.
+                Immobiliaris è una giovane realtà nata per rivoluzionare il modo in cui si vendono e si valutano gli immobili.
               </p>
 
               <p>
@@ -120,7 +120,7 @@ const Home = () => {
               </p>
 
               <p>
-                Il nostro obiettivo è rendere la valutazione immobiliare semplice, rapida e trasparente, offrendo ai clienti un servizio innovativo che combina dati, consulenza e fiducia.
+                Il nostro obiettivo è rendere la valutazione immobiliare semplice, rapida e trasparente, offrendo ai clienti un servizio innovativo che combina dati, consulenza e fiducia.
               </p>
             </div>
             </div>
