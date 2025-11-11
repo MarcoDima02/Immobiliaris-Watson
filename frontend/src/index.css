@@ -6,29 +6,33 @@
 
 :root {
   /* === PALETTE PRINCIPALE === */
-  --background: #C0C0C0;
-  --foreground: #5E223E;
-  --card: #F2E9E4;
-  --card-foreground: #5E223E;
-  --popover: #F2E9E4;
-  --popover-foreground: #5E223E;
+  /* --background: #c0c0c0; */
+  --background: #fff;
+  --foreground: #5e223e;
+  --card: #f2e9e4;
+  /* --card: red; */
+  --card-foreground: #5e223e;
+  --popover: #f2e9e4;
+  --popover-foreground: #5e223e;
 
-  --primary: #5E223E;
-  --primary-foreground: #F2E9E4;
-  --secondary: #C9ADA7;
-  --secondary-foreground: #5E223E;
+  --primary: #5e223e;
+  --primary-foreground: #f2e9e4;
+  --secondary: #c9ada7;
+  --secondary-light: #e7d4d0;
+  --secondary-foreground: #5e223e;
 
-  --muted: #888282;
-  --muted-foreground: #F2E9E4;
-  --accent: #C9ADA7;
-  --accent-foreground: #5E223E;
+  /* --muted: #888282; */
+  --muted: #897a7a;
+  --muted-foreground: #f2e9e4;
+  --accent: #c9ada7;
+  --accent-foreground: #5e223e;
 
-  --destructive: #880E4F;
-  --destructive-foreground: #F2E9E4;
+  --destructive: #880e4f;
+  --destructive-foreground: #f2e9e4;
 
-  --border: #C9ADA7;
-  --input: #C9ADA7;
-  --ring: #5E223E;
+  --border: #c9ada7;
+  --input: #c9ada7;
+  --ring: #5e223e;
 
   /* === FONT E RADIUS === */
   --font-sans: 'Montserrat', ui-sans-serif, system-ui, sans-serif;
@@ -46,26 +50,26 @@
 
 /* === DARK MODE === */
 .dark {
-  --background: #2A2A2A;
-  --foreground: #F2E9E4;
-  --card: #3A3A3A;
-  --card-foreground: #F2E9E4;
+  --background: #2a2a2a;
+  --foreground: #f2e9e4;
+  --card: #3a3a3a;
+  --card-foreground: #f2e9e4;
   --popover: #444;
-  --popover-foreground: #F2E9E4;
+  --popover-foreground: #f2e9e4;
 
-  --primary: #C9ADA7;
-  --primary-foreground: #2A2A2A;
-  --secondary: #5E223E;
-  --secondary-foreground: #F2E9E4;
+  --primary: #c9ada7;
+  --primary-foreground: #2a2a2a;
+  --secondary: #5e223e;
+  --secondary-foreground: #f2e9e4;
 
   --muted: #555;
-  --muted-foreground: #C9ADA7;
-  --accent: #5E223E;
-  --accent-foreground: #F2E9E4;
+  --muted-foreground: #c9ada7;
+  --accent: #5e223e;
+  --accent-foreground: #f2e9e4;
 
   --border: #555;
   --input: #666;
-  --ring: #C9ADA7;
+  --ring: #c9ada7;
 }
 
 /* === COLLEGAMENTO CON TAILWIND === */
@@ -75,6 +79,7 @@
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
   --color-secondary: var(--secondary);
+  --color-secondary-light: var(--secondary-light);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
@@ -82,6 +87,8 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-border: var(--border);
   --color-ring: var(--ring);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
 
   --font-sans: var(--font-sans);
 
@@ -101,3 +108,31 @@
     @apply font-sans;
   }
 }
+
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0px 1000px var(--secondary-light) inset;
+  -webkit-text-fill-color: #5e223e;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* .container-fluid {
+  @apply container mx-auto px-4 sm:px-6 lg:px-8 h-16
+} */
+
+.container-fluid {
+  @apply mx-auto px-4 sm:px-6 lg:px-8 max-w-3xl xl:max-w-7xl;
+}
+
+.title {
+  @apply text-black text-3xl md:text-4xl lg:text-5xl font-bold mb-3 max-w-[20ch]
+}
+
+.title-secondary {
+  @apply font-semibold mb-4 md:text-lg max-w-[30ch] md:max-w-[45ch]
+} 

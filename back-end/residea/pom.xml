@@ -47,7 +47,6 @@
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-crypto</artifactId>
-			<version>6.2.0</version> <!-- o la versione Spring che stai usando -->
 		</dependency>
 
 		<dependency>

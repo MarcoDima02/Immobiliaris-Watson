@@ -1,10 +1,18 @@
 package com.residea.residea.entities;
 
-import jakarta.persistence.*;
 import java.math.BigDecimal;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.MapsId;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+
 @Entity
-@Table(name = "dettagli_immobile")
+@Table(name = "DettagliImmobile")
 public class DettagliImmobile {
 
     @Id
@@ -16,10 +24,17 @@ public class DettagliImmobile {
     @JoinColumn(name = "idImmobile")
     private Immobile immobile;
 
-    private Integer nLocali;
-    private Integer nCamere;
+    @Column(name = "nStanze")
+    private Integer nStanze;
+
+    @Column(name = "nBagni")
     private Integer nBagni;
+
+    @Column(name = "nPiano")
     private Integer nPiano;
+
+    @Column(name = "nPianiImmobile")
+    private Integer nPianiImmobile;
 
     private boolean balconeTerrazzo;
     private boolean giardino;
@@ -27,30 +42,35 @@ public class DettagliImmobile {
     private boolean ascensore;
     private boolean cantina;
 
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = com.residea.residea.entities.converters.TipoRiscaldamentoConverter.class)
     @Column(nullable = false, length = 20)
     private TipoRiscaldamento tipoRiscaldamento = TipoRiscaldamento.NO;
 
     private Integer annoCostruzione;
-    private boolean esposizioneSolare;
 
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = com.residea.residea.entities.converters.CondizioneImmobileConverter.class)
     @Column(length = 30)
     private CondizioneImmobile condizioneImmobile;
 
-    @Column(length = 50)
-    private String classeEnergetica;
+    @Convert(converter = com.residea.residea.entities.converters.ClasseEnergeticaConverter.class)
+    @Column(length = 2)
+    private ClasseEnergetica classeEnergetica;
 
-    @Column(precision = 15, scale = 2)
+    @Column(precision = 10, scale = 2)
     private BigDecimal prezzo;
 
     // --- COSTRUTTORI ---
-    public DettagliImmobile(Immobile immobile, Integer nLocali, Integer nCamere, Integer nBagni, Integer nPiano,boolean balconeTerrazzo, boolean giardino, boolean garage, boolean ascensore, boolean cantina,TipoRiscaldamento tipoRiscaldamento, Integer annoCostruzione, boolean esposizioneSolare,CondizioneImmobile condizioneImmobile, String classeEnergetica, BigDecimal prezzo) {
+    public DettagliImmobile() {}
+
+    public DettagliImmobile(Immobile immobile, Integer nStanze, Integer nBagni, Integer nPiano, Integer nPianiImmobile,
+                            boolean balconeTerrazzo, boolean giardino, boolean garage, boolean ascensore, boolean cantina,
+                            TipoRiscaldamento tipoRiscaldamento, Integer annoCostruzione,
+                            CondizioneImmobile condizioneImmobile, ClasseEnergetica classeEnergetica, BigDecimal prezzo) {
         this.immobile = immobile;
-        this.nLocali = nLocali;
-        this.nCamere = nCamere;
+        this.nStanze = nStanze;
         this.nBagni = nBagni;
         this.nPiano = nPiano;
+        this.nPianiImmobile = nPianiImmobile;
         this.balconeTerrazzo = balconeTerrazzo;
         this.giardino = giardino;
         this.garage = garage;
@@ -58,7 +78,6 @@ public class DettagliImmobile {
         this.cantina = cantina;
         this.tipoRiscaldamento = tipoRiscaldamento;
         this.annoCostruzione = annoCostruzione;
-        this.esposizioneSolare = esposizioneSolare;
         this.condizioneImmobile = condizioneImmobile;
         this.classeEnergetica = classeEnergetica;
         this.prezzo = prezzo;
@@ -81,32 +100,36 @@ public class DettagliImmobile {
         this.immobile = immobile;
     }
 
-    public Integer getnLocali() {
-        return nLocali;
+    public Integer getNStanze() {
+        return nStanze;
     }
 
-    public void setnLocali(Integer nLocali) {
-        this.nLocali = nLocali;
+    public void setNStanze(Integer nStanze) {
+        this.nStanze = nStanze;
     }
 
-    public Integer getnCamere() {
-        return nCamere;
-    }
-
-    public void setnCamere(Integer nCamere) {
-        this.nCamere = nCamere;
-    }
-
-    public Integer getnBagni() {
+    public Integer getNBagni() {
         return nBagni;
     }
 
-    public void setnBagni(Integer nBagni) {
+    public void setNBagni(Integer nBagni) {
         this.nBagni = nBagni;
     }
 
-    public Integer getnPiano() {
+    public Integer getNPiano() {
         return nPiano;
+    }
+
+    public void setNPiano(Integer nPiano) {
+        this.nPiano = nPiano;
+    }
+
+    public Integer getNPianiImmobile() {
+        return nPianiImmobile;
+    }
+
+    public void setNPianiImmobile(Integer nPianiImmobile) {
+        this.nPianiImmobile = nPianiImmobile;
     }
 
     public void setnPiano(Integer nPiano) {
@@ -169,14 +192,6 @@ public class DettagliImmobile {
         this.annoCostruzione = annoCostruzione;
     }
 
-    public boolean isEsposizioneSolare() {
-        return esposizioneSolare;
-    }
-
-    public void setEsposizioneSolare(boolean esposizioneSolare) {
-        this.esposizioneSolare = esposizioneSolare;
-    }
-
     public CondizioneImmobile getCondizioneImmobile() {
         return condizioneImmobile;
     }
@@ -185,16 +200,16 @@ public class DettagliImmobile {
         this.condizioneImmobile = condizioneImmobile;
     }
 
-    public String getClasseEnergetica() {
+    public ClasseEnergetica getClasseEnergetica(ClasseEnergetica classeEnergetica) {
         return classeEnergetica;
     }
 
-    public void setClasseEnergetica(String classeEnergetica) {
+    public void setClasseEnergetica(ClasseEnergetica classeEnergetica) {
         this.classeEnergetica = classeEnergetica;
     }
 
-    public BigDecimal getPrezzo() {
-        return prezzo;
+    public ClasseEnergetica getClasseEnergetica() {
+        return classeEnergetica;
     }
 
     public void setPrezzo(BigDecimal prezzo) {
@@ -205,10 +220,10 @@ public class DettagliImmobile {
     public String toString() {
         return "DettagliImmobile{" +
                 "idImmobile=" + idImmobile +
-                ", nLocali=" + nLocali +
-                ", nCamere=" + nCamere +
+                ", nStanze=" + nStanze +
                 ", nBagni=" + nBagni +
                 ", nPiano=" + nPiano +
+                ", nPianiImmobile=" + nPianiImmobile +
                 ", balconeTerrazzo=" + balconeTerrazzo +
                 ", giardino=" + giardino +
                 ", garage=" + garage +
@@ -216,7 +231,6 @@ public class DettagliImmobile {
                 ", cantina=" + cantina +
                 ", tipoRiscaldamento=" + tipoRiscaldamento +
                 ", annoCostruzione=" + annoCostruzione +
-                ", esposizioneSolare=" + esposizioneSolare +
                 ", condizioneImmobile=" + condizioneImmobile +
                 ", classeEnergetica='" + classeEnergetica + '\'' +
                 ", prezzo=" + prezzo +
@@ -238,5 +252,28 @@ public class DettagliImmobile {
         RISTRUTTURATO,
         PARZIALMENTE_RISTRUTTURATO,
         NON_RISTRUTTURATO
+    }
+
+    // --- ENUM per classe energetica ---
+    // --- ENUM per classe energetica ---
+    public enum ClasseEnergetica {
+        A_PLUS("A+"),
+        A("A"),
+        B("B"),
+        C("C"),
+        D("D"),
+        E("E"),
+        F("F"),
+        G("G");
+
+        private final String displayValue;
+
+        ClasseEnergetica(String displayValue) {
+            this.displayValue = displayValue;
+        }
+
+        public String getDisplayValue() {
+            return displayValue;
+        }
     }
 }

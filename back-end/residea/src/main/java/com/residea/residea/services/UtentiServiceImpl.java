@@ -8,13 +8,13 @@ import org.springframework.stereotype.Service;
 
 import com.residea.residea.entities.Utente;
 import com.residea.residea.entities.Utente.Ruolo;
-import com.residea.residea.repos.UtentiRepo;
+import com.residea.residea.repos.UtenteRepo;
 
 @Service
 public class UtentiServiceImpl implements UtentiService {
 
     @Autowired
-    private UtentiRepo utentiRepo;
+    private UtenteRepo utenteRepo;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -22,17 +22,17 @@ public class UtentiServiceImpl implements UtentiService {
     // --- READ ---
     @Override
     public List<Utente> getAllUtente() {
-        return utentiRepo.findAll();
+    return utenteRepo.findAll();
     }
 
     @Override
     public List<Utente> getUtenteByTelefono(String telefono) {
-        return utentiRepo.findByTelefono(telefono);
+    return utenteRepo.findByTelefono(telefono);
     }
 
     @Override
     public Utente getUtenteById(Integer idUtente) {
-        return utentiRepo.findById(idUtente)
+    return utenteRepo.findById(idUtente)
                 .orElseThrow(() -> new RuntimeException("Utente non trovato"));
     }
 
@@ -41,7 +41,7 @@ public class UtentiServiceImpl implements UtentiService {
     public Utente salvaUtente(Utente utente) {
         // Hash della password prima di salvare
         utente.setPasswordHash(passwordEncoder.encode(utente.getPasswordHash()));
-        return utentiRepo.save(utente);
+    return utenteRepo.save(utente);
     }
 
     // --- UPDATE ---
@@ -53,23 +53,23 @@ public class UtentiServiceImpl implements UtentiService {
                 passwordEncoder.encode(utenteAggiornato.getPasswordHash())
             );
         }
-        return utentiRepo.save(utenteAggiornato);
+    return utenteRepo.save(utenteAggiornato);
     }
 
     @Override
     public Utente cambiaRuoloUtente(Integer idUtente, Ruolo ruoloNuovo) {
-        Utente utente = utentiRepo.findById(idUtente)
+    Utente utente = utenteRepo.findById(idUtente)
                 .orElseThrow(() -> new RuntimeException("Utente non trovato"));
         utente.setRuolo(ruoloNuovo);
-        return utentiRepo.save(utente);
+    return utenteRepo.save(utente);
     }
 
     // --- PASSWORD VERIFICA ---
     @Override
     public boolean verificaPassword(Integer idUtente, String passwordInChiaro) {
-        Utente utente = utentiRepo.findById(idUtente)
+    Utente utente = utenteRepo.findById(idUtente)
                 .orElseThrow(() -> new RuntimeException("Utente non trovato"));
-        return passwordEncoder.matches(passwordInChiaro, utente.getPasswordHash());
+    return passwordEncoder.matches(passwordInChiaro, utente.getPasswordHash());
     }
 
     // --- DELETE ---

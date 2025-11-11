@@ -1,9 +1,16 @@
 package com.residea.residea.entities;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "immagini")
+@Table(name = "Immagine")
 public class Immagine {
 
     @Id
@@ -33,8 +40,11 @@ public class Immagine {
     private Integer dimensioneKb;
 
     // --- COSTRUTTORI ---
-        public Immagine(Immobile idImmobile, String url, String nomeFile, String descrizione,boolean copertina, Integer ordinamento, Integer dimensioneKb) {
-        this.immobile = idImmobile;
+    public Immagine() {}
+
+    public Immagine(Immobile immobile, String url, String nomeFile, String descrizione,
+                    boolean copertina, Integer ordinamento, Integer dimensioneKb) {
+        this.immobile = immobile;
         this.url = url;
         this.nomeFile = nomeFile;
         this.descrizione = descrizione;

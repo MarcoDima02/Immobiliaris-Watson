@@ -1,10 +1,19 @@
 package com.residea.residea.entities;
 
-import jakarta.persistence.*;
 import java.math.BigDecimal;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+
 @Entity
-@Table(name = "immobili")
+@Table(name = "Immobile")
 public class Immobile {
 
     @Id
@@ -12,24 +21,24 @@ public class Immobile {
     @Column(name = "idImmobile")
     private Integer idImmobile;
 
-    @ManyToOne
-    @JoinColumn(name = "idProprietario", nullable = false)
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "idProprietario", nullable = true)
     private Utente proprietario;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
+    @Convert(converter = com.residea.residea.entities.converters.TipologiaConverter.class)
+    @Column(nullable = false, length = 30)
     private Tipologia tipologia;
 
-    @Column(length = 255)
+    @Column(length = 200)
     private String indirizzo;
 
     @Column(length = 100)
     private String citta;
 
-    @Column(length = 100)
+    @Column(length = 3)
     private String provincia;
 
-    @Column(length = 10)
+    @Column(length = 5)
     private String cap;
 
     @Column(precision = 10, scale = 8)
@@ -38,11 +47,15 @@ public class Immobile {
     @Column(precision = 11, scale = 8)
     private BigDecimal longitudine;
 
+    @Convert(converter = com.residea.residea.entities.converters.StatoConverter.class)
     @Column(length = 50)
-    private String stato;
+    private Stato stato;
 
     // --- COSTRUTTORI ---
-    public Immobile(Utente proprietario, Tipologia tipologia, String indirizzo,String citta, String provincia, String cap,BigDecimal latitudine, BigDecimal longitudine, String stato) {
+    public Immobile() {}
+
+    public Immobile(Utente proprietario, Tipologia tipologia, String indirizzo, String citta, String provincia, String cap,
+                    BigDecimal latitudine, BigDecimal longitudine, Stato stato) {
         this.proprietario = proprietario;
         this.tipologia = tipologia;
         this.indirizzo = indirizzo;
@@ -127,11 +140,11 @@ public class Immobile {
         this.longitudine = longitudine;
     }
 
-    public String getStato() {
+    public Stato getStato() {
         return stato;
     }
 
-    public void setStato(String stato) {
+    public void setStato(Stato stato) {
         this.stato = stato;
     }
 
@@ -155,11 +168,12 @@ public class Immobile {
     public enum Tipologia {
         APPARTAMENTO,
         VILLA,
-        TERRATETTO,
-        MONOLOCALE,
-        BILOCALE,
-        TRILOCALE,
-        QUADRILOCALE,
-        ATTICO
+        CASA_INDIPENDENTE,
+        MONOLOCALE
+    }
+
+    public enum Stato {
+        DISPONIBILE,
+        VENDUTO
     }
 }

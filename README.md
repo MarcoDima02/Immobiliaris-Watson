@@ -1,6 +1,6 @@
 # Immobiliaris - Portale Immobiliare
 
-Progetto realizzato nell'ambito del Laboratorio Integrato – Digital Strategist, Web e Software Developer.  
+Progetto realizzato nell'ambito del Laboratorio Integrato – Digital Strategist, Web e Software Developer.
 Un portale innovativo per l'acquisizione di immobili in esclusiva, pensato per modernizzare l'approccio tradizionale dell'agenzia immobiliare Immobiliaris.
 
 **Calendario e Scadenze:** [Calendario 25-26.pdf](./Calendario%2025-26.pdf)
@@ -34,6 +34,7 @@ Un portale innovativo per l'acquisizione di immobili in esclusiva, pensato per m
 Immobiliaris è un'agenzia immobiliare attiva nel territorio piemontese, parte del gruppo Indomus, specializzata nella compravendita di immobili con particolare attenzione all'acquisizione di nuove proprietà da vendere.
 
 Il portale web permetterà di:
+
 - Onboarding proprietari attraverso un form multi-step intuitivo per la raccolta dati sull'immobile
 - Valutazione automatica dell'immobile entro 72 ore dalla richiesta
 - Gestione contratti di vendita in esclusiva digitali e ottimizzati
@@ -41,7 +42,9 @@ Il portale web permetterà di:
 - Integrazione marketing con strumenti di automation per massimizzare le conversioni
 
 ### Obiettivi del Progetto
+
 Il progetto nasce dall'esigenza di modernizzare l'approccio commerciale, attualmente basato su canali tradizionali (passaparola, volantini, eventi locali), per attrarre un target più giovane (35–55 anni) attraverso:
+
 - Creazione di un portale digitale ispirato a modelli innovativi come Gromia.com
 - Strategia di comunicazione integrata multi-canale
 - Campagne paid per generare traffico qualificato e conversioni
@@ -67,7 +70,7 @@ Il progetto nasce dall'esigenza di modernizzare l'approccio commerciale, attualm
 ## Stack Tecnologico
 
 ```plaintext
-Backend:          Java 17 + Spring Boot
+Backend:          Java 21 + Spring Boot
 Frontend:         React, TypeScript, HTML, CSS, SCSS
 Database:         MySQL
 Marketing:        Facebook Ads, Google Ads, Performance Max
@@ -80,6 +83,7 @@ Performance:      Lighthouse, PageSpeed Insights
 ```
 
 Note tecniche:
+
 - Non è consentito utilizzare Bootstrap o WordPress
 - Altri framework e librerie possono essere utilizzati solo dopo conferma del mentor
 - Responsive design obbligatorio
@@ -90,26 +94,31 @@ Note tecniche:
 ## Funzionalità Principali
 
 ### Onboarding Proprietari
+
 Form multi-step intuitivo e user-friendly per la raccolta dati immobile:
+
 - Informazioni generali (tipologia, ubicazione, metratura)
 - Caratteristiche specifiche (numero stanze, stato, anno costruzione)
-- Documentazione (foto, planimetrie, certificazioni)
-- Dati proprietario e preferenze di vendita
+- Dati proprietario necessari per il form
 
 ### Valutazione Automatica
+
 Sistema di valutazione basato su:
+
 - Analisi dati mercato locale
-- Comparazione con immobili simili
 - Algoritmo di pricing dinamico
-- Risposta entro 72 ore dalla richiesta
+- Risposta immediata per la valutazione automatica, alla fine del form
+- Risposta entro 72 da parte di un agente immobiliare che effettuerà una valutazione specifica
 
 ### Gestione Contratti
+
 - Generazione automatica proposte contrattuali
 - Firma digitale integrata
 - Tracking stato pratiche
 - Storico documenti e comunicazioni
 
 ### Dashboard Amministrativa (Backoffice)
+
 - Gestione richieste e lead in tempo reale
 - CRM integrato per follow-up clienti
 - Analytics e reportistica avanzata
@@ -117,6 +126,7 @@ Sistema di valutazione basato su:
 - Monitoraggio campagne marketing
 
 ### Marketing Automation
+
 - Integrazione con Meta Ads e Google Ads
 - Email automation per nurturing lead
 - Retargeting automatico
@@ -125,9 +135,9 @@ Sistema di valutazione basato su:
 
 ---
 
-## Team 
+## Team
 
-Referente Aziendale:  
+Referente Aziendale:
 Paolo Ghirlinzoni – Immobiliaris / Gruppo Indomus
 
 Team di Sviluppo:
@@ -144,12 +154,12 @@ Alessia Valendino – Digital Strategist – [alessiavalendino](https://github.c
 Irene Dabusti – Digital Strategist – [irenedabusti](https://github.com/irenedabusti)
 Asmaa Tantaoui – Digital Strategist – [AsmaaTantaoui](https://github.com/AsmaaTantaoui)
 
-
-
 ---
 
 ### Digital Strategist
+
 Responsabilità:
+
 - Analisi buyer persona e competitor
 - Definizione TOV (Tone of Voice), linee editoriali, PED
 - Proposta logo e visual identity
@@ -158,7 +168,9 @@ Responsabilità:
 - Strategia di conversione lead
 
 ### Web Developer
+
 Responsabilità:
+
 - Conversione mockup in codice
 - UX/UI design e accessibilità (WCAG)
 - Validazione dati e form handling
@@ -167,10 +179,12 @@ Responsabilità:
 - Performance optimization (Lighthouse score >90)
 
 ### Software Developer
+
 Responsabilità:
+
 - Configurazione e gestione database MySQL
 - Sviluppo backend con Java + Spring Boot
-- Creazione API REST (documentate con Swagger)
+- Creazione API REST
 - Implementazione business logic
 - Integrazione CRM e marketing automation
 - Testing e deployment
@@ -180,30 +194,39 @@ Responsabilità:
 ## Target e Area Geografica
 
 ### Target Principale
+
 - Età: 35–55 anni
 - Profilo: Professionisti, famiglie, investitori
 - Comportamento: Digitalizzati, ricercano soluzioni rapide e trasparenti
 - Esigenza: Vendere immobile velocemente, con servizio affidabile e moderno
 
 ### Area Geografica
+
 Piemonte - Città medio-grandi:
+
 - Torino
 - Cuneo
 - Alessandria
 - Asti
+- Novara
+- Vercelli
+- Biella
+- Verbania
 
 ---
 
 ## Budget e Timeline
 
 ### Budget Stimato
+
 - Lead Generation (Paid Ads): €1.500/mese per 12 mesi
 - Sviluppo Portale: Da definire (architettura, design, SEO, CRM)
 - Marketing Automation: Da definire
 - Infrastruttura e Hosting: Da definire
 
 ### Timeline Progetto
-1. Fase 1 - Analisi e Design: [Da definire]
+
+1. Fase 1 - Analisi e Design: 4 Novembre
 2. Fase 2 - Sviluppo MVP: [Da definire]
 3. Fase 3 - Testing e Ottimizzazione: [Da definire]
 4. Fase 4 - Launch e Campagne Paid: [Da definire]
@@ -216,6 +239,7 @@ Note: Alla fine del progetto il cliente valuterà il rinnovo e il budget per gli
 ## Media e Canali di Comunicazione
 
 ### Social Media
+
 - Facebook – Campagne lead generation, remarketing
 - Instagram – Visual storytelling, community building
 - WhatsApp Business – Customer care, assistenza immediata
@@ -223,6 +247,7 @@ Note: Alla fine del progetto il cliente valuterà il rinnovo e il budget per gli
 - YouTube (opzionale) – Video tour immobili, testimonial
 
 ### Strumenti Marketing
+
 - Facebook Ads Manager
 - Google Ads (Search, Display, Performance Max)
 - CRM integrato
@@ -235,6 +260,7 @@ Note: Alla fine del progetto il cliente valuterà il rinnovo e il budget per gli
 ## SEO Strategy
 
 ### On-Page SEO
+
 - Ottimizzazione meta title, description, headings
 - Structured data (Schema.org per immobili)
 - URL SEO-friendly
@@ -242,6 +268,7 @@ Note: Alla fine del progetto il cliente valuterà il rinnovo e il budget per gli
 - Internal linking strategico
 
 ### Technical SEO
+
 - Sitemap.xml dinamica
 - Robots.txt ottimizzato
 - Performance e Core Web Vitals
@@ -250,6 +277,7 @@ Note: Alla fine del progetto il cliente valuterà il rinnovo e il budget per gli
 - Canonical tags
 
 ### Off-Page SEO
+
 - Link building locale
 - Partnership strategiche
 - Directory immobiliari
@@ -261,11 +289,13 @@ Note: Alla fine del progetto il cliente valuterà il rinnovo e il budget per gli
 ## KPI e Metriche di Successo
 
 ### Performance Tecnica
+
 - Lighthouse Score: **>90** (Performance, Accessibility, Best Practices, SEO)
 - Page Load Time: **<3 secondi**
 - Mobile Usability: **100%**
 
 ### Marketing e Business
+
 - **Lead Generation:** Numero richieste valutazione/mese
 - **Conversion Rate:** % form compilati → contratti firmati
 - **CAC (Customer Acquisition Cost):** Costo per lead qualificato
@@ -273,6 +303,7 @@ Note: Alla fine del progetto il cliente valuterà il rinnovo e il budget per gli
 - **Engagement Social:** Reach, interazioni, crescita follower
 
 ### UX e Qualità
+
 - **Bounce Rate:** <40%
 - **Tempo Medio Sessione:** >3 minuti
 - **Pagine per Sessione:** >2,5
@@ -282,35 +313,41 @@ Note: Alla fine del progetto il cliente valuterà il rinnovo e il budget per gli
 
 ## Stato del Progetto
 
-In Avvio – Fase di Planning e Setup Iniziale
+In sviluppo - sviluppo frontend e backend, strategia in definizione
 
 ### Milestone Completate
+
 1. Briefing iniziale ricevuto
 2. Team assemblato
 3. Repository GitHub creato
 4. Documentazione README iniziale
+5. Discussione e individuazione stile e logo per il sito
+6. Proposta di rebranding accettata da parte del cliente
+7. Inizializzazione e definizione database
+8. Sviluppo in fase iniziale/intermedia lato backend e frontend
+9. Testing primo endpoint
 
 ### Prossimi Step
-1. Analisi competitor e buyer persona
-2. Definizione architettura tecnica
-3. Creazione mockup e wireframe
-4. Setup ambiente di sviluppo
-5. Configurazione database MySQL
-6. Definizione USP e visual identity
+
+1. Finalizzazione backend
+2. Finalizzazione frontend
+3. definizione strategia e lead
 
 ---
 
 ## Come Iniziare
 
 ### Prerequisiti
+
 ```bash
-- Java 17+
+- Java 21
 - Node.js 18+
 - MySQL 8.0+
 - Git
 ```
 
 ### Setup Locale (In Sviluppo)
+
 ```bash
 # Clone repository
 git clone https://github.com/[org]/immobiliaris-watson.git
@@ -335,10 +372,12 @@ mysql -u root -p < database/schema.sql
 ## Documentazione
 
 ### API Documentation
+
 - Swagger UI: `http://localhost:8080/swagger-ui.html` (Coming soon)
 - API Endpoints: Vedi `/docs/api-reference.md` (Coming soon)
 
 ### Guides
+
 - Setup Guide: `/docs/setup-guide.md` (Coming soon)
 - Contributing: `/docs/CONTRIBUTING.md` (Coming soon)
 - Style Guide: `/docs/style-guide.md` (Coming soon)
@@ -364,30 +403,36 @@ Il progetto è gestito tramite GitHub Projects con metodologia Agile.
 ### Strategia di Branching
 
 #### Branch Permanenti
+
 Il progetto mantiene due branch principali che non vengono mai eliminate:
 
 **main**
+
 - Rappresenta il codice in produzione
 - Solo codice stabile, testato e rilasciabile
 - Protetta da push diretti (solo merge via Pull Request)
 - Deploy automatico in ambiente di produzione
 
 **develop**
+
 - Branch di integrazione per lo sviluppo
 - Raccoglie tutte le feature completate prima del rilascio
 - Ambiente di staging/test
 - Base da cui partono tutte le branch temporanee
 
 #### Branch Temporanee (create dalle Issue)
+
 Tutte le branch di lavoro sono temporanee e vengono create automaticamente dalle GitHub Issues:
 
 **Branch da Issue** (es: `23-form-onboarding`, `45-dashboard-admin`)
+
 - Create automaticamente quando si inizia a lavorare su una issue
 - Nominate con il numero dell'issue seguito da una descrizione breve
 - Si mergiano su `develop` quando completate
 - Vengono eliminate dopo il merge completato
 
 **hotfix/** (es: `hotfix/critical-login-error`)
+
 - Solo per bug critici trovati in produzione
 - Partono da `main` (non da develop!)
 - Si mergiano sia su `main` che su `develop`
@@ -442,6 +487,7 @@ develop (staging) ────────────────────�
 ### Convenzioni di Naming
 
 **Commit Messages** (Conventional Commits):
+
 - `feat:` nuova funzionalità
 - `fix:` correzione bug
 - `docs:` modifiche documentazione
@@ -451,10 +497,12 @@ develop (staging) ────────────────────�
 - `chore:` task di manutenzione
 
 **Branch**:
+
 - Da issue: `[numero-issue]-[descrizione-breve]` (es: `23-form-onboarding`)
 - Hotfix: `hotfix/[descrizione-bug]` (es: `hotfix/critical-login-error`)
 
 **Pull Request**:
+
 - Titolo chiaro e descrittivo
 - Template con checklist compilata
 - Screenshot/GIF per modifiche UI
@@ -471,6 +519,7 @@ develop (staging) ────────────────────�
 ## Note di Sviluppo
 
 ### Tecnologie da Approfondire
+
 - Spring Security per autenticazione
 - React Query per state management (se si usa React)
 - MySQL ottimizzazioni e indexing
@@ -479,6 +528,7 @@ develop (staging) ────────────────────�
 - CI/CD con GitHub Actions
 
 ### Integrazioni Future Possibili
+
 - Google Maps API per geolocalizzazione
 - Stripe/PayPal per pagamenti online
 - Twilio per notifiche SMS
@@ -487,9 +537,8 @@ develop (staging) ────────────────────�
 
 ---
 
-**Ultimo aggiornamento:** Ottobre 2025  
-**Versione:** 0.1.0 (Alpha)  
+**Ultimo aggiornamento:** Novembre 2025
+**Versione:** 0.1.0 (Alpha)
 **Status:** 🚀 In Development
 
 ---
-

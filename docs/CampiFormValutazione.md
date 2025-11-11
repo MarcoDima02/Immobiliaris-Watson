@@ -26,9 +26,7 @@
   - bathrooms
     - tipo: integer >= 0
     - DB: DettagliImmobile.nBagni
-  - requestedPurpose
-    - tipo: enum (estimate | officialDocument)
-    - DB: ValutazioneImmobile.requestedPurpose
+  
 
 - Campi raccomandati (migliorano accuratezza)
   - floor (piano)

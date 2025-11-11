@@ -4,7 +4,7 @@
 import { useState } from 'react';
 
 export function useMultistepForm(totalSteps: number) {
-  const [step, setStep] = useState(0);
+  const [stepIndex, setStep] = useState(0);
 
   const next = () => setStep((step) => Math.min(totalSteps - 1, step + 1));
   const back = () => setStep((step) => Math.max(0, step - 1));
@@ -12,11 +12,12 @@ export function useMultistepForm(totalSteps: number) {
     setStep(() => Math.max(0, Math.min(totalSteps - 1, index)));
 
   return {
-    step,
+    stepIndex,
     next,
     back,
     goTo,
-    isFirst: step === 0,
-    isLast: step === totalSteps - 1,
+    isFirst: stepIndex === 0,
+    isLast: stepIndex === totalSteps - 1,
+    totalSteps,
   };
 }

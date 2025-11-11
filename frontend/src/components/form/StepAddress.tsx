@@ -60,7 +60,11 @@ const StepAddress = ({ onNext }: { onNext: () => void }) => {
   });
 
   const address = watch('address');
+
   const [suggestions, setSuggestions] = useState<any[]>([]);
+  const [selectedAddress, setSelectedAddress] = useState<string | null>(null);
+  const [activeIndex, setActiveIndex] = useState<number>(-1);
+
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const markerRef = useRef<mapboxgl.Marker | null>(null);
@@ -109,8 +113,12 @@ const StepAddress = ({ onNext }: { onNext: () => void }) => {
   }, 400);
 
   useEffect(() => {
+    if (!address || address === selectedAddress) {
+      setSuggestions([]);
+      return;
+    }
     geocode(address);
-  }, [address]);
+  }, [address, selectedAddress]);
 
   const onSelectSuggestion = (feature: any) => {
     const selectedAddress = feature.place_name;
@@ -141,6 +149,8 @@ const StepAddress = ({ onNext }: { onNext: () => void }) => {
     });
 
     setMarker(longitude, latitude);
+
+    setSelectedAddress(selectedAddress);
     setSuggestions([]);
   };
 
@@ -149,10 +159,14 @@ const StepAddress = ({ onNext }: { onNext: () => void }) => {
     onNext();
   };
 
+  useEffect(() => {
+    setActiveIndex(-1);
+  }, [address]);
+
   return (
     <Card className="w-full sm:maxw-md">
       <CardHeader>
-        <CardTitle>Dove si trova l'immobile?</CardTitle>
+        <CardTitle className='font-bold'>Dove si trova l'immobile?</CardTitle>
       </CardHeader>
 
       <CardContent>
@@ -173,6 +187,31 @@ const StepAddress = ({ onNext }: { onNext: () => void }) => {
                     placeholder="Es. Via Roma 10, Milano"
                     aria-invalid={fieldState.invalid}
                     autoComplete="off"
+                    onKeyDown={(e) => {
+                      if (!suggestions || suggestions.length === 0) return;
+
+                      if (e.key === 'ArrowDown') {
+                        e.preventDefault();
+                        setActiveIndex(
+                          (prev) => (prev + 1) % suggestions.length
+                        );
+                      } else if (e.key === 'ArrowUp') {
+                        e.preventDefault();
+                        setActiveIndex(
+                          (prev) =>
+                            (prev - 1 + suggestions.length) % suggestions.length
+                        );
+                      } else if (e.key === 'Enter') {
+                        e.preventDefault();
+                        if (
+                          activeIndex >= 0 &&
+                          activeIndex < suggestions.length
+                        ) {
+                          onSelectSuggestion(suggestions[activeIndex]);
+                          setActiveIndex(-1);
+                        }
+                      }
+                    }}
                   />
 
                   {fieldState.invalid && (
@@ -181,10 +220,15 @@ const StepAddress = ({ onNext }: { onNext: () => void }) => {
 
                   {suggestions && suggestions.length > 0 && (
                     <ul className="bg-white border rounded mt-2 max-h-48 overflow-auto shadow-sm">
-                      {suggestions.map((suggestion) => (
+                      {suggestions.map((suggestion, index) => (
                         <li
-                          key={suggestion.id}
-                          className="p-2 hover:bg-gray-100 cursor-pointer text-sm"
+                          key={`${suggestion.id}-${index}`}
+                          className={`p-2 cursor-pointer text-sm ${
+                            index === activeIndex
+                              ? 'bg-gray-200'
+                              : 'hover:bg-gray-100'
+                          }`}
+                          onMouseEnter={() => setActiveIndex(index)}
                           onClick={() => onSelectSuggestion(suggestion)}
                         >
                           {suggestion.place_name}
@@ -194,7 +238,7 @@ const StepAddress = ({ onNext }: { onNext: () => void }) => {
                   )}
                 </Field>
               )}
-            ></Controller>
+            />
 
             <Controller
               name="city"
@@ -213,7 +257,7 @@ const StepAddress = ({ onNext }: { onNext: () => void }) => {
                   )}
                 </Field>
               )}
-            ></Controller>
+            />
 
             <Controller
               name="province"
@@ -233,7 +277,7 @@ const StepAddress = ({ onNext }: { onNext: () => void }) => {
                   )}
                 </Field>
               )}
-            ></Controller>
+            />
 
             <Controller
               name="cap"
@@ -248,11 +292,11 @@ const StepAddress = ({ onNext }: { onNext: () => void }) => {
                   />
 
                   {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
+                    <FieldError className='' errors={[fieldState.error]} />
                   )}
                 </Field>
               )}
-            ></Controller>
+            />
 
             <Field>
               <FieldLabel>Posizione sulla mappa</FieldLabel>
@@ -267,7 +311,10 @@ const StepAddress = ({ onNext }: { onNext: () => void }) => {
       </CardContent>
 
       <CardFooter>
-        <Field orientation="horizontal">
+        <Field
+          orientation="horizontal"
+          className="flex justify-between"
+        >
           <Button
             type="button"
             variant="outline"
@@ -277,6 +324,7 @@ const StepAddress = ({ onNext }: { onNext: () => void }) => {
           <Button
             type="submit"
             form="address-form"
+            className='hover:bg-card'
           >
             Avanti
           </Button>
