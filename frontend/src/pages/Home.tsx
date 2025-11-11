@@ -1,7 +1,7 @@
 /**
  * Immages
  */
-import { heroAltAvif, heroAltWebp, heroAltJpg } from '@/assets';
+import { heroAltAvif, heroAltWebp, heroAltJpg, about } from '@/assets';
 
 /**
  * Components
@@ -13,6 +13,8 @@ import Functionality from '@/components/Functionality';
  * Icons
  */
 import { File, Euro, UserRound } from 'lucide-react';
+
+
 
 const Home = () => {
   return (
@@ -33,7 +35,7 @@ const Home = () => {
         </div>
       </div>
 
-      <div className="relative w-full overflow-hidden">
+      <div className="relative w-full overflow-hidden rounded-full">
         <figure className="w-full h-full">
           <picture>
             <source
@@ -53,7 +55,7 @@ const Home = () => {
           </picture>
 
           {/* <div className="absolute inset-0 pointer-events-none bg-linear-to-t from-background via-transparent "></div> */}
-          <div className="absolute inset-0 pointer-events-none bg-linear-to-r from-background from-0% via-transparent"></div>
+          {/* <div className="absolute inset-0 pointer-events-none bg-linear-to-r from-background from-0% via-transparent"></div> */}
         </figure>
       </div>
 
@@ -63,7 +65,7 @@ const Home = () => {
 
       
 
-      <section className="container-fluid mt-8 flex flex-col justify-center items-center text-center ">
+      <section className="container mx-auto mt-8 flex flex-col justify-center items-center text-center ">
         <h2 className="title">Come funziona</h2>
         <h3 className="title-secondary">
           Ricevi in tre step la valutazione del tuo immobile!
@@ -100,10 +102,33 @@ const Home = () => {
         </div>
       </section>
 
-      <section className='container-fluid mt-32'>
+      <section className='container mt-32 mx-auto flex flex-col justify-center items-center'>
             <h2 className="title">Chi siamo</h2>
             <h3 className='title-secondary'>Perchè scegliere Immobiliaris</h3>
+            <div>
+               <figure >
+              <img src={about} alt="" className='mx-auto'/>
+            </figure>
+
+            <div>
+              <p>
+                Immobiliaris è una giovane realtà nata per rivoluzionare il modo in cui si vendono e si valutano gli immobili.
+              </p>
+
+              <p>
+                Uniamo la professionalità dei nostri agenti all’efficienza delle nuove tecnologie digitali.
+              </p>
+
+              <p>
+                Il nostro obiettivo è rendere la valutazione immobiliare semplice, rapida e trasparente, offrendo ai clienti un servizio innovativo che combina dati, consulenza e fiducia.
+              </p>
+            </div>
+            </div>
+           
       </section>
+
+
+
     </>
   );
 };
