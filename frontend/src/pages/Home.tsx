@@ -101,10 +101,12 @@ const Home = () => {
           <h2 className='title'>I nostri agenti</h2>
           <h3 className='title-secondary'>Esperti del settore al tuo fianco in ogni passo della compravendita.</h3>
         </div>
-        <div className="container-fluid flex flex-nowrap justify-center gap-10 mx-auto">
 
 
-          <div className='bg-white w-[25%] rounded-[50px]  flex flex-col border-16 border-white shadow-2xl'>
+        <div className="container-fluid grid md:grid-cols-2 xl:grid-cols-4 justify-center gap-10 mx-auto">
+
+
+          <div className='bg-white w-full rounded-[50px]  flex flex-col border-16 border-white shadow-2xl'>
             <div><img src={agent1} alt="" className='h-full w-full rounded-[30px]' /></div>
             <div className='px-4'>
               <h3 className='text-xl font-bold mt-5 text-black'>Cristina Rossi</h3>
@@ -116,7 +118,7 @@ const Home = () => {
             </div>
           </div>
 
-          <div className='bg-white w-[25%] rounded-[50px]  flex flex-col border-16 border-white shadow-2xl'>
+          <div className='bg-white w-full rounded-[50px]  flex flex-col border-16 border-white shadow-2xl'>
             <div><img src={agent1} alt="" className='h-full w-full rounded-[30px]' /></div>
             <div className='px-4'>
               <h3 className='text-xl font-bold mt-5 text-black'>Cristina Rossi</h3>
@@ -128,7 +130,7 @@ const Home = () => {
             </div>
           </div>
 
-          <div className='bg-white w-[25%] rounded-[50px]  flex flex-col border-16 border-white shadow-2xl'>
+          <div className='bg-white w-full rounded-[50px]  flex flex-col border-16 border-white shadow-2xl'>
             <div><img src={agent1} alt="" className='h-full w-full rounded-[30px]' /></div>
             <div className='px-4'>
               <h3 className='text-xl font-bold mt-5 text-black'>Cristina Rossi</h3>
@@ -140,7 +142,7 @@ const Home = () => {
             </div>
           </div>
 
-          <div className='bg-white w-[25%] rounded-[50px]  flex flex-col border-16 border-white shadow-2xl'>
+          <div className='bg-white w-full rounded-[50px]  flex flex-col border-16 border-white shadow-2xl'>
             <div><img src={agent1} alt="" className='h-full w-full rounded-[30px]' /></div>
             <div className='px-4'>
               <h3 className='text-xl font-bold mt-5 text-black'>Cristina Rossi</h3>
