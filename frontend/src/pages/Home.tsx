@@ -36,7 +36,7 @@ const Home = () => {
       </div>
 
       <div className="w-full overflow-hidden">
-        <figure className="w-full absolute top-0 h-[50vh]">
+        <figure className="w-full absolute top-0 right-0 h-[50vh]">
           <picture>
             <source
               srcSet={heroAltAvif}
@@ -55,7 +55,7 @@ const Home = () => {
           </picture>
 
           {/* <div className="absolute inset-0 pointer-events-none bg-linear-to-t from-background via-transparent "></div> */}
-          <div className="absolute inset-0 pointer-events-none bg-linear-to-r from-background via-transparent"></div>
+          <div className="absolute inset-0 pointer-events-none bg-linear-to-r from-background from-40%  via-transparent to-10%"></div>
         </figure>
       </div>
 
