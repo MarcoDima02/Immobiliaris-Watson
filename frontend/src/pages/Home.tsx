@@ -1,7 +1,7 @@
 /**
  * Immages
  */
-import { heroAltAvif, heroAltWebp, heroAltJpg } from '@/assets';
+import { heroAltAvif, heroAltWebp, heroAltJpg, agent1 } from '@/assets';
 
 /**
  * Components
@@ -12,12 +12,12 @@ import Functionality from '@/components/Functionality';
 /**
  * Icons
  */
-import { File, Euro, UserRound } from 'lucide-react';
+import { File, Euro, UserRound, HomeIcon } from 'lucide-react';
 
 const Home = () => {
   return (
     <>
-      <section className="relative w-full h-[50vh] overflow-hidden">
+      <div className=" relative w-full h-[50vh] overflow-hidden">
         <figure className="absolute inset-0 w-full h-full">
           <picture>
             <source
@@ -42,7 +42,7 @@ const Home = () => {
           {/* <div className="absolute inset-0 pointer-events-none bg-linear-to-t from-background via-transparent "></div> */}
           <div className="absolute inset-0 pointer-events-none bg-linear-to-r from-background via-transparent"></div>
         </figure>
-      </section>
+      </div>
 
       <div className="absolute top-[20%] z-10  px-6 sm:px-8 lg:px-12 w-full max-w-3xl xl:max-w[1700px] left-1/2 -translate-x-1/2  bg-linear-to-b ">
         <h1 className="title">Vuoi vendere casa senza stress?</h1>
@@ -93,6 +93,65 @@ const Home = () => {
               </>
             }
           />
+        </div>
+      </section>
+
+      <section className='w-full'>
+        <div className='flex flex-col items-center mx-auto text-center pb-8'>
+          <h2 className='title'>I nostri agenti</h2>
+          <h3 className='title-secondary'>Esperti del settore al tuo fianco in ogni passo della compravendita.</h3>
+        </div>
+        <div className="container-fluid flex flex-nowrap justify-center gap-10 mx-auto">
+
+
+          <div className='bg-white w-[25%] rounded-[50px]  flex flex-col border-16 border-white shadow-2xl'>
+            <div><img src={agent1} alt="" className='h-full w-full rounded-[30px]' /></div>
+            <div className='px-4'>
+              <h3 className='text-xl font-bold mt-5 text-black'>Cristina Rossi</h3>
+              <h4 className='text-light-grey font-medium text-md'>Agente immobiliare in zona Torino</h4>
+              <div className='flex gap-2 items-center justify-center mt-18 '>
+                <HomeIcon className='text-secondary h-5' />
+                <p className='text-secondary font-semibold text-center text-sm'> 200+ immobili venduti</p>
+              </div>
+            </div>
+          </div>
+
+          <div className='bg-white w-[25%] rounded-[50px]  flex flex-col border-16 border-white shadow-2xl'>
+            <div><img src={agent1} alt="" className='h-full w-full rounded-[30px]' /></div>
+            <div className='px-4'>
+              <h3 className='text-xl font-bold mt-5 text-black'>Cristina Rossi</h3>
+              <h4 className='text-light-grey font-medium text-md'>Agente immobiliare in zona Torino</h4>
+              <div className='flex gap-2 items-center justify-center mt-18 '>
+                <HomeIcon className='text-secondary h-5' />
+                <p className='text-secondary font-semibold text-center text-sm'> 200+ immobili venduti</p>
+              </div>
+            </div>
+          </div>
+
+          <div className='bg-white w-[25%] rounded-[50px]  flex flex-col border-16 border-white shadow-2xl'>
+            <div><img src={agent1} alt="" className='h-full w-full rounded-[30px]' /></div>
+            <div className='px-4'>
+              <h3 className='text-xl font-bold mt-5 text-black'>Cristina Rossi</h3>
+              <h4 className='text-light-grey font-medium text-md'>Agente immobiliare in zona Torino</h4>
+              <div className='flex gap-2 items-center justify-center mt-18 '>
+                <HomeIcon className='text-secondary h-5' />
+                <p className='text-secondary font-semibold text-center text-sm'> 200+ immobili venduti</p>
+              </div>
+            </div>
+          </div>
+
+          <div className='bg-white w-[25%] rounded-[50px]  flex flex-col border-16 border-white shadow-2xl'>
+            <div><img src={agent1} alt="" className='h-full w-full rounded-[30px]' /></div>
+            <div className='px-4'>
+              <h3 className='text-xl font-bold mt-5 text-black'>Cristina Rossi</h3>
+              <h4 className='text-light-grey font-medium text-md'>Agente immobiliare in zona Torino</h4>
+              <div className='flex gap-2 items-center justify-center mt-18 '>
+                <HomeIcon className='text-secondary h-5' />
+                <p className='text-secondary font-semibold text-center text-sm'> 200+ immobili venduti</p>
+              </div>
+            </div>
+          </div>
+
         </div>
       </section>
     </>

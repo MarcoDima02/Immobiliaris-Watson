@@ -6,7 +6,7 @@
 
 :root {
   /* === PALETTE PRINCIPALE === */
-  /* --background: #c0c0c0; */
+  --light-grey: #868686;
   --background: #fff;
   --foreground: #5e223e;
   --card: #f2e9e4;
@@ -74,6 +74,7 @@
 
 /* === COLLEGAMENTO CON TAILWIND === */
 @theme inline {
+  --color-light-grey: var(--light-grey);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-primary: var(--primary);
@@ -136,3 +137,8 @@ input:-webkit-autofill {
 .title-secondary {
   @apply font-semibold mb-4 md:text-lg max-w-[30ch] md:max-w-[45ch]
 } 
+
+
+section {
+  @apply py-32;
+}
