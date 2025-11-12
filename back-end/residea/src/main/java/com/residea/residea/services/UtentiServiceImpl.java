@@ -39,29 +39,54 @@ public class UtentiServiceImpl implements UtentiService {
     // --- CREATE ---
     @Override
     public Utente salvaUtente(Utente utente) {
-        // Hash della password prima di salvare
-        utente.setPasswordHash(passwordEncoder.encode(utente.getPasswordHash()));
-    return utenteRepo.save(utente);
+        // Se il ruolo richiede credenziali (AGENTE o AMMINISTRATORE), la password in chiaro
+        // deve essere fornita e verrà hashata. Altrimenti (es. PROPRIETARIO) può rimanere null.
+        if (utente.getRuolo() == Ruolo.AGENTE || utente.getRuolo() == Ruolo.AMMINISTRATORE) {
+            if (utente.getPasswordHash() == null || utente.getPasswordHash().isEmpty()) {
+                throw new IllegalArgumentException("Password richiesta per ruolo AGENTE o AMMINISTRATORE");
+            }
+            utente.setPasswordHash(passwordEncoder.encode(utente.getPasswordHash()));
+        } else {
+            // Per ruoli senza accesso, permettiamo password nulla
+            if (utente.getPasswordHash() == null || utente.getPasswordHash().isEmpty()) {
+                utente.setPasswordHash(null);
+            } else {
+                // Se viene fornita comunque una password, la hashamo
+                utente.setPasswordHash(passwordEncoder.encode(utente.getPasswordHash()));
+            }
+        }
+        return utenteRepo.save(utente);
     }
 
     // --- UPDATE ---
     @Override
     public Utente aggiornaUtente(Utente utenteAggiornato) {
-        // Se vuoi aggiornare anche la password, ricordati di hasharla
-        if (utenteAggiornato.getPasswordHash() != null) {
+        // Se viene fornita una nuova password, la hashamo
+        if (utenteAggiornato.getPasswordHash() != null && !utenteAggiornato.getPasswordHash().isEmpty()) {
             utenteAggiornato.setPasswordHash(
                 passwordEncoder.encode(utenteAggiornato.getPasswordHash())
             );
         }
-    return utenteRepo.save(utenteAggiornato);
+        // Se il ruolo aggiornato richiede credenziali, assicurarsi che una password sia presente
+        if (utenteAggiornato.getRuolo() == Ruolo.AGENTE || utenteAggiornato.getRuolo() == Ruolo.AMMINISTRATORE) {
+            if (utenteAggiornato.getPasswordHash() == null || utenteAggiornato.getPasswordHash().isEmpty()) {
+                throw new IllegalArgumentException("Password richiesta per ruolo AGENTE o AMMINISTRATORE");
+            }
+        }
+        return utenteRepo.save(utenteAggiornato);
     }
 
     @Override
     public Utente cambiaRuoloUtente(Integer idUtente, Ruolo ruoloNuovo) {
     Utente utente = utenteRepo.findById(idUtente)
                 .orElseThrow(() -> new RuntimeException("Utente non trovato"));
+        // Se si sta promuovendo a ruolo con accesso, verificare che ci sia una password
+        if ((ruoloNuovo == Ruolo.AGENTE || ruoloNuovo == Ruolo.AMMINISTRATORE)
+            && (utente.getPasswordHash() == null || utente.getPasswordHash().isEmpty())) {
+            throw new IllegalArgumentException("Impossibile cambiare ruolo: l'utente non ha una password impostata");
+        }
         utente.setRuolo(ruoloNuovo);
-    return utenteRepo.save(utente);
+        return utenteRepo.save(utente);
     }
 
     // --- PASSWORD VERIFICA ---
@@ -69,6 +94,9 @@ public class UtentiServiceImpl implements UtentiService {
     public boolean verificaPassword(Integer idUtente, String passwordInChiaro) {
     Utente utente = utenteRepo.findById(idUtente)
                 .orElseThrow(() -> new RuntimeException("Utente non trovato"));
+    if (utente.getPasswordHash() == null || utente.getPasswordHash().isEmpty()) {
+        return false;
+    }
     return passwordEncoder.matches(passwordInChiaro, utente.getPasswordHash());
     }
 

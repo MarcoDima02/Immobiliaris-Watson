@@ -30,7 +30,9 @@ public class Utente {
     @Column(nullable = false, length = 100, unique = true)
     private String email;
 
-    @Column(name = "passwordHash", nullable = false, length = 255)
+    // passwordHash è richiesta solo per account con accesso (AGENTE/AMMINISTRATORE).
+    // Permettiamo valori null per gli utenti che non hanno credenziali di accesso.
+    @Column(name = "passwordHash", nullable = true, length = 255)
     private String passwordHash;
 
     @Enumerated(EnumType.STRING)
