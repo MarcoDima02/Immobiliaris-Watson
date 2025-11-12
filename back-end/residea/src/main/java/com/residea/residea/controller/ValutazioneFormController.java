@@ -14,7 +14,7 @@ import com.residea.residea.dto.FormValutazioneRequest;
 import com.residea.residea.dto.FormValutazioneResponse;
 import com.residea.residea.entities.DettagliImmobile;
 import com.residea.residea.entities.Immobile;
-import com.residea.residea.entities.Superfici;
+import com.residea.residea.entities.Superficie;
 import com.residea.residea.entities.Utente;
 import com.residea.residea.repos.DettagliImmobileRepo;
 import com.residea.residea.repos.ImmobileRepo;
@@ -124,7 +124,7 @@ public class ValutazioneFormController {
 
     dettagliRepo.save(dettagli);
 
-        Superfici superfici = new Superfici();
+        Superficie superfici = new Superficie();
         superfici.setImmobile(immobile);  // @MapsId gestisce automaticamente l'ID
         superfici.setSuperficieMq(request.getSuperficie());
         superfici.setSuperficieBalconeTerrazzo(request.getSuperficieBalconeTerrazzo());

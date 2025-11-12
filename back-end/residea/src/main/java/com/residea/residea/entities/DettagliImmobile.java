@@ -59,12 +59,11 @@ public class DettagliImmobile {
     @Column(precision = 10, scale = 2)
     private BigDecimal prezzo;
 
+
     // --- COSTRUTTORI ---
     public DettagliImmobile() {}
 
-    public DettagliImmobile(Immobile immobile, Integer nStanze, Integer nBagni, Integer nPiano, Integer nPianiImmobile,
-                            boolean balconeTerrazzo, boolean giardino, boolean garage, boolean ascensore, boolean cantina,
-                            TipoRiscaldamento tipoRiscaldamento, Integer annoCostruzione,
+    public DettagliImmobile(Immobile immobile, Integer nStanze, Integer nBagni, Integer nPiano, Integer nPianiImmobile,boolean balconeTerrazzo, boolean giardino, boolean garage, boolean ascensore, boolean cantina,TipoRiscaldamento tipoRiscaldamento, Integer annoCostruzione,
                             CondizioneImmobile condizioneImmobile, ClasseEnergetica classeEnergetica, BigDecimal prezzo) {
         this.immobile = immobile;
         this.nStanze = nStanze;
@@ -254,7 +253,6 @@ public class DettagliImmobile {
         NON_RISTRUTTURATO
     }
 
-    // --- ENUM per classe energetica ---
     // --- ENUM per classe energetica ---
     public enum ClasseEnergetica {
         A_PLUS("A+"),
