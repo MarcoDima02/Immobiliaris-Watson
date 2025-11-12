@@ -17,7 +17,7 @@ import { File, Euro, UserRound } from 'lucide-react';
 const Home = () => {
   return (
     <>
-      <div className="p-5 container max-w-3xl lg:max-w-[1400px]  grid lg:grid-cols-2 items-center mx-auto h-[35vh] lg:h-[55vh]">
+      <div className="p-5 md:px-12 container max-w-xl lg:max-w-[1400px] grid lg:grid-cols-2 items-center mx-auto h-[35vh] lg:h-[55vh]">
         <div className="z-10 w-full h-full flex flex-col justify-center">
           <h1 className="title mx-auto lg:mx-0 text-center lg:text-start mt-8">
             Vuoi vendere casa senza stress?
