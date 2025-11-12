@@ -9,6 +9,7 @@ import heroAltAvif from '@/assets/hero-alt-3.avif';
 import heroAltWebp from '@/assets/hero-alt-3.webp';
 import heroAltJpg from '@/assets/hero-alt-3.jpg';
 import agent1 from '@/assets/agent1.jpg';
+import about from '@/assets/about.jpg';
 
 
-export { heroAvif, heroWebp, heroJpg, heroAltAvif, heroAltWebp, heroAltJpg, agent1 };
+export { heroAvif, heroWebp, heroJpg, heroAltAvif, heroAltWebp, heroAltJpg, agent1, about };

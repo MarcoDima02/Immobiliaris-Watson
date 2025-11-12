@@ -1,7 +1,7 @@
 /**
  * Immages
  */
-import { heroAltAvif, heroAltWebp, heroAltJpg, agent1 } from '@/assets';
+import { heroAltAvif, heroAltWebp, heroAltJpg, agent1, about } from '@/assets';
 
 /**
  * Components
@@ -65,7 +65,7 @@ const Home = () => {
           Ricevi in tre step la valutazione del tuo immobile!
         </h3>
 
-        <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6 mt-8">
+        <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-10 mt-8 text-left">
           <Functionality
             icon={File}
             desc={
@@ -96,7 +96,7 @@ const Home = () => {
         </div>
       </section>
 
-      <section className='w-full'>
+      <section className='container mx-auto'>
         <div className='flex flex-col items-center mx-auto text-center pb-8'>
           <h2 className='title'>I nostri agenti</h2>
           <h3 className='title-secondary'>Esperti del settore al tuo fianco in ogni passo della compravendita.</h3>
@@ -151,6 +151,29 @@ const Home = () => {
                 <HomeIcon className='text-secondary h-5' />
                 <p className='text-secondary font-semibold text-center text-sm'> 200+ immobili venduti</p>
               </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <section className='container-fluid'>
+        <div className='flex flex-col items-center mx-auto text-center pb-8'>
+          <h2 className='title'>Chi siamo</h2>
+          <h3 className='title-secondary'>Scopri la storia e i valori di Immobiliaris</h3>
+        </div>
+        <div className='flex flex-col lg:flex-row lg:items-center lg:justify-center gap-10 mx-auto'>
+          <div className='w-full px-8 pb-5 lg:pb-0'>
+            <img src={about} alt="About us" className='w-full h-full object-cover rounded-[40px]' />
+          </div>
+          <div className='flex flex-col justify-center px-8 w-full'>
+            <p className='text-lg text-justify mb-4 text-black font-medium '>
+              <b>Immobiliaris</b> è una giovane realtà nata per rivoluzionare il modo in cui si vendono e si valutano gli immobili.
+              <br /> <br />
+              Uniamo la professionalità dei nostri agenti <b>all’efficienza</b> delle nuove tecnologie digitali.</p>
+
+            <div className='bg-foreground rounded-2xl p-6 mt-6 flex justify-center items-center'>
+              <p className='text-white'>Il nostro obiettivo è rendere la valutazione immobiliare semplice, rapida e trasparente, offrendo ai clienti un servizio innovativo che combina dati, consulenza e fiducia.</p>
             </div>
           </div>
 
