@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<title>Gestione Utenti</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 2rem; background: #f9f9f9; }
+  h1 { color: #333; }
+  table { border-collapse: collapse; width: 100%; margin-top: 1rem; }
+  th, td { border: 1px solid #ccc; padding: 0.5rem; text-align: left; }
+  th { background: #007bff; color: white; }
+  input, select, button { margin: 0.3rem 0; padding: 0.5rem; width: 100%; max-width: 300px; }
+  button { background: #007bff; color: white; border: none; cursor: pointer; border-radius: 4px; }
+  button:hover { background: #0056b3; }
+</style>
+</head>
+<body>
+
+<h1>Gestione Utenti</h1>
+
+
+
+
+<section>
+  <h3>➕ Crea nuovo utente</h3>
+  <input id="nome" placeholder="Nome">
+  <input id="cognome" placeholder="Cognome">
+  <input id="telefono" placeholder="Telefono" maxlength="20">
+  <input id="email" placeholder="Email">
+  <input id="password" placeholder="Password" type="password">
+  <select id="ruolo">
+    <option value="PROPRIETARIO">PROPRIETARIO</option>
+    <option value="AGENTE">AGENTE</option>
+    <option value="AMMINISTRATORE">AMMINISTRATORE</option>
+  </select>
+  <button onclick="crea()">Crea Utente</button>
+</section>
+
+
+<script>
+const api = "http://localhost:8080/api/utenti";
+
+
+// POST /api/utenti
+async function crea() {
+  const body = {
+    nome: document.getElementById("nome").value,
+    cognome: document.getElementById("cognome").value,
+    telefono: document.getElementById("telefono").value,
+    email: document.getElementById("email").value,
+    passwordHash: document.getElementById("password").value,
+    ruolo: document.getElementById("ruolo").value,
+    verificaEmail: false,
+    consensoPrivacy: true
+  };
+
+  try {
+    const res = await fetch(api, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    });
+
+    if (!res.ok) {
+      const error = await res.json();
+      alert("Errore: " + (error.message || res.statusText));
+      return;
+    }
+
+    alert("Utente creato con successo!");
+    getAll();
+  } catch (err) {
+    alert("Errore: " + err.message);
+  }
+}
+
+</script>
+
+</body>
+</html>

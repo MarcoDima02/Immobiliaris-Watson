@@ -1,5 +1,7 @@
 package com.residea.residea.entities;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -24,7 +26,7 @@ public class Utente {
     @Column(nullable = false, length = 20)
     private String cognome;
 
-    @Column(length = 9)
+    @Column(length = 10)
     private String telefono;
 
     @Column(nullable = false, length = 100, unique = true)
@@ -103,9 +105,14 @@ public class Utente {
     }
 
     // --- ENUM interno ---
-    public enum Ruolo {
-        PROPRIETARIO,
-        AGENTE,
-        AMMINISTRATORE, 
+public enum Ruolo {
+    PROPRIETARIO,
+    AGENTE,
+    AMMINISTRATORE;
+
+    @JsonCreator
+    public static Ruolo fromString(String value) {
+        return Ruolo.valueOf(value.toUpperCase());
     }
+}
 }
