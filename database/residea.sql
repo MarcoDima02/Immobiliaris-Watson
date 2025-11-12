@@ -23,16 +23,16 @@ CREATE TABLE Utente (
     idUtente INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(20) NOT NULL,
     cognome VARCHAR(20) NOT NULL,
-    telefono VARCHAR(9) NOT NULL UNIQUE,
+    telefono VARCHAR(10) NOT NULL UNIQUE,
     email VARCHAR(100) NOT NULL UNIQUE,
-    passwordHash VARCHAR(255) NOT NULL,
+    passwordHash VARCHAR(255) NULL,
     ruolo ENUM('proprietario', 'agente', 'amministratore') DEFAULT 'proprietario',
     verifica_email BOOLEAN DEFAULT FALSE,
     consenso_privacy BOOLEAN DEFAULT FALSE
 );
 
 -- ========================
--- TABELLA: Immobile
+-- TABELLA: Immobile 
 -- ========================
 CREATE TABLE Immobile (
     idImmobile INT AUTO_INCREMENT PRIMARY KEY,

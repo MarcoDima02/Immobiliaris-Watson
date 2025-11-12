@@ -48,7 +48,13 @@ public class FormValutazioneRequest {
     private String esposizione;       // opzionale
 
     // Metadata opzionali
-    private Integer idUtente;         // proprietario
+    private Integer idUtente;         // proprietario (se già registrato)
+    
+    // Dati utente (per utenti non ancora registrati)
+    private String nomeUtente;
+    private String cognomeUtente;
+    private String emailUtente;
+    private String telefonoUtente;
 
     // Getters & Setters
     public String getTipologia() { return tipologia; }
@@ -125,4 +131,16 @@ public class FormValutazioneRequest {
 
     public Integer getIdUtente() { return idUtente; }
     public void setIdUtente(Integer idUtente) { this.idUtente = idUtente; }
+
+    public String getNomeUtente() { return nomeUtente; }
+    public void setNomeUtente(String nomeUtente) { this.nomeUtente = nomeUtente; }
+
+    public String getCognomeUtente() { return cognomeUtente; }
+    public void setCognomeUtente(String cognomeUtente) { this.cognomeUtente = cognomeUtente; }
+
+    public String getEmailUtente() { return emailUtente; }
+    public void setEmailUtente(String emailUtente) { this.emailUtente = emailUtente; }
+
+    public String getTelefonoUtente() { return telefonoUtente; }
+    public void setTelefonoUtente(String telefonoUtente) { this.telefonoUtente = telefonoUtente; }
 }

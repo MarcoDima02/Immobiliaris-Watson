@@ -2,6 +2,7 @@ package com.residea.residea.controller;
 
 import java.math.BigDecimal;
 
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -60,8 +61,22 @@ public class ValutazioneFormController {
 
         Utente proprietario = null;
         if (request.getIdUtente() != null) {
-            // Se l'utente non esiste, lasciamo null (scenario pre-registrazione)
+            // Se l'utente esiste già, lo recuperiamo
             proprietario = utenteRepo.findById(request.getIdUtente()).orElse(null);
+        } else if (request.getEmailUtente() != null && !request.getEmailUtente().isEmpty()) {
+            // Creiamo un nuovo utente se sono forniti i dati
+            proprietario = new Utente();
+            proprietario.setNome(request.getNomeUtente() != null ? request.getNomeUtente() : "");
+            proprietario.setCognome(request.getCognomeUtente() != null ? request.getCognomeUtente() : "");
+            proprietario.setEmail(request.getEmailUtente());
+            proprietario.setTelefono(request.getTelefonoUtente() != null ? request.getTelefonoUtente() : "");
+            // Non impostiamo alcuna password per i proprietari creati dal form;
+            // le credenziali sono necessarie solo per ruoli con accesso (AGENTE/AMMINISTRATORE).
+            proprietario.setPasswordHash(null);
+            proprietario.setRuolo(Utente.Ruolo.PROPRIETARIO);
+            proprietario.setVerificaEmail(false);
+            proprietario.setConsensoPrivacy(true);
+            proprietario = utenteRepo.save(proprietario);
         }
 
         // Mappatura Tipologia
@@ -122,6 +137,7 @@ public class ValutazioneFormController {
                 immobile.getIdImmobile(),
                 dettagli.getIdImmobile(),
                 superfici.getIdImmobile(),
+                proprietario != null ? proprietario.getIdUtente() : null,
                 "CREATO"
         );
 
