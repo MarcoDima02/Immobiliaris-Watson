@@ -1,10 +1,14 @@
 export const links = [
   {
-    to: '/',
+    href: '#home',
     label: 'Home',
   },
   {
-    to: '/valutazione',
+    href: '#come-funziona',
+    label: 'Come funziona',
+  },
+  {
+    href: '#valutazione',
     label: 'Valuta ora',
   },
   {
@@ -14,9 +18,5 @@ export const links = [
   {
     href: '#chi-siamo',
     label: 'Chi siamo',
-  },
-  {
-    to: '/backoffice',
-    label: 'Area privata',
   },
 ];

@@ -16,7 +16,7 @@ import Home from '@/pages/Home';
 
 // Lazy import for bundle optimization
 
-const Evaluation = lazy(() => import('@/pages/Evaluation'));
+// const Evaluation = lazy(() => import('@/pages/Evaluation'));
 const NotFound = lazy(() => import('@/pages/NotFound'));
 
 const router = createBrowserRouter([
@@ -28,10 +28,6 @@ const router = createBrowserRouter([
       {
         index: true,
         Component: Home,
-      },
-      {
-        path: 'valutazione',
-        Component: Evaluation,
       },
     ],
   },

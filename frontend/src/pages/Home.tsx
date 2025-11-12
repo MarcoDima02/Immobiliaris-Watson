@@ -1,4 +1,9 @@
 /**
+ * Pages
+ */
+import OurServices from './OurServices';
+
+/**
  * Immages
  */
 import { heroAltAvif, heroAltWebp, heroAltJpg, about } from '@/assets';
@@ -7,17 +12,14 @@ import { heroAltAvif, heroAltWebp, heroAltJpg, about } from '@/assets';
  * Components
  */
 import { Button } from '@/components/ui/button';
-import Functionality from '@/components/Functionality';
-
-/**
- * Icons
- */
-import { File, Euro, UserRound } from 'lucide-react';
 
 const Home = () => {
   return (
     <>
-      <div className="p-5 md:px-12 container max-w-xl lg:max-w-[1400px] grid lg:grid-cols-2 items-center mx-auto h-[35vh] lg:h-[55vh]">
+      <section
+        id="home"
+        className="p-5 md:px-12 container max-w-xl lg:max-w-[1400px] grid lg:grid-cols-2 items-center mx-auto h-[35vh] lg:h-[55vh]"
+      >
         <div className="z-10 w-full h-full flex flex-col justify-center">
           <h1 className="title mx-auto lg:mx-0 text-center lg:text-start mt-8">
             Vuoi vendere casa senza stress?
@@ -58,46 +60,21 @@ const Home = () => {
             <div className="absolute inset-0 pointer-events-none bg-linear-to-r from-background lg:from-40%  via-transparent lg:to-10%"></div>
           </figure>
         </div>
-      </div>
-
-      <section className="container mx-auto mt-8 flex flex-col justify-center items-center text-center ">
-        <h2 className="title">Come funziona</h2>
-        <h3 className="title-secondary">
-          Ricevi in tre step la valutazione del tuo immobile!
-        </h3>
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-          <Functionality
-            icon={File}
-            desc={
-              <>
-                <strong>Compila il form</strong> con i dati dell’abitazione in
-                pochi minuti
-              </>
-            }
-          />
-          <Functionality
-            icon={Euro}
-            desc={
-              <>
-                <strong>Ricevi una fascia di valutazione</strong> in base ai
-                tuoi dati
-              </>
-            }
-          />
-          <Functionality
-            icon={UserRound}
-            desc={
-              <>
-                <strong>Consulenza</strong> e valutazione precisa da parte di
-                uno <strong>dei nostri agenti</strong>
-              </>
-            }
-          />
-        </div>
       </section>
 
-      <section className="container mt-32 mx-auto flex flex-col justify-center items-center">
+      <OurServices id='come-funziona'/>
+      
+      <section id="valutazione" className="min-h-[50vh]">ciao</section>
+
+      <section id="agenti" className="min-h-[50vh]">
+        ciao
+      </section>
+
+
+      <section
+        id="chi-siamo"
+        className="container mt-32 mx-auto flex flex-col justify-center items-center"
+      >
         <h2 className="title">Chi siamo</h2>
         <h3 className="title-secondary">Perchè scegliere Immobiliaris</h3>
         <div>
