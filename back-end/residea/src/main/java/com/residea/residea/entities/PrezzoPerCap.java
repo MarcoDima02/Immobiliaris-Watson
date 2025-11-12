@@ -42,6 +42,22 @@ public class PrezzoPerCap {
     @Column(name = "updatedAt")
     private LocalDateTime updatedAt;
 
+    // --- COSTRUTTORI ---
+    public PrezzoPerCap() {}
+    public PrezzoPerCap(String cap, Citta citta, BigDecimal prezzoMq, String fonte, LocalDate validFrom,
+            LocalDate validTo, BigDecimal qualityScore, LocalDateTime updatedAt) {
+        this.cap = cap;
+        this.citta = citta;
+        this.prezzoMq = prezzoMq;
+        this.fonte = fonte;
+        this.validFrom = validFrom;
+        this.validTo = validTo;
+        this.qualityScore = qualityScore;
+        this.updatedAt = updatedAt;
+    }
+
+     // --- GETTERS & SETTERS ---
+
     public String getCap() {
         return cap;
     }
