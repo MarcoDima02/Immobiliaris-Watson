@@ -2,7 +2,6 @@ package com.residea.residea.controller;
 
 import java.math.BigDecimal;
 
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.residea.residea.dto.FormValutazioneRequest;
-import com.residea.residea.dto.FormValutazioneResponse;
+import com.residea.residea.dto.ValutazioneResultResponse;
 import com.residea.residea.entities.DettagliImmobile;
 import com.residea.residea.entities.Immobile;
 import com.residea.residea.entities.Superficie;
@@ -20,6 +19,7 @@ import com.residea.residea.repos.DettagliImmobileRepo;
 import com.residea.residea.repos.ImmobileRepo;
 import com.residea.residea.repos.SuperficiRepo;
 import com.residea.residea.repos.UtenteRepo;
+import com.residea.residea.services.ValutazioneImmobileService;
 
 @RestController
 @RequestMapping("/api/valutazioni/form")
@@ -29,29 +29,26 @@ public class ValutazioneFormController {
     private final DettagliImmobileRepo dettagliRepo;
     private final SuperficiRepo superficiRepo;
     private final UtenteRepo utenteRepo;
+    private final ValutazioneImmobileService valutazioneService;
 
     public ValutazioneFormController(ImmobileRepo immobileRepo,
                                      DettagliImmobileRepo dettagliRepo,
                                      SuperficiRepo superficiRepo,
-                                     UtenteRepo utenteRepo) {
+                                     UtenteRepo utenteRepo,
+                                     ValutazioneImmobileService valutazioneService) {
         this.immobileRepo = immobileRepo;
         this.dettagliRepo = dettagliRepo;
         this.superficiRepo = superficiRepo;
         this.utenteRepo = utenteRepo;
+        this.valutazioneService = valutazioneService;
     }
 
     @PostMapping(consumes = "application/json", produces = "application/json")
     @Transactional
-    public ResponseEntity<FormValutazioneResponse> submit(@RequestBody FormValutazioneRequest request) {
-        // Log temporaneo per debug
-        System.out.println("=== DEBUG REQUEST ===");
-        System.out.println("nStanze: " + request.getNStanze());
-        System.out.println("nBagni: " + request.getNBagni());
-        System.out.println("piano: " + request.getPiano());
-        System.out.println("pianiTotali: " + request.getPianiTotali());
-        System.out.println("====================");
+    public ResponseEntity<ValutazioneResultResponse> submit(@RequestBody FormValutazioneRequest request) {
         
-        // Validazioni minime lato backend (ulteriori possono essere aggiunte)
+        
+        // Validazioni minime lato backend 
         if (request.getSuperficie() == null || request.getSuperficie().compareTo(BigDecimal.ZERO) <= 0) {
             return ResponseEntity.badRequest().build();
         }
@@ -133,14 +130,11 @@ public class ValutazioneFormController {
         superfici.setSuperficieCantina(Boolean.TRUE.equals(request.getCantina()) ? request.getSuperficieCantina() : null);
     superficiRepo.save(superfici);
 
-        FormValutazioneResponse response = new FormValutazioneResponse(
-                immobile.getIdImmobile(),
-                dettagli.getIdImmobile(),
-                superfici.getIdImmobile(),
-                proprietario != null ? proprietario.getIdUtente() : null,
-                "CREATO"
-        );
-
-        return ResponseEntity.status(201).body(response);
+        // ========================================
+        // CALCOLO VALUTAZIONE DOPO SALVATAGGIO
+        // ========================================
+        ValutazioneResultResponse valutazione = valutazioneService.calculateAndSave(request, immobile.getIdImmobile());
+        
+        return ResponseEntity.status(201).body(valutazione);
     }
 }

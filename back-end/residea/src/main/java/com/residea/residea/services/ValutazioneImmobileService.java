@@ -3,11 +3,21 @@ package com.residea.residea.services;
 import java.math.BigDecimal;
 import java.util.List;
 
+import com.residea.residea.dto.FormValutazioneRequest;
+import com.residea.residea.dto.ValutazioneResultResponse;
 import com.residea.residea.entities.ValutazioneImmobile;
 
 public interface ValutazioneImmobileService {
-
-    // --- READ ---
+    
+    // CALCOLO VALUTAZIONE (on-the-fly) 
+    ValutazioneResultResponse calculateFromRequest(FormValutazioneRequest req);
+    ValutazioneResultResponse calculateFromImmobileId(Integer idImmobile);
+    
+    // CALCOLO E SALVATAGGIO 
+    ValutazioneResultResponse calculateAndSave(FormValutazioneRequest req, Integer idImmobile);
+    
+    // CRUD VALUTAZIONI PERSISTITE 
+    // READ
     List<ValutazioneImmobile> getAllValutazioni();
     ValutazioneImmobile getValutazioneById(Integer idValutazione);
     ValutazioneImmobile getValutazioneByIdImmobile(Integer idImmobile);
@@ -15,15 +25,15 @@ public interface ValutazioneImmobileService {
     List<ValutazioneImmobile> getValutazioniByValoreMedioCompreso(Integer valoreMin, Integer valoreMax);
     List<ValutazioneImmobile> getValutazioniByFattoreAggiustamentoMaggioreDi(BigDecimal soglia);
     
-    // --- CREATE ---
+    // CREATE
     ValutazioneImmobile salvaValutazione(ValutazioneImmobile valutazione);
 
-    // --- UPDATE ---
+    // UPDATE
     ValutazioneImmobile aggiornaValutazione(ValutazioneImmobile valutazioneAggiornata);
     ValutazioneImmobile aggiornaValoreMedio(Integer idValutazione, Integer nuovoValoreMedio);
     ValutazioneImmobile aggiornaConfidence(Integer idValutazione, BigDecimal nuovaConfidence);
 
-    // --- DELETE ---
+    // DELETE
     void eliminaValutazione(Integer idValutazione);
     void eliminaValutazioniByImmobile(Integer idImmobile);
 }
