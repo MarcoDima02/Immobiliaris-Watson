@@ -13,6 +13,7 @@ import RootLayout from '@/components/layout/RootLayout';
  * Pages
  */
 import Home from '@/pages/Home';
+import Backoffice from '@/pages/Backoffice';
 
 // Lazy import for bundle optimization
 
@@ -29,6 +30,10 @@ const router = createBrowserRouter([
         index: true,
         Component: Home,
       },
+      {
+        path: '/backoffice',
+        Component: Backoffice,
+      }
     ],
   },
 ]);

@@ -39,7 +39,7 @@ const About = ({ id }: AboutProps) => {
           </p>
 
           <div className="bg-foreground rounded-2xl p-6 mt-6 flex justify-center items-center">
-            <p className="text-white">
+            <p className="text-white leading-relaxed">
               Il nostro obiettivo è rendere la valutazione immobiliare semplice,
               rapida e trasparente, offrendo ai clienti un servizio innovativo
               che combina dati, consulenza e fiducia.
