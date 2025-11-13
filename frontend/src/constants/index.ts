@@ -19,4 +19,8 @@ export const links = [
     href: '#chi-siamo',
     label: 'Chi siamo',
   },
+  {
+    href: '#inizia-gratis',
+    label: 'Inizia gratis',
+  },
 ];

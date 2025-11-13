@@ -6,6 +6,7 @@ import OurServices from '@/pages/OurServices';
 import Evaluation from '@/pages/Evaluation';
 import Agents from '@/pages/Agents';
 import About from '@/pages/About';
+import More from '@/pages/More';
 
 const Home = () => {
   return (
@@ -19,6 +20,8 @@ const Home = () => {
       <Agents id="agenti" />
 
       <About id='chi-siamo' />
+
+      <More id='inizia-gratis'/>
     </>
   );
 };

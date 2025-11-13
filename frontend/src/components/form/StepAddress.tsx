@@ -157,6 +157,7 @@ const StepAddress = ({ onNext }: { onNext: () => void }) => {
   const onSubmit = (formValues: FormValues) => {
     setData(formValues);
     onNext();
+    window.scrollBy({ top: -400, left: 0, behavior: 'smooth' });
   };
 
   useEffect(() => {
@@ -166,7 +167,7 @@ const StepAddress = ({ onNext }: { onNext: () => void }) => {
   return (
     <Card className="w-full sm:maxw-md">
       <CardHeader>
-        <CardTitle className='font-bold'>Dove si trova l'immobile?</CardTitle>
+        <CardTitle className="font-bold">Dove si trova l'immobile?</CardTitle>
       </CardHeader>
 
       <CardContent>
@@ -250,7 +251,7 @@ const StepAddress = ({ onNext }: { onNext: () => void }) => {
                   <Input
                     {...field}
                     aria-invalid={fieldState.invalid}
-                    placeholder='Es. Torino'
+                    placeholder="Es. Torino"
                   />
 
                   {fieldState.invalid && (
@@ -271,7 +272,7 @@ const StepAddress = ({ onNext }: { onNext: () => void }) => {
                     {...field}
                     maxLength={2}
                     aria-invalid={fieldState.invalid}
-                    placeholder='Es. Rivoli'
+                    placeholder="Es. Rivoli"
                   />
 
                   {fieldState.invalid && (
@@ -291,11 +292,14 @@ const StepAddress = ({ onNext }: { onNext: () => void }) => {
                   <Input
                     {...field}
                     aria-invalid={fieldState.invalid}
-                    placeholder='Es. 10098'
+                    placeholder="Es. 10098"
                   />
 
                   {fieldState.invalid && (
-                    <FieldError className='' errors={[fieldState.error]} />
+                    <FieldError
+                      className=""
+                      errors={[fieldState.error]}
+                    />
                   )}
                 </Field>
               )}
@@ -327,7 +331,7 @@ const StepAddress = ({ onNext }: { onNext: () => void }) => {
           <Button
             type="submit"
             form="address-form"
-            className='hover:bg-card'
+            className="hover:bg-card"
           >
             Avanti
           </Button>

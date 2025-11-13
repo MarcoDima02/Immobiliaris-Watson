@@ -34,7 +34,7 @@ const Hero = ({ id }: HeroProps) => {
       </div>
 
       <div className="w-full overflow-hidden">
-        <figure className="w-full absolute top-0 right-0 h-[40vh] md:h-[42vh] lg:h-[55vh]">
+        <figure className="w-full absolute top-0 right-0 h-[50vh] md:h-[42vh] lg:h-[55vh]">
           <picture>
             <source
               srcSet={heroAltAvif}

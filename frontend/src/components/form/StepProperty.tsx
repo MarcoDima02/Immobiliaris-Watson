@@ -144,7 +144,7 @@ const StepProperty = ({
                       <FieldLabel>Superficie (m²)</FieldLabel>
                       <Input
                         type="number"
-                        placeholder='Es. 120'
+                        placeholder="Es. 120"
                         {...field}
                         value={field.value ?? ''}
                         onChange={(e) => {
@@ -169,7 +169,7 @@ const StepProperty = ({
                         <Input
                           className="w-1/2 min-w-1"
                           type="number"
-                          placeholder='Es. 5'
+                          placeholder="Es. 5"
                           {...field}
                           value={field.value ?? ''}
                           onChange={(e) => {
@@ -189,7 +189,7 @@ const StepProperty = ({
                         <FieldLabel>Numero di bagni</FieldLabel>
                         <Input
                           type="number"
-                          placeholder='Es. 2'
+                          placeholder="Es. 2"
                           className="w-1/2 min-w-1"
                           {...field}
                           value={field.value ?? ''}
@@ -211,7 +211,7 @@ const StepProperty = ({
                       <FieldLabel>Anno di costruzione</FieldLabel>
                       <Input
                         type="number"
-                        placeholder='Es. 2015'
+                        placeholder="Es. 2015"
                         {...field}
                         value={field.value ?? ''}
                         onChange={(e) => {
