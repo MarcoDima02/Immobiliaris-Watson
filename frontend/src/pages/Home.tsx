@@ -4,6 +4,7 @@
 import Hero from '@/pages/Hero';
 import OurServices from '@/pages/OurServices';
 import Evaluation from './Evaluation';
+import Agents from './Agents';
 
 /**
  * Immages
@@ -21,9 +22,7 @@ const Home = () => {
       
       <Evaluation  id='valutazione'/>
 
-      <section id="agenti" className="min-h-[50vh]">
-        ciao
-      </section>
+     <Agents id='agenti'/>
 
 
       <section
