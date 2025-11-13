@@ -12,7 +12,7 @@ import Functionality from '@/components/Functionality';
 /**
  * Icons
  */
-import { File, Euro, UserRound, HomeIcon, Sparkle, ChartColumn, UsersRound } from 'lucide-react';
+import { File, Euro, UserRound, Sparkle, ChartColumn, UsersRound } from 'lucide-react';
 import AgentCard from '@/components/ui/agentCard';
 
 const Home = () => {
