@@ -36,7 +36,7 @@ const MultiStepForm = ({ steps }: MultiStepFormProps) => {
 
   return (
     <FormProvider>
-      <div className="max-w-2xl mx-auto">
+      <div className="max-w-2xl mx-auto mt-12">
         <div className="w-full bg-muted h-2 rounded-full mb-6">
           <Progress
             aria-hidden

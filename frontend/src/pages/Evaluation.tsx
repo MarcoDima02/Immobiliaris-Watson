@@ -7,13 +7,21 @@ import StepProperty from '@/components/form/StepProperty';
 import StepUserType from '@/components/form/StepUserType';
 import StepSuccess from '@/components/form/StepSuccess';
 
-const Evaluation = () => {
+interface EvaluationProps {
+  id: string;
+}
+
+const Evaluation = ({ id }: EvaluationProps) => {
   const steps = [StepAddress, StepProperty, StepUserType, StepSuccess];
 
   return (
-    <div className='p-4'>
+    <section
+      id={id}
+      className="px-4 py-8 mt-16 bg-secondary/40"
+    >
+      <h2 className='title mx-auto text-center text-primary!'>Valuta il tuo immobile</h2>
       <MultiStepForm steps={steps} />
-    </div>
+    </section>
   );
 };
 

@@ -250,6 +250,7 @@ const StepAddress = ({ onNext }: { onNext: () => void }) => {
                   <Input
                     {...field}
                     aria-invalid={fieldState.invalid}
+                    placeholder='Es. Torino'
                   />
 
                   {fieldState.invalid && (
@@ -270,6 +271,7 @@ const StepAddress = ({ onNext }: { onNext: () => void }) => {
                     {...field}
                     maxLength={2}
                     aria-invalid={fieldState.invalid}
+                    placeholder='Es. Rivoli'
                   />
 
                   {fieldState.invalid && (
@@ -289,6 +291,7 @@ const StepAddress = ({ onNext }: { onNext: () => void }) => {
                   <Input
                     {...field}
                     aria-invalid={fieldState.invalid}
+                    placeholder='Es. 10098'
                   />
 
                   {fieldState.invalid && (

@@ -54,7 +54,7 @@ const Header = () => {
     const target = document.getElementById(targetId);
 
     if (target) {
-      const y = target.getBoundingClientRect().top + window.scrollY + HEADER_OFFSET;
+      const y = target.getBoundingClientRect().top + window.scrollY;
       window.history.pushState(null, '', href);
       window.scrollTo({ top: y, behavior: 'smooth' });
     }

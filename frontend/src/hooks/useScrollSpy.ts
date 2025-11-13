@@ -17,7 +17,6 @@ export const useScrollSpy = (sectionIds: string[], offset: number = 72) => {
           }
         }
       }
-      console.log(currentId)
       setActiveId(currentId);
     };
 
