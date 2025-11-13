@@ -24,10 +24,11 @@ const Hero = ({ id }: HeroProps) => {
         </h2>
         <div className="flex justify-center lg:justify-start">
           <Button
+          asChild
             size="lg"
             className="text-md lg:text-lg"
           >
-            Valuta ora
+            <a href="#valutazione">Valuta ora</a>
           </Button>
         </div>
       </div>
