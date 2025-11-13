@@ -7,11 +7,6 @@ import Evaluation from '@/pages/Evaluation';
 import Agents from '@/pages/Agents';
 import About from '@/pages/About';
 
-/**
- * Immages
- */
-import { about } from '@/assets';
-
 const Home = () => {
   return (
     <>
