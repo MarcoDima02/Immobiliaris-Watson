@@ -29,7 +29,6 @@ const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const sectionIds = links.map((link) => link.href.slice(1));
-  console.log(sectionIds)
   const activeId = useScrollSpy(sectionIds, HEADER_OFFSET);
 
   useEffect(() => {
