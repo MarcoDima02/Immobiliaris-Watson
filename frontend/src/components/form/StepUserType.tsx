@@ -77,6 +77,7 @@ const StepUserType = ({
                   <FieldLabel>Email</FieldLabel>
                   <Input
                     type="email"
+                    placeholder='Es. esempio@email.com'
                     {...field}
                   />
                   {fieldState.error && (
@@ -96,6 +97,7 @@ const StepUserType = ({
                   <FieldLabel>Telefono</FieldLabel>
                   <Input
                     type="tel"
+                    placeholder='Es. +39 345 678 9012'
                     {...field}
                     pattern="^(\+39\s?)?(\d{6,12})$"
                     onInvalid={(e) => {

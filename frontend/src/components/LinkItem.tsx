@@ -1,7 +1,7 @@
 /**
  * Node modules
  */
-import { NavLink } from 'react-router';
+import { NavLink, useNavigate, useLocation } from 'react-router';
 
 /**
  * Helper
@@ -21,40 +21,65 @@ type LinkItemProps = {
 };
 
 const LinkItem = ({ to, href, label, setIsOpen }: LinkItemProps) => {
-  const baseClasses =
-    'relative font-semibold text-primary/80 hover:text-primary transition-colors duration-150';
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  if (to) {
-    return (
-      <NavLink
-        to={to}
-        viewTransition
-        onClick={() => setIsOpen(false)}
-        className={({ isActive }) =>
-          cn(
-            baseClasses,
-            isActive &&
-              'after:absolute after:left-0 after:-bottom-2 after:h-1 after:w-full after:bg-primary after:rounded-lg'
-          )
+  const handleAnchorClick = (href: string) => {
+    const id = href.replace('#', '');
+    setIsOpen(false);
+
+    if (location.pathname === '/') {
+      const element = document.getElementById(id);
+      if (element) {
+        const yOffset = -80; 
+        const y =
+          element.getBoundingClientRect().top + window.scrollY + yOffset;
+
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      }
+    } else {
+      navigate('/');
+      setTimeout(() => {
+        const element = document.getElementById(id);
+        if (element) {
+          const yOffset = -80;
+          const y =
+            element.getBoundingClientRect().top + window.scrollY + yOffset;
+
+          window.scrollTo({ top: y, behavior: 'smooth' });
         }
-      >
-        {label}
-      </NavLink>
-    );
-  }
+      }, 400);
+    }
+  };
+
+  const baseClasses =
+    'relative font-semibold transition-colors duration-150 text-primary/70 hover:text-primary';
+  const activeClasses = 'text-primary after:absolute after:bottom-[-4px] after:left-0 after:w-full after:h-[2px] after:bg-primary';
 
   if (href) {
+    
+    const isActive = location.hash === href;
     return (
-      <a
-        href={href}
-        className={baseClasses}
-        onClick={() => setIsOpen(false)}
+      <button
+        onClick={() => handleAnchorClick(href)}
+        className={cn(baseClasses, isActive && activeClasses)}
       >
         {label}
-      </a>
+      </button>
     );
   }
-  return null;
+
+    return (
+    <NavLink
+      to={to!}
+      onClick={() => setIsOpen(false)}
+      className={cn(
+        'text-foreground/80 hover:text-primary font-medium transition-colors duration-200'
+      )}
+    >
+      {label}
+    </NavLink>
+  );
 };
 
 export default LinkItem;

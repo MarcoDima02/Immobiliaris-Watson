@@ -7,7 +7,7 @@
 :root {
   /* === PALETTE PRINCIPALE === */
   /* --background: #c0c0c0; */
-  --background: #fff;
+  --background: #f3f3f6;
   --foreground: #5e223e;
   --card: #f2e9e4;
   /* --card: red; */
@@ -125,8 +125,8 @@ input:-webkit-autofill {
   @apply container mx-auto px-4 sm:px-6 lg:px-8 h-16
 } */
 
-.container-fluid {
-  @apply mx-auto px-4 sm:px-6 lg:px-8 max-w-3xl xl:max-w-7xl;
+html {
+  scroll-behavior: smooth;
 }
 
 .title {
