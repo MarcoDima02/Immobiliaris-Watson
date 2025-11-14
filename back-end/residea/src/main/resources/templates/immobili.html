@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Gestione Immobili</title>
+	<style>
+		body{font-family:Arial,Helvetica,sans-serif;padding:16px}
+		input,select{margin:4px 6px 10px 0;padding:6px}
+		table{border-collapse:collapse;width:100%;margin-top:8px}
+		th,td{border:1px solid #ddd;padding:8px;text-align:left}
+		tr:hover{background:#f5f5f5}
+		.form-row{display:flex;flex-wrap:wrap;gap:8px}
+		.form-row > *{flex:1 1 200px}
+	</style>
+</head>
+<body>
+
+<h1>Gestione Immobili</h1>
+
+<section>
+	<h3>➕ Crea / Aggiorna immobile</h3>
+	<div class="form-row">
+		<input id="idImmobile" placeholder="ID (lascia vuoto per creare)" readonly style="max-width:120px">
+		<input id="proprietarioId" placeholder="ID proprietario (numero)" style="display:none;">
+		<select id="tipologia">
+			<option value="APPARTAMENTO">APPARTAMENTO</option>
+			<option value="VILLA">VILLA</option>
+			<option value="CASA_INDIPENDENTE">CASA_INDIPENDENTE</option>
+			<option value="MONOLOCALE">MONOLOCALE</option>
+		</select>
+		<select id="stato">
+			<option value="DISPONIBILE">DISPONIBILE</option>
+			<option value="VENDUTO">VENDUTO</option>
+		</select>
+	</div>
+	<div class="form-row">
+		<input id="indirizzo" placeholder="Indirizzo">
+		<input id="citta" placeholder="Città">
+		<input id="provincia" placeholder="Provincia (sigla)">
+		<input id="cap" placeholder="CAP">
+	</div>
+	<div class="form-row">
+		<input id="latitudine" placeholder="Latitudine (es. 45.4642)">
+		<input id="longitudine" placeholder="Longitudine (es. 9.19)">
+	</div>
+	<div style="margin-top:8px">
+		<button onclick="creaImmobile()">Crea</button>
+		<button onclick="aggiornaImmobile()">Aggiorna</button>
+		<button onclick="resetForm()">Pulisci</button>
+	</div>
+</section>
+
+<section id="listaImmobili">
+	<h3>📋 Elenco Immobili</h3>
+	<table id="tabImmobili">
+		<thead>
+			<tr><th>ID</th><th>Proprietario</th><th>Tipologia</th><th>Indirizzo</th><th>Città</th><th>Provincia</th><th>CAP</th><th>Lat</th><th>Lon</th><th>Stato</th></tr>
+		</thead>
+		<tbody></tbody>
+	</table>
+</section>
+
+<!-- ricerca e comandi -->
+<section style="margin-top:12px">
+	<input id="immobileSearchId" placeholder="Cerca per ID immobile" style="max-width:200px">
+	<button onclick="cercaImmobilePerId()">Cerca</button>
+	<button onclick="mostraTuttiImmobili()">Mostra tutti</button>
+
+	<!-- ricerca per proprietario / tipologia -->
+	<div style="margin-top:8px; display:flex; gap:8px; align-items:center;">
+		<input id="searchProprietarioId" placeholder="ID proprietario (es. 5)" style="max-width:160px">
+		<button onclick="cercaPerProprietario()">Cerca per proprietario</button>
+		<select id="searchTipologia" style="max-width:200px">
+			<option value="">-- Cerca per tipologia --</option>
+			<option value="APPARTAMENTO">APPARTAMENTO</option>
+			<option value="VILLA">VILLA</option>
+			<option value="CASA_INDIPENDENTE">CASA_INDIPENDENTE</option>
+			<option value="MONOLOCALE">MONOLOCALE</option>
+		</select>
+		<button onclick="cercaPerTipologia()">Cerca per tipologia</button>
+	</div>
+	<div id="dettaglioImmobile" style="margin-top:8px"></div>
+</section>
+
+<script>
+const api = "http://localhost:8080/api/immobili";
+
+async function creaImmobile(){
+	const payload = buildPayloadFromForm();
+	// remove id for create
+	delete payload.idImmobile;
+	try{
+		console.log('POST', api, payload);
+		const res = await fetch(api, {method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload)});
+		if(!res.ok){
+			const text = await res.text().catch(() => res.statusText);
+			let msg = text;
+			try { msg = JSON.parse(text); } catch(e) { /* not json */ }
+			console.error('Create failed', res.status, res.statusText, text);
+			alert('Errore creazione: ' + (typeof msg === 'string' ? msg : JSON.stringify(msg)));
+			return;
+		}
+		alert('Immobile creato');
+		getAllImmobili();
+		resetForm();
+	}catch(e){console.error(e);alert('Errore rete: '+e.message)}
+}
+
+async function aggiornaImmobile(){
+	const payload = buildPayloadFromForm();
+	if(!payload.idImmobile){ alert('Inserisci l\'ID dell\'immobile da aggiornare (clicca una riga per caricarlo nel form).'); return; }
+	try{
+		console.log('PUT', api, payload);
+		// per update il controller usa PUT
+		const res = await fetch(api, {method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload)});
+		if(!res.ok){ const text = await res.text().catch(()=>res.statusText); console.error('Update failed', res.status, text); alert('Errore aggiornamento: '+text); return; }
+		alert('Immobile aggiornato');
+		getAllImmobili();
+		resetForm();
+	}catch(e){console.error(e);alert('Errore rete: '+e.message)}
+}
+
+function buildPayloadFromForm(){
+	const id = (document.getElementById('idImmobile').value || '').trim();
+	const proprietarioId = (document.getElementById('proprietarioId')?.value || '').trim();
+	const payload = {};
+	if(id) payload.idImmobile = Number(id);
+	if(proprietarioId) {
+		const pid = Number(proprietarioId);
+		if(Number.isFinite(pid)) payload.proprietario = { idUtente: pid };
+	}
+	payload.tipologia = document.getElementById('tipologia').value || null;
+	payload.indirizzo = document.getElementById('indirizzo').value || null;
+	payload.citta = document.getElementById('citta').value || null;
+	payload.provincia = document.getElementById('provincia').value || null;
+	payload.cap = document.getElementById('cap').value || null;
+	payload.latitudine = parseFloatOrNull(document.getElementById('latitudine').value);
+	payload.longitudine = parseFloatOrNull(document.getElementById('longitudine').value);
+	payload.stato = document.getElementById('stato').value || null;
+	return payload;
+}
+
+function parseFloatOrNull(v){ const n = parseFloat(v); return Number.isFinite(n) ? n : null; }
+
+async function getAllImmobili(){
+	try{
+		const res = await fetch(api, {method:'GET', headers:{'Accept':'application/json'}});
+		if(!res.ok){ const text = await res.text().catch(()=>res.statusText); console.error('GET immobili failed', res.status, text); alert('Impossibile caricare immobili: '+text); return; }
+		const immobili = await res.json();
+		renderTable(immobili);
+	}catch(e){console.error(e);alert('Errore rete: '+e.message)}
+}
+
+function renderTable(immobili){
+	const tbody = document.querySelector('#tabImmobili tbody');
+	tbody.innerHTML = '';
+	if(!Array.isArray(immobili)){
+		if(immobili && immobili.content) immobili = immobili.content; else immobili = immobili ? [immobili] : [];
+	}
+	immobili.forEach(im =>{
+		const tr = document.createElement('tr');
+		tr.innerHTML = `
+			<td>${im.idImmobile ?? ''}</td>
+			<td>${im.proprietario ? (im.proprietario.idUtente ?? '') : ''}</td>
+			<td>${escapeHtml(im.tipologia)}</td>
+			<td>${escapeHtml(im.indirizzo)}</td>
+			<td>${escapeHtml(im.citta)}</td>
+			<td>${escapeHtml(im.provincia)}</td>
+			<td>${escapeHtml(im.cap)}</td>
+			<td>${im.latitudine ?? ''}</td>
+			<td>${im.longitudine ?? ''}</td>
+			<td>${escapeHtml(im.stato)}</td>
+		`;
+		tr.addEventListener('click', ()=>{ loadImmobileIntoForm(im); highlightRowById(im.idImmobile); });
+		tbody.appendChild(tr);
+	});
+}
+
+function loadImmobileIntoForm(im){
+	document.getElementById('idImmobile').value = im.idImmobile ?? '';
+	document.getElementById('proprietarioId').value = im.proprietario ? (im.proprietario.idUtente ?? '') : '';
+	document.getElementById('tipologia').value = im.tipologia ?? '';
+	document.getElementById('indirizzo').value = im.indirizzo ?? '';
+	document.getElementById('citta').value = im.citta ?? '';
+	document.getElementById('provincia').value = im.provincia ?? '';
+	document.getElementById('cap').value = im.cap ?? '';
+	document.getElementById('latitudine').value = im.latitudine ?? '';
+	document.getElementById('longitudine').value = im.longitudine ?? '';
+	document.getElementById('stato').value = im.stato ?? '';
+}
+
+function resetForm(){
+	['idImmobile','proprietarioId','indirizzo','citta','provincia','cap','latitudine','longitudine'].forEach(id=>document.getElementById(id).value='');
+	document.getElementById('tipologia').value='APPARTAMENTO';
+	document.getElementById('stato').value='DISPONIBILE';
+	document.getElementById('dettaglioImmobile').innerHTML = '';
+	document.querySelectorAll('#tabImmobili tbody tr._highlight').forEach(r=>r.classList.remove('_highlight'));
+}
+
+function highlightRowById(id){
+	const rows = Array.from(document.querySelectorAll('#tabImmobili tbody tr'));
+	rows.forEach(r=>r.classList.remove('_highlight'));
+	if(!id) return;
+	const match = rows.find(r => (r.querySelectorAll('td')[0]?.textContent.trim()||'') === String(id));
+	if(match){ match.classList.add('_highlight'); match.scrollIntoView({behavior:'smooth', block:'center'}); }
+}
+
+function escapeHtml(s){ return s==null ? '' : String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[c])); }
+
+async function cercaImmobilePerId(){
+	const id = (document.getElementById('immobileSearchId').value || '').trim();
+	if(!id){ alert('Inserisci ID da cercare'); return; }
+	try{
+		const res = await fetch(api, {method:'GET', headers:{'Accept':'application/json'}});
+		if(!res.ok){ const text = await res.text().catch(()=>res.statusText); console.error('GET immobili failed', res.status, text); alert('Impossibile caricare immobili: '+text); return; }
+		const immobili = await res.json();
+		const list = Array.isArray(immobili) ? immobili : (immobili && immobili.content ? immobili.content : [immobili]);
+		const found = list.find(i => String(i.idImmobile) === String(id));
+		document.getElementById('dettaglioImmobile').innerHTML = '';
+		if(!found){ document.getElementById('dettaglioImmobile').innerHTML = '<em>Nessun immobile trovato.</em>'; return; }
+		loadImmobileIntoForm(found);
+		highlightRowById(found.idImmobile);
+		document.getElementById('dettaglioImmobile').innerHTML = `<strong>Immobile trovato:</strong><div>ID: ${escapeHtml(found.idImmobile)}</div><div>Indirizzo: ${escapeHtml(found.indirizzo)}</div>`;
+	}catch(e){console.error(e);alert('Errore rete: '+e.message)}
+}
+
+function mostraTuttiImmobili(){ document.getElementById('immobileSearchId').value=''; resetForm(); getAllImmobili(); }
+
+// initial load removed: data will be loaded when user clicks 'Mostra tutti'
+
+// Cerca immobili per proprietario (idUtente)
+async function cercaPerProprietario(){
+	const id = (document.getElementById('searchProprietarioId').value || '').trim();
+	if(!id){ alert('Inserisci l\'ID del proprietario'); return; }
+	if(!/^\d+$/.test(id)) { alert('L\'ID del proprietario deve essere un numero intero positivo'); return; }
+	try{
+		const res = await fetch(api + '/proprietario/' + encodeURIComponent(id), { method:'GET', headers:{'Accept':'application/json'} });
+		if(!res.ok){ const text = await res.text().catch(()=>res.statusText); console.error('GET per proprietario fallito', res.status, text); alert('Errore: '+text); return; }
+		const list = await res.json();
+		renderTable(list);
+		// mostra dettagli completi sotto la tabella
+		const arr = Array.isArray(list) ? list : (list ? [list] : []);
+		document.getElementById('dettaglioImmobile').innerHTML = `<strong>Risultati per proprietario ID ${escapeHtml(id)}:</strong>` + (arr.length ? (`<ul>${arr.map(i=>`<li>${formatImmobileSummary(i)}</li>`).join('')}</ul>`) : '<div><em>Nessun risultato</em></div>');
+	}catch(e){ console.error(e); alert('Errore rete: '+e.message); }
+}
+
+// Cerca immobili per tipologia
+async function cercaPerTipologia(){
+	const tip = (document.getElementById('searchTipologia').value || '').trim();
+	if(!tip){ alert('Seleziona una tipologia'); return; }
+	try{
+		const res = await fetch(api + '/tipologia/' + encodeURIComponent(tip), { method:'GET', headers:{'Accept':'application/json'} });
+		if(!res.ok){ const text = await res.text().catch(()=>res.statusText); console.error('GET per tipologia fallito', res.status, text); alert('Errore: '+text); return; }
+		const list = await res.json();
+		renderTable(list);
+		const arr = Array.isArray(list) ? list : (list ? [list] : []);
+		document.getElementById('dettaglioImmobile').innerHTML = `<strong>Risultati per tipologia ${escapeHtml(tip)}:</strong>` + (arr.length ? (`<ul>${arr.map(i=>`<li>${formatImmobileSummary(i)}</li>`).join('')}</ul>`) : '<div><em>Nessun risultato</em></div>');
+	}catch(e){ console.error(e); alert('Errore rete: '+e.message); }
+}
+
+function formatImmobileSummary(i){
+	const pid = i.proprietario ? (i.proprietario.idUtente ?? '') : '';
+	return `ID: ${escapeHtml(i.idImmobile ?? '')} — Tipologia: ${escapeHtml(i.tipologia ?? '')} — Indirizzo: ${escapeHtml(i.indirizzo ?? '')} — Città: ${escapeHtml(i.citta ?? '')} — Proprietario ID: ${escapeHtml(pid)}`;
+}
+
+</script>
+
+</body>
+</html>

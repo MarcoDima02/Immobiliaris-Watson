@@ -10,4 +10,9 @@ public class ViewController {
     public String utentiPage() {
         return "utenti";     // Thymeleaf cercherà templates/utenti.html
     }
+
+    @GetMapping({"/immobili"})
+    public String immobili() {
+        return "immobili"; // renderizza src/main/resources/templates/immobili.html
+    }
 }
