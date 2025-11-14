@@ -2,7 +2,6 @@ package com.residea.residea.controller;
 
 import java.math.BigDecimal;
 
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;

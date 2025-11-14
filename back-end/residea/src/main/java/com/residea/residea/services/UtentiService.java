@@ -8,7 +8,7 @@ import com.residea.residea.entities.Utente.Ruolo;
 public interface UtentiService {
 
     //Read
-    List<Utente> getAllUtente();
+    List<Utente> getAllUtenti();
     List<Utente> getUtenteByTelefono(String telefono);
     Utente getUtenteById(Integer idUtente);
 
@@ -21,6 +21,5 @@ public interface UtentiService {
     Utente aggiornaUtente(Utente utenteAggiornato);
     Utente cambiaRuoloUtente(Integer idUtente, Ruolo ruoloNuovo);
 
-    //Delete
-    //void eliminaUtente(Integer idUtente);
+
 }
