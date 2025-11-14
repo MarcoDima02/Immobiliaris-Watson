@@ -1,25 +1,7 @@
-<!DOCTYPE html>
-<html lang="it">
-<head>
-<meta charset="UTF-8">
-<title>Gestione Utenti</title>
-<style>
-  body { font-family: Arial, sans-serif; margin: 2rem; background: #f9f9f9; }
-  h1 { color: #333; }
-  table { border-collapse: collapse; width: 100%; margin-top: 1rem; }
-  th, td { border: 1px solid #ccc; padding: 0.5rem; text-align: left; }
-  th { background: #007bff; color: white; }
-  input, select, button { margin: 0.3rem 0; padding: 0.5rem; width: 100%; max-width: 300px; }
-  button { background: #007bff; color: white; border: none; cursor: pointer; border-radius: 4px; }
-  button:hover { background: #0056b3; }
-</style>
-</head>
+// ...existing code...
 <body>
 
 <h1>Gestione Utenti</h1>
-
-
-
 
 <section>
   <h3>➕ Crea nuovo utente</h3>
@@ -36,10 +18,28 @@
   <button onclick="crea()">Crea Utente</button>
 </section>
 
+<!-- aggiunta: lista utenti -->
+<section id="listaUtenti">
+  <h3>📋 Elenco Utenti</h3>
+  <table id="tabUtenti">
+    <thead>
+      <tr><th>ID</th><th>Nome</th><th>Cognome</th><th>Email</th><th>Telefono</th><th>Ruolo</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</section>
+
+<!-- ricerca utente -->
+<section id="searchUtente">
+  <h3>🔎 Cerca utente per telefono</h3>
+  <input id="telefonoSearch" placeholder="Inserisci numero da cercare">
+  <button onclick="cercaUtente()">Cerca</button>
+  <button onclick="mostraTutti()">Mostra tutti</button>
+  <div id="dettaglioUtente" style="margin-top:8px"></div>
+</section>
 
 <script>
 const api = "http://localhost:8080/api/utenti";
-
 
 // POST /api/utenti
 async function crea() {
@@ -62,17 +62,163 @@ async function crea() {
     });
 
     if (!res.ok) {
-      const error = await res.json();
+      const error = await res.json().catch(() => ({ message: res.statusText }));
       alert("Errore: " + (error.message || res.statusText));
       return;
     }
 
     alert("Utente creato con successo!");
-    getAll();
+    getAll(); // aggiorna la lista
   } catch (err) {
     alert("Errore: " + err.message);
   }
 }
+
+// GET /api/utenti
+async function getAll() {
+  try {
+    const res = await fetch(api, { method: "GET", headers: { "Accept": "application/json" } });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({ message: res.statusText }));
+      console.error("GET utenti errore:", err);
+      alert("Impossibile caricare utenti: " + (err.message || res.statusText));
+      return;
+    }
+    const utenti = await res.json();
+    renderTable(utenti);
+  } catch (e) {
+    console.error(e);
+    alert("Errore di rete: " + e.message);
+  }
+}
+
+function renderTable(utenti) {
+  const tbody = document.querySelector("#tabUtenti tbody");
+  tbody.innerHTML = "";
+  if (!Array.isArray(utenti)) {
+    // se il server ritorna un oggetto singolo o wrapper, prova a estrarre la lista
+    if (utenti && utenti.content) utenti = utenti.content;
+    else utenti = utenti ? [utenti] : [];
+  }
+  utenti.forEach(u => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${u.idUtente ?? u.id ?? ""}</td>
+      <td>${escapeHtml(u.nome)}</td>
+      <td>${escapeHtml(u.cognome)}</td>
+      <td>${escapeHtml(u.email)}</td>
+      <td>${escapeHtml(u.telefono)}</td>
+      <td>${escapeHtml(u.ruolo)}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+
+function getUtenteByTelefono(utenti, telefonoArg) {
+  // telefonoArg opzionale: se passato viene utilizzato, altrimenti legge
+  // da #telefonoSearch e in fallback da #telefono (campo di creazione)
+  const rawQuery = (telefonoArg ?? document.getElementById("telefonoSearch")?.value ?? document.getElementById("telefono")?.value ?? "").trim();
+  const normalize = s => (s == null ? "" : String(s).replace(/\D/g, ""));
+
+  if (!rawQuery) return null;
+
+  // if utenti is not an array, try to build it from the table in pagina
+  if (!Array.isArray(utenti)) {
+    const rows = Array.from(document.querySelectorAll("#tabUtenti tbody tr"));
+    utenti = rows.map(r => {
+      const cells = r.querySelectorAll("td");
+      return {
+        idUtente: cells[0]?.textContent.trim(),
+        nome: cells[1]?.textContent.trim(),
+        cognome: cells[2]?.textContent.trim(),
+        email: cells[3]?.textContent.trim(),
+        telefono: cells[4]?.textContent.trim(),
+        ruolo: cells[5]?.textContent.trim()
+      };
+    });
+  }
+
+  const target = utenti.find(u => normalize(u.telefono) === normalize(rawQuery));
+
+  if (!target) {
+    console.info("Nessun utente trovato per telefono:", rawQuery);
+    return null;
+  }
+
+  return target;
+}
+
+// Cerca sul server e mostra il risultato nella UI
+async function cercaUtente() {
+  const query = (document.getElementById("telefonoSearch")?.value || "").trim();
+  if (!query) {
+    alert("Inserisci un numero di telefono da cercare.");
+    return;
+  }
+
+  try {
+    const res = await fetch(api, { method: "GET", headers: { "Accept": "application/json" } });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({ message: res.statusText }));
+      alert("Impossibile caricare utenti: " + (err.message || res.statusText));
+      return;
+    }
+    const utenti = await res.json();
+    const utente = getUtenteByTelefono(utenti, query);
+    renderUserDetail(utente);
+    if (utente) highlightRowById(utente.idUtente ?? utente.id);
+  } catch (e) {
+    console.error(e);
+    alert("Errore di rete: " + e.message);
+  }
+}
+
+function renderUserDetail(u) {
+  const container = document.getElementById("dettaglioUtente");
+  if (!container) return;
+  if (!u) {
+    container.innerHTML = "<em>Nessun utente trovato.</em>";
+    return;
+  }
+  container.innerHTML = `
+    <strong>Utente trovato:</strong>
+    <div>ID: ${escapeHtml(u.idUtente ?? u.id ?? "")}</div>
+    <div>Nome: ${escapeHtml(u.nome)}</div>
+    <div>Cognome: ${escapeHtml(u.cognome)}</div>
+    <div>Email: ${escapeHtml(u.email)}</div>
+    <div>Telefono: ${escapeHtml(u.telefono)}</div>
+    <div>Ruolo: ${escapeHtml(u.ruolo)}</div>
+  `;
+}
+
+function highlightRowById(id) {
+  const rows = Array.from(document.querySelectorAll("#tabUtenti tbody tr"));
+  rows.forEach(r => r.classList.remove("_highlight"));
+  if (!id) return;
+  const match = rows.find(r => (r.querySelectorAll("td")[0]?.textContent.trim() || "") === String(id));
+  if (match) {
+    match.classList.add("_highlight");
+    match.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+}
+
+// piccolo CSS inline per evidenziare
+const style = document.createElement('style');
+style.innerHTML = `#tabUtenti tbody tr._highlight{background:#fffbcc}`;
+document.head.appendChild(style);
+// Mostra tutti gli utenti: pulisce ricerca/dettagli e ricarica la lista
+function mostraTutti() {
+  const search = document.getElementById('telefonoSearch');
+  if (search) search.value = '';
+  const det = document.getElementById('dettaglioUtente');
+  if (det) det.innerHTML = '';
+  // rimuovi eventuali evidenziazioni
+  document.querySelectorAll('#tabUtenti tbody tr._highlight').forEach(r => r.classList.remove('_highlight'));
+  // ricarica lista completa
+  getAll();
+}
+function escapeHtml(s){ return s==null ? "" : String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[c])); }
 
 </script>
 

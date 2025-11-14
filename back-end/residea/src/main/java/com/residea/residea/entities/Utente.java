@@ -1,14 +1,13 @@
 package com.residea.residea.entities;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PostLoad;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 
 @Entity
@@ -32,12 +31,9 @@ public class Utente {
     @Column(nullable = false, length = 100, unique = true)
     private String email;
 
-    // passwordHash è richiesta solo per account con accesso (AGENTE/AMMINISTRATORE).
-    // Permettiamo valori null per gli utenti che non hanno credenziali di accesso.
     @Column(name = "passwordHash", nullable = true, length = 255)
     private String passwordHash;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "ruolo", nullable = false, length = 20)
     private Ruolo ruolo = Ruolo.PROPRIETARIO;
 
@@ -46,7 +42,6 @@ public class Utente {
 
     @Column(name = "consenso_privacy", nullable = false)
     private boolean consensoPrivacy = false;
-
 
     // --- COSTRUTTORI ---
     public Utente() {}
@@ -57,7 +52,7 @@ public class Utente {
         this.telefono = telefono;
         this.email = email;
         this.passwordHash = passwordHash;
-        this.ruolo = ruolo;
+        setRuolo(ruolo); // usa il setter per normalizzare
         this.verificaEmail = verificaEmail;
         this.consensoPrivacy = consensoPrivacy;
     }
@@ -82,13 +77,42 @@ public class Utente {
     public void setPasswordHash(String passwordHash) { this.passwordHash = passwordHash; }
 
     public Ruolo getRuolo() { return ruolo; }
-    public void setRuolo(Ruolo ruolo) { this.ruolo = ruolo; }
+
+    // Setter enum più robusto
+    public void setRuolo(Ruolo ruolo) {
+        if (ruolo != null) {
+            this.ruolo = Ruolo.valueOf(ruolo.name().toUpperCase());
+        }
+    }
+
+    // Setter da stringa JSON (utile per deserializzazione)
+    public void setRuolo(String ruolo) {
+        if (ruolo != null && !ruolo.isBlank()) {
+            this.ruolo = Ruolo.valueOf(ruolo.trim().toUpperCase());
+        }
+    }
 
     public boolean isVerificaEmail() { return verificaEmail; }
     public void setVerificaEmail(boolean verificaEmail) { this.verificaEmail = verificaEmail; }
 
     public boolean isConsensoPrivacy() { return consensoPrivacy; }
     public void setConsensoPrivacy(boolean consensoPrivacy) { this.consensoPrivacy = consensoPrivacy; }
+
+    // Normalizza ruolo prima di salvare o aggiornare
+    @PrePersist
+    @PreUpdate
+    private void normalizeRuolo() {
+        if (this.ruolo != null) {
+            this.ruolo = Ruolo.valueOf(this.ruolo.name().toUpperCase());
+        }
+    }
+
+    @PostLoad
+    private void normalizeRuoloAfterLoad() {
+        if (this.ruolo != null) {
+            this.ruolo = Ruolo.valueOf(this.ruolo.name().toUpperCase());
+        }
+    }
 
     @Override
     public String toString() {
@@ -106,13 +130,21 @@ public class Utente {
 
     // --- ENUM interno ---
 public enum Ruolo {
-    PROPRIETARIO,
-    AGENTE,
-    AMMINISTRATORE;
+    PROPRIETARIO, AGENTE, AMMINISTRATORE;
 
-    @JsonCreator
-    public static Ruolo fromString(String value) {
-        return Ruolo.valueOf(value.toUpperCase());
+    @com.fasterxml.jackson.annotation.JsonCreator
+    public static Ruolo fromString(String key) {
+        if (key == null) return null;
+        try {
+            return Ruolo.valueOf(key.toUpperCase());
+        } catch (IllegalArgumentException ex) {
+            return null; // oppure lanciare IllegalArgumentException personalizzata
+        }
+    }
+
+    @com.fasterxml.jackson.annotation.JsonValue
+    public String toValue() {
+        return this.name();
     }
 }
 }

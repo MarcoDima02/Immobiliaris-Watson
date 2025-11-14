@@ -21,7 +21,7 @@ public class UtentiServiceImpl implements UtentiService {
 
     // --- READ ---
     @Override
-    public List<Utente> getAllUtente() {
+    public List<Utente> getAllUtenti() {
     return utenteRepo.findAll();
     }
 
