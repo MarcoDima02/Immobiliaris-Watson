@@ -12,7 +12,7 @@ function AgentCard({
     soldProperties: number;
 }) {
     return (
-        <div className='bg-white w-full rounded-[50px] flex flex-col border-16 border-white shadow-2xl'>
+        <div className='bg-white w-full rounded-[50px] flex flex-col border-16 border-white shadow-2xl hover:scale-105 hover:shadow-primary transition-transform duration-1000'>
             <div>
                 <img src={agentImage} alt={agentName} className='h-full w-full rounded-[30px]' />
             </div>
