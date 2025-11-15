@@ -4,6 +4,7 @@
 import MultiStepForm from '@/components/MultiStepForm';
 import StepAddress from '@/components/form/StepAddress';
 import StepProperty from '@/components/form/StepProperty';
+import StepOptional from '@/components/form/StepOptional';
 import StepUserType from '@/components/form/StepUserType';
 import StepSuccess from '@/components/form/StepSuccess';
 
@@ -12,7 +13,7 @@ interface EvaluationProps {
 }
 
 const Evaluation = ({ id }: EvaluationProps) => {
-  const steps = [StepAddress, StepProperty, StepUserType, StepSuccess];
+  const steps = [StepAddress, StepProperty, StepOptional, StepUserType, StepSuccess];
 
   return (
     <section

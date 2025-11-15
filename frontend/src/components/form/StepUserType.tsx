@@ -46,12 +46,13 @@ const StepUserType = ({
       contactEmail: data.contactEmail ?? '',
       contactPhone: data.contactPhone ?? '',
     },
+    shouldUnregister: false,
   });
 
   const onSubmit = (values: UserTypeValues) => {
     const allData = { ...data, ...values };
     console.log('Tutti i dati del form:', allData);
-    setData(values);
+    setData(allData);
     onNext();
   };
   return (

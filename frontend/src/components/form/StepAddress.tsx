@@ -47,6 +47,13 @@ mapboxgl.accessToken = mapboxgl.accessToken =
 
 type FormValues = z.infer<typeof addressSchema>;
 
+const allowedKeys: (keyof FormValues)[] = [
+  'address',
+  'city',
+  'province',
+  'cap',
+];
+
 const StepAddress = ({ onNext }: { onNext: () => void }) => {
   const { data, setData } = useFormContext();
   const { control, handleSubmit, setValue, watch } = useForm<FormValues>({
@@ -57,7 +64,18 @@ const StepAddress = ({ onNext }: { onNext: () => void }) => {
       province: data.province ?? '',
       cap: data.cap ?? '',
     },
+    shouldUnregister: false,
+    mode: 'onSubmit',
+    reValidateMode: 'onSubmit',
   });
+
+  useEffect(() => {
+    allowedKeys.forEach((key) => {
+      if (data[key] !== undefined) {
+        setValue(key, data[key] as FormValues[typeof key]);
+      }
+    });
+  }, [data, setValue]);
 
   const address = watch('address');
 
@@ -146,6 +164,8 @@ const StepAddress = ({ onNext }: { onNext: () => void }) => {
       city,
       province,
       cap,
+      longitude,
+      latitude,
     });
 
     setMarker(longitude, latitude);
@@ -155,7 +175,10 @@ const StepAddress = ({ onNext }: { onNext: () => void }) => {
   };
 
   const onSubmit = (formValues: FormValues) => {
-    setData(formValues);
+    const cleaned = Object.fromEntries(
+      Object.entries(formValues).filter(([_, v]) => v !== undefined)
+    );
+    setData(cleaned);
     onNext();
     window.scrollBy({ top: -400, left: 0, behavior: 'smooth' });
   };
@@ -272,7 +295,7 @@ const StepAddress = ({ onNext }: { onNext: () => void }) => {
                     {...field}
                     maxLength={2}
                     aria-invalid={fieldState.invalid}
-                    placeholder="Es. Rivoli"
+                    placeholder="Es. TO"
                   />
 
                   {fieldState.invalid && (

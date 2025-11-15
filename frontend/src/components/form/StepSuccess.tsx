@@ -1,9 +1,4 @@
 /**
- * Node modules
- */
-import { Link } from 'react-router';
-
-/**
  * Components
  */
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
@@ -34,12 +29,12 @@ const StepSuccess = () => {
       </Card>
 
       <Button asChild className="mx-auto">
-        <Link
-          to="/"
+        <a
+          href="/"
           
         >
           Torna alla home
-        </Link>
+        </a>
       </Button>
     </div>
   );

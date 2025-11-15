@@ -21,8 +21,8 @@ export const propertySchema = z.object({
     .number({ error: 'Inserisci la superficie' })
     .min(0.01, 'La superficie deve essere > 0')
     .max(20000, 'Superficie troppo grande'),
-  rooms: z.number().int().min(0),
-  bathrooms: z.number().int().min(0),
+  rooms: z.number().int().min(0,'La stanze devono essere > 0'),
+  bathrooms: z.number().int().min(0, 'I bagni devono essere > 0'),
   requestedPurpose: z.enum(['estimate', 'officialDocument']),
   floor: z.number().int().optional(),
   totalFloors: z.number().int().optional(),
