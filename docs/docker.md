@@ -63,7 +63,10 @@ Invece di installare MySQL, Java, Node.js, ecc. manualmente, Docker crea dei "co
 2. **Trova e cancella** questa riga:
    ```
    package-lock.json
+   nginx.conf
    ```
+   Si dovrebbero trovare rispettivamente nelle righe 6 e 35.
+
 3. Salva e chiudi il file
 
 ---

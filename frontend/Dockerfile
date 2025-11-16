@@ -12,6 +12,9 @@ RUN npm ci
 # Copia il codice sorgente
 COPY . .
 
+# Variabili ambiente per build Vite (hardcoded per Docker)
+ENV VITE_API_URL=http://localhost:8080/api
+
 # Build production
 RUN npm run build
 
