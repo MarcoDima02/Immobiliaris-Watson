@@ -1,8 +1,112 @@
-# 🐳 Immobiliaris Watson - Ambiente Docker
+# 🐳 Docker per Principianti Assoluti - Guida Passo Passo
 
-Setup Docker completo per testing e sviluppo dell'applicazione Immobiliaris Watson (Residea).
+## Cos'è Docker?
 
-## 📋 Prerequisiti
+**Docker** è come una "scatola magica" che contiene tutto ciò che serve per far funzionare un'applicazione (codice, database, server web) senza dover installare nulla sul tuo computer.
+
+Invece di installare MySQL, Java, Node.js, ecc. manualmente, Docker crea dei "container" (contenitori) che hanno già tutto dentro.
+
+---
+
+## 📥 Step 1: Installa Docker Desktop
+
+1. Vai su [https://www.docker.com/products/docker-desktop](https://www.docker.com/products/docker-desktop)
+2. Scarica **Docker Desktop per Windows**
+3. Esegui l'installer scaricato (`.exe`)
+4. Segui la procedura guidata (lascia tutto di default)
+5. **Riavvia il computer** quando richiesto
+6. Dopo il riavvio, apri **Docker Desktop** dal menu Start
+7. Attendi che Docker si avvii (vedrai un'icona nella barra delle applicazioni)
+
+---
+
+## 📥 Step 2: Installa Node.js (necessario per il frontend)
+
+1. Vai su [https://nodejs.org/it/](https://nodejs.org/it/)
+2. Scarica la versione **LTS** (consigliata)
+3. Esegui l'installer (`.msi`)
+4. Segui la procedura guidata (lascia tutto di default)
+5. Alla fine, apri **PowerShell** (o Prompt dei comandi) e digita:
+   ```powershell
+   node --version
+   npm --version
+   ```
+   Se vedi i numeri di versione, è installato correttamente.
+
+---
+
+## 🔧 Step 3: Prepara il progetto
+
+### 3.1 Genera il file `package-lock.json`
+
+1. Apri **PowerShell** come amministratore (tasto destro > "Esegui come amministratore")
+2. Abilita l'esecuzione degli script:
+   ```powershell
+   Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+   ```
+   Conferma con `S` (Sì)
+
+3. Vai nella cartella del frontend:
+   ```powershell
+   cd C:\Users\dimam\Desktop\Immobiliaris-Watson\frontend
+   ```
+
+4. Genera il file `package-lock.json`:
+   ```powershell
+   npm install
+   ```
+   Attendi il completamento (può richiedere 1-2 minuti)
+
+### 3.2 Modifica il file `.dockerignore`
+
+1. Apri il file `frontend/.dockerignore` con Notepad o VS Code
+2. **Trova e cancella** questa riga:
+   ```
+   package-lock.json
+   ```
+3. Salva e chiudi il file
+
+---
+
+## 🚀 Step 4: Avvia Docker
+
+1. Apri **PowerShell** (o Prompt dei comandi)
+2. Vai nella cartella principale del progetto:
+   ```powershell
+   cd C:\Users\dimam\Desktop\Immobiliaris-Watson
+   ```
+
+3. Lancia il comando per avviare tutto:
+   ```powershell
+   docker compose up -d
+   ```
+
+   **Cosa succede:**
+   - Docker scarica le immagini base (MySQL, Node.js, Java) → può richiedere 10-15 minuti la prima volta
+   - Crea 3 container: database (MySQL), backend (Java), frontend (React)
+   - Installa tutte le dipendenze e compila il codice
+
+4. **Attendi** fino a quando non vedi:
+   ```
+   ✔ Container residea-mysql      Started
+   ✔ Container residea-backend    Started
+   ✔ Container residea-frontend   Started
+   ```
+
+---
+
+## ✅ Step 5: Verifica che funzioni
+
+1. Apri il browser (Chrome, Firefox, Edge)
+2. Vai su:
+   - **Frontend:** [http://localhost](http://localhost)
+   - **Backend API:** [http://localhost:8080/api](http://localhost:8080/api)
+
+3. Se vedi la tua applicazione, **funziona tutto!** 🎉
+
+---
+
+## 📋 Prerequisiti Tecnici
 
 - **Docker Desktop** (Windows/Mac) o **Docker Engine** (Linux)
 - **Docker Compose** v2.0+
