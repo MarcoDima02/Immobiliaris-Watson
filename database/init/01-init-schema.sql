@@ -1,25 +1,15 @@
--- Passaggi creazione database e utente autorizzato
--- CREATE DATABASE residea_db;
--- Use residea_db;
--- CREATE USER 'residea_user'@'localhost' IDENTIFIED BY 'ResideaP@ss';
--- GRANT ALL PRIVILEGES ON residea_db.* TO 'residea_user'@'localhost';
--- FLUSH PRIVILEGES;
-
 -- ============================================
--- Comandi reset tabelle in caso sia necessario
--- SET FOREIGN_KEY_CHECKS = 0;
--- TRUNCATE TABLE Superfici;
--- TRUNCATE TABLE DettagliImmobile;
--- TRUNCATE TABLE ValutazioneImmobile;
--- TRUNCATE TABLE Immobile;
--- SET FOREIGN_KEY_CHECKS = 1;
+-- Script di inizializzazione database MySQL
+-- Eseguito automaticamente dal container MySQL
 -- ============================================
 
+-- Il database e l'utente sono già creati dalle variabili ambiente
+-- USE residea_db; -- già selezionato di default
 
 -- ========================
 -- TABELLA: Utente
 -- ========================
-CREATE TABLE Utente (
+CREATE TABLE IF NOT EXISTS Utente (
     idUtente INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(20) NOT NULL,
     cognome VARCHAR(20) NOT NULL,
@@ -34,7 +24,7 @@ CREATE TABLE Utente (
 -- ========================
 -- TABELLA: Immobile 
 -- ========================
-CREATE TABLE Immobile (
+CREATE TABLE IF NOT EXISTS Immobile (
     idImmobile INT AUTO_INCREMENT PRIMARY KEY,
     idProprietario INT NULL,
     tipologia ENUM('Appartamento', 'Villa', 'Casa indipendente', 'Monolocale'),
@@ -51,7 +41,7 @@ CREATE TABLE Immobile (
 -- ========================
 -- TABELLA: DettagliImmobile
 -- ========================
-CREATE TABLE DettagliImmobile (
+CREATE TABLE IF NOT EXISTS DettagliImmobile (
     idImmobile INT PRIMARY KEY,
     nStanze INT(2) NOT NULL,
     nBagni INT(2) NOT NULL,
@@ -70,11 +60,10 @@ CREATE TABLE DettagliImmobile (
     FOREIGN KEY (idImmobile) REFERENCES Immobile(idImmobile) ON DELETE CASCADE
 );
 
-
 -- ========================
--- TABELLA: Citta - CRUD Completa
+-- TABELLA: Citta
 -- ========================
-CREATE TABLE Citta (
+CREATE TABLE IF NOT EXISTS Citta (
     idCitta INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
     provincia VARCHAR(3) NOT NULL,
@@ -83,9 +72,9 @@ CREATE TABLE Citta (
 );
 
 -- ========================
--- TABELLA: PrezzoPerCAP - CRUD Completa
+-- TABELLA: PrezzoPerCAP
 -- ========================
-CREATE TABLE PrezzoPerCAP (
+CREATE TABLE IF NOT EXISTS PrezzoPerCAP (
     cap VARCHAR(10) PRIMARY KEY,
     idCitta INT DEFAULT NULL,
     prezzoMq DECIMAL(10, 2) NOT NULL,
@@ -98,9 +87,9 @@ CREATE TABLE PrezzoPerCAP (
 );
 
 -- ========================
--- TABELLA: Immagine - CRUD Completa
+-- TABELLA: Immagine
 -- ========================
-CREATE TABLE Immagine (
+CREATE TABLE IF NOT EXISTS Immagine (
     idImmagine INT AUTO_INCREMENT PRIMARY KEY,
     idImmobile INT NOT NULL,
     url VARCHAR(255),
@@ -113,9 +102,9 @@ CREATE TABLE Immagine (
 );
 
 -- ========================
--- TABELLA: Prenotazione
+-- TABELLA: Richiesta
 -- ========================
-CREATE TABLE Richiesta (
+CREATE TABLE IF NOT EXISTS Richiesta (
     idRichiesta INT AUTO_INCREMENT PRIMARY KEY,
     idUtente INT NOT NULL,
     idImmobile INT NOT NULL,
@@ -131,7 +120,7 @@ CREATE TABLE Richiesta (
 -- ========================
 -- TABELLA: Superfici
 -- ========================
-CREATE TABLE Superfici (
+CREATE TABLE IF NOT EXISTS Superfici (
     idImmobile INT PRIMARY KEY,
     superficieMq INT(4),
     superficieBalconeTerrazzo INT(4),
@@ -144,7 +133,7 @@ CREATE TABLE Superfici (
 -- ========================
 -- TABELLA: ValutazioneImmobile
 -- ========================
-CREATE TABLE ValutazioneImmobile (
+CREATE TABLE IF NOT EXISTS ValutazioneImmobile (
     idValutazione INT AUTO_INCREMENT PRIMARY KEY,
     idImmobile INT NOT NULL,
     valoreBase INT(9),
@@ -159,7 +148,7 @@ CREATE TABLE ValutazioneImmobile (
 -- ========================
 -- TABELLA: Contratti
 -- ========================
-CREATE TABLE Contratti (
+CREATE TABLE IF NOT EXISTS Contratti (
     idContratto INT AUTO_INCREMENT PRIMARY KEY,
     idImmobile INT NOT NULL,
     tipoContratto ENUM ('Esclusivo', 'altro'),
@@ -170,9 +159,9 @@ CREATE TABLE Contratti (
 );
 
 -- ========================
--- TABELLA: Leads - contatti generati, da revisionare
+-- TABELLA: Leads
 -- ========================
-CREATE TABLE Leads (
+CREATE TABLE IF NOT EXISTS Leads (
     idLead INT AUTO_INCREMENT PRIMARY KEY,
     idUtente INT,
     nome VARCHAR(100),
@@ -191,17 +180,14 @@ CREATE TABLE Leads (
     createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
     updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (idUtente) REFERENCES Utente(idUtente) ON DELETE SET NULL,
-    FOREIGN KEY (idRichiesta) REFERENCES Richiesta(idRichiesta)
-    ON DELETE SET NULL ON UPDATE CASCADE,
-    FOREIGN KEY (assegnatoA) REFERENCES Utente(idUtente)
-    ON DELETE SET NULL ON UPDATE CASCADE
+    FOREIGN KEY (idRichiesta) REFERENCES Richiesta(idRichiesta) ON DELETE SET NULL ON UPDATE CASCADE,
+    FOREIGN KEY (assegnatoA) REFERENCES Utente(idUtente) ON DELETE SET NULL ON UPDATE CASCADE
 );
-
 
 -- ========================
 -- TABELLA: Vendite
 -- ========================
-CREATE TABLE Vendite (
+CREATE TABLE IF NOT EXISTS Vendite (
     idVendita INT AUTO_INCREMENT PRIMARY KEY,
     idContratto INT NOT NULL,
     idImmobile INT NOT NULL,
@@ -212,3 +198,26 @@ CREATE TABLE Vendite (
     FOREIGN KEY (idUtente) REFERENCES Utente(idUtente) ON DELETE CASCADE
 );
 
+-- ============================================
+-- Dati di esempio per testing
+-- ============================================
+
+-- Inserimento città Torino
+INSERT IGNORE INTO Citta (idCitta, nome, provincia, regione, codiceIstat) 
+VALUES (1, 'Torino', 'TO', 'Piemonte', '001272');
+
+-- Inserimento prezzi per CAP di Torino
+INSERT IGNORE INTO PrezzoPerCAP (cap, idCitta, prezzoMq, fonte, validFrom, qualityScore) 
+VALUES 
+    ('10121', 1, 3200.00, 'Immobiliare.it 2024', '2024-01-01', 0.85),
+    ('10122', 1, 2900.00, 'Immobiliare.it 2024', '2024-01-01', 0.82),
+    ('10123', 1, 2800.00, 'Immobiliare.it 2024', '2024-01-01', 0.80),
+    ('10124', 1, 2700.00, 'Immobiliare.it 2024', '2024-01-01', 0.78),
+    ('10125', 1, 2650.00, 'Immobiliare.it 2024', '2024-01-01', 0.75);
+
+-- Utente di test
+INSERT IGNORE INTO Utente (idUtente, nome, cognome, telefono, email, ruolo, verifica_email, consenso_privacy)
+VALUES (1, 'Mario', 'Rossi', '3331234567', 'mario.rossi@example.com', 'proprietario', TRUE, TRUE);
+
+-- Log di completamento
+SELECT 'Database inizializzato con successo!' AS Status;
