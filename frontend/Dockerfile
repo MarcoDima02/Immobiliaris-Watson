@@ -12,8 +12,13 @@ RUN npm ci
 # Copia il codice sorgente
 COPY . .
 
+<<<<<<< HEAD
 ENV VITE_API_URL=http://localhost:8080/api
 ENV VITE_MAPBOX_ACCESS_TOKEN=pk.eyJ1IjoibWF4OTV3aGsiLCJhIjoiY21ocTFubGg5MGxvNzJpczQzZHpnaGkyNiJ9.ky28aP9RPnDYGetmYFl-lA
+=======
+# Variabili ambiente per build Vite (hardcoded per Docker)
+ENV VITE_API_URL=http://localhost:8080/api
+>>>>>>> 54fa047f6af82d2ea8349583f837c9b46017c38b
 
 # Build production
 RUN npm run build
