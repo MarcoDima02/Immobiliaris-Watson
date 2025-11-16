@@ -31,6 +31,8 @@ import { ownerSchema } from '@/hooks/schemas/valuationSchema';
 
 type UserTypeValues = z.infer<typeof ownerSchema>;
 
+const URL = 'http://localhost:8080/api/valutazioni/form';
+
 const StepUserType = ({
   onNext,
   onBack,
@@ -49,10 +51,30 @@ const StepUserType = ({
     shouldUnregister: false,
   });
 
-  const onSubmit = (values: UserTypeValues) => {
+  const onSubmit = async (values: UserTypeValues) => {
     const allData = { ...data, ...values };
     console.log('Tutti i dati del form:', allData);
     setData(allData);
+
+    try {
+      const res = await fetch(URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(allData),
+      });
+
+      if (!res.ok) {
+        const errorMessage = await res.text();
+        throw new Error(errorMessage || 'Errore sconosciuto');
+      }
+
+      const result = await res.json();
+
+      console.log('Risposta dal backend:', result);
+    } catch (error) {
+      console.log('Error: ', error);
+    }
+
     onNext();
   };
   return (
@@ -78,7 +100,7 @@ const StepUserType = ({
                   <FieldLabel>Email</FieldLabel>
                   <Input
                     type="email"
-                    placeholder='Es. esempio@email.com'
+                    placeholder="Es. esempio@email.com"
                     {...field}
                   />
                   {fieldState.error && (
@@ -98,7 +120,7 @@ const StepUserType = ({
                   <FieldLabel>Telefono</FieldLabel>
                   <Input
                     type="tel"
-                    placeholder='Es. +39 345 678 9012'
+                    placeholder="Es. +39 345 678 9012"
                     {...field}
                     pattern="^(\+39\s?)?(\d{6,12})$"
                     onInvalid={(e) => {
@@ -132,7 +154,7 @@ const StepUserType = ({
         <Button
           type="submit"
           form="user-form"
-          className='hover:bg-card'
+          className="hover:bg-card"
         >
           Avanti
         </Button>

@@ -21,13 +21,14 @@ export const propertySchema = z.object({
     .number({ error: 'Inserisci la superficie' })
     .min(0.01, 'La superficie deve essere > 0')
     .max(20000, 'Superficie troppo grande'),
-  rooms: z.number().int().min(0,'La stanze devono essere > 0'),
-  bathrooms: z.number().int().min(0, 'I bagni devono essere > 0'),
+  rooms: z.number({ error: 'Inserisci il numero di stanze' }).int().min(0,'La stanze devono essere > 0'),
+  bathrooms: z.number({ error: 'Inserisci il numero di bagni' }).int().min(0, 'I bagni devono essere > 0'),
   requestedPurpose: z.enum(['estimate', 'officialDocument']),
   floor: z.number().int().optional(),
   totalFloors: z.number().int().optional(),
   elevator: z.boolean().optional(),
   garage: z.boolean().optional(),
+  garageArea: z.number().optional(),
   balconyTerraceArea: z.number().optional(),
   garden: z.boolean().optional(),
   gardenArea: z.number().optional(),
@@ -42,5 +43,5 @@ export const propertySchema = z.object({
 
 export const ownerSchema = z.object({
   contactEmail: z.email('Email non valida').optional(),
-  contactPhone: z.string().optional(),
+  contactPhone: z.string().max(10, 'Il numero deve essere di 10 cifre').optional(),
 });

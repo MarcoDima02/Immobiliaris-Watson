@@ -25,11 +25,7 @@ import {
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 
-import {
-  Field,
-  FieldLabel,
-  FieldGroup,
-} from '@/components/ui/field';
+import { Field, FieldLabel, FieldGroup } from '@/components/ui/field';
 
 /**
  * Types
@@ -45,12 +41,12 @@ export default function StepOptional({
   onNext: () => void;
   onBack: () => void;
 }) {
-  const { data, setData, } = useFormContext();
+  const { data, setData } = useFormContext();
   //   const [selectedType, setSelectedType] = useState<string | undefined>(
   //     data.propertyType || undefined
   //   );
 
-  const { control, handleSubmit, setValue } = useForm<PropertyValues>({
+  const { control, handleSubmit, setValue, watch } = useForm<PropertyValues>({
     resolver: zodResolver(propertySchema),
     defaultValues: {
       // required by schema ➜ MUST BE HERE
@@ -68,6 +64,7 @@ export default function StepOptional({
       heatingType: data.heatingType ?? '',
       balconyTerraceArea: data.balconyTerraceArea ?? undefined,
       gardenArea: data.gardenArea ?? undefined,
+      garageArea: data.gardenArea ?? undefined,
       basementArea: data.basementArea ?? undefined,
       floor: data.floor ?? undefined,
       totalFloors: data.totalFloors ?? undefined,
@@ -76,22 +73,22 @@ export default function StepOptional({
     shouldUnregister: false,
   });
 
-    const safeSetValue = (
+  const safeSetValue = (
     key: keyof PropertyValues,
     value: unknown,
     setValue: (f: keyof PropertyValues, v: any) => void
   ) => {
     if (
       value === undefined ||
-      typeof value === "string" ||
-      typeof value === "number" ||
-      typeof value === "boolean"
+      typeof value === 'string' ||
+      typeof value === 'number' ||
+      typeof value === 'boolean'
     ) {
       setValue(key, value);
     }
   };
 
-    useEffect(() => {
+  useEffect(() => {
     Object.entries(data).forEach(([key, value]) =>
       safeSetValue(key as keyof PropertyValues, value, setValue)
     );
@@ -102,6 +99,11 @@ export default function StepOptional({
     onNext();
     window.scrollBy({ top: -400, left: 0, behavior: 'smooth' });
   };
+
+  const garageValue = watch('garage');
+  const gardenValue = watch('garden');
+  const basementValue = watch('basement');
+
   return (
     <Card className="max-w-xl mx-auto">
       <CardHeader>
@@ -179,6 +181,7 @@ export default function StepOptional({
                 </Field>
               )}
             />
+            
 
             {/* Garage */}
             <Controller
@@ -196,6 +199,31 @@ export default function StepOptional({
                 </Field>
               )}
             />
+
+            {garageValue && (
+              <Controller
+                name="garageArea"
+                control={control}
+                render={({ field }) => (
+                  <Field>
+                    <FieldLabel>Superficie Garage (m²)</FieldLabel>
+                    <Input
+                      type="number"
+                      placeholder="Es. 20"
+                      {...field}
+                      value={field.value ?? ''}
+                      onChange={(e) =>
+                        field.onChange(
+                          isNaN(e.target.valueAsNumber)
+                            ? undefined
+                            : e.target.valueAsNumber
+                        )
+                      }
+                    />
+                  </Field>
+                )}
+              />
+            )}
 
             {/* Balcone/Terrazzo */}
             <Controller
@@ -237,8 +265,7 @@ export default function StepOptional({
                 </Field>
               )}
             />
-
-            {control._formValues.garden && (
+            {gardenValue && (
               <Controller
                 name="gardenArea"
                 control={control}
@@ -263,6 +290,7 @@ export default function StepOptional({
               />
             )}
 
+  
             {/* Cantina + mq */}
             <Controller
               name="basement"
@@ -280,7 +308,7 @@ export default function StepOptional({
               )}
             />
 
-            {control._formValues.basement && (
+            {basementValue && (
               <Controller
                 name="basementArea"
                 control={control}
@@ -306,7 +334,7 @@ export default function StepOptional({
             )}
 
             {/* Riscaldamento */}
-            {/* <Controller
+            <Controller
               name="heatingType"
               control={control}
               render={({ field }) => (
@@ -316,7 +344,7 @@ export default function StepOptional({
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className='cursor-pointer border-primary! data-placeholder:text-primary'>
                       <SelectValue placeholder="Seleziona..." />
                     </SelectTrigger>
                     <SelectContent>
@@ -327,7 +355,7 @@ export default function StepOptional({
                   </Select>
                 </Field>
               )}
-            /> */}
+            />
 
             <Controller
               name="heatingType"
@@ -342,7 +370,7 @@ export default function StepOptional({
                     <SelectTrigger className="cursor-pointer border-primary! data-placeholder:text-primary">
                       <SelectValue
                         placeholder="Seleziona..."
-                         className=""
+                        className=""
                       />
                     </SelectTrigger>
                     <SelectContent>

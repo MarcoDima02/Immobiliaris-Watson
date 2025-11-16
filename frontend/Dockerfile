@@ -12,6 +12,9 @@ RUN npm ci
 # Copia il codice sorgente
 COPY . .
 
+ENV VITE_API_URL=http://localhost:8080/api
+ENV VITE_MAPBOX_ACCESS_TOKEN=pk.eyJ1IjoibWF4OTV3aGsiLCJhIjoiY21ocTFubGg5MGxvNzJpczQzZHpnaGkyNiJ9.ky28aP9RPnDYGetmYFl-lA
+
 # Build production
 RUN npm run build
 
@@ -29,8 +32,16 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 # Espone porta 80
 EXPOSE 80
 
+RUN apk add --no-cache curl
+
+
 # Health check
+# HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
+#   CMD wget --no-verbose --tries=1 --spider http://localhost/health || exit 1
 HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost/health || exit 1
+  CMD curl -f http://localhost/health || exit 1
+
 
 CMD ["nginx", "-g", "daemon off;"]
+
+
