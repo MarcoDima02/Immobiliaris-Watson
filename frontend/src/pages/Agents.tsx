@@ -25,7 +25,7 @@ const Agents = ({ id }: AgentsProps) => {
         </h3>
       </div>
 
-      <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-10 p-12">
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-10 p-12">
         <AgentCard
           agentName="Anna Abate"
           agentDescription="Specialista in compravendite residenziali a Torino."
