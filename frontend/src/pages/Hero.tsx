@@ -1,4 +1,4 @@
-import { heroAltAvif, heroAltWebp, heroAltJpg } from '@/assets';
+import { heroAltAvif, heroAltWebp, heroAltJpg, hero2Jpg } from '@/assets';
 
 /**
  * Components
@@ -13,49 +13,54 @@ const Hero = ({ id }: HeroProps) => {
   return (
     <section
       id={id}
-      className="p-5 md:px-12 container max-w-xl lg:max-w-[1400px] grid lg:grid-cols-2 items-center mx-auto h-[35vh] lg:h-[55vh]"
+      className=""
     >
-      <div className="z-10 w-full h-full flex flex-col justify-center">
-        <h1 className="title mx-auto lg:mx-0 text-center lg:text-start mt-8">
-          Vuoi vendere casa senza stress?
-        </h1>
-        <h2 className="title-secondary mx-auto lg:mx-0 text-center lg:text-start">
-          Con noi, il tuo immobile trova presto il suo nuovo proprietario.
-        </h2>
-        <div className="flex justify-center lg:justify-start">
-          <Button
-          asChild
-            size="lg"
-            className="text-md lg:text-lg"
-          >
-            <a href="#valutazione">Valuta ora</a>
-          </Button>
+
+      <div
+        className="relative h-[30vh] xl:h-[80vh] w-full flex justify-start items-start flex-col text-start mx-auto"
+      >
+        {/* Mirrored background image */}
+        <div
+          className="absolute inset-0 pointer-events-none opacity-30 md:opacity-50"
+          style={{
+            backgroundImage: `url(${hero2Jpg})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'top',
+            transform: 'scaleX(-1)',
+            transformOrigin: 'center',
+            zIndex: 0
+          }}
+        />
+
+        <div
+          className="absolute inset-0 pointer-events-none h-[80vh]"
+          style={{
+            background: 'linear-gradient(to bottom, rgba(255,255,255,1), rgba(255,255,255,0))',
+            zIndex: 10
+          }}
+        />
+
+        <div className="container z-20 flex flex-col mx-auto justify-center xl:mt-48 p-10 text-start w-fit md:w-full h-full xl:h-fit">
+          <h1 className="title lg:mx-0 mt-8 xl:text-6xl! 2xl:text-7xl! font-extrabold">
+            Vuoi <span className='text-primary text-shadow-primary text-shadow-lg/10 '>vendere casa</span><br></br>senza stress?
+          </h1>
+          <h2 className="title-secondary lg:mx-0 xl:text-2xl! mb-6">
+            Con noi, il tuo immobile trova presto il suo nuovo proprietario.
+          </h2>
+          <div className="flex justify-start">
+            <Button
+              asChild
+              size="lg"
+              className="text-md lg:text-lg"
+            >
+              <a href="#valutazione">Valuta ora</a>
+            </Button>
+          </div>
         </div>
       </div>
 
-      <div className="w-full overflow-hidden">
-        <figure className="w-full absolute top-0 right-0 h-[50vh] md:h-[42vh] lg:h-[55vh]">
-          <picture>
-            <source
-              srcSet={heroAltAvif}
-              type="image/avif"
-            />
-            <source
-              srcSet={heroAltWebp}
-              type="image/webp"
-            />
-            <img
-              src={heroAltJpg}
-              alt="Immagine di un appartamento"
-              loading="lazy"
-              className="object-cover w-full h-full"
-            />
-          </picture>
 
-          <div className="absolute inset-0 pointer-events-none bg-background/75 lg:bg-background/30"></div>
-          <div className="absolute inset-0 pointer-events-none bg-linear-to-r from-background lg:from-40%  via-transparent lg:to-10%"></div>
-        </figure>
-      </div>
+
     </section>
   );
 };

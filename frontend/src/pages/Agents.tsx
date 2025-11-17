@@ -16,7 +16,7 @@ const Agents = ({ id }: AgentsProps) => {
   return (
     <section
       id={id}
-      className="mt-12 mx-auto container max-w-xl lg:max-w-[1400px]"
+      className="py-24 my-12 mx-auto container max-w-xl lg:max-w-[1400px]"
     >
       <div className="flex flex-col items-center mx-auto text-center pb-8">
         <h2 className="title">I nostri agenti</h2>
