@@ -86,8 +86,8 @@ public class ValutazioneServiceImpl implements ValutazioneImmobileService {
         // A. Type factor (tipologia immobile)
         coeff.put("tipologia", BigDecimal.valueOf(tipologiaCoeff(req.getTipologia())));
         
-        // B. Size factor (effetto dimensionale)
-        coeff.put("dimensione", BigDecimal.valueOf(dimensioneCoeff(req.getSuperficie())));
+        // B. Size factor (effetto dimensionale) - comportamento dipende dalla tipologia
+        coeff.put("dimensione", BigDecimal.valueOf(dimensioneCoeff(req.getSuperficie(), req.getTipologia())));
         
         // C. Rooms factor (numero stanze, baseline 2)
         if (req.getNStanze() != null) {
@@ -205,10 +205,22 @@ public class ValutazioneServiceImpl implements ValutazioneImmobileService {
     /**
      * B. Size factor - effetto dimensionale
      */
-    private double dimensioneCoeff(BigDecimal area) {
+    private double dimensioneCoeff(BigDecimal area, String tipologia) {
         if (area == null) return 1.0;
         double areaMq = area.doubleValue();
-        
+
+        // Comportamento diverso per tipologie "house-like" (VILLA / CASA_INDIPENDENTE)
+        if (tipologia != null) {
+            String t = tipologia.toUpperCase();
+            if (t.contains("VILLA") || t.contains("CASA") || t.contains("HOUSE")) {
+                // Per le ville/case indipendenti tagli grandi possono avere un premio
+                if (areaMq < 80) return 1.00;   // baseline per tagli piccoli/medi
+                if (areaMq < 150) return 1.03;  // +3% per taglio ampio
+                return 1.08;                   // +8% per metrature molto grandi
+            }
+        }
+
+        // Default per appartamenti: piccoli premium, grandi discount
         if (areaMq < 40) return 1.05;      // +5% (più costoso per m²)
         if (areaMq < 80) return 1.00;      // baseline
         if (areaMq < 150) return 0.98;     // -2%
