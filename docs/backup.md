@@ -1,3 +1,4 @@
+```
 /**
  * Node modules
  */
@@ -32,9 +33,8 @@ import { ownerSchema } from '@/hooks/schemas/valuationSchema';
 type UserTypeValues = z.infer<typeof ownerSchema>;
 
 const URL = import.meta.env.VITE_API_URL
-  ? `${import.meta.env.VITE_API_URL.replace(/\/$/, '')}`
+  ? `${import.meta.env.VITE_API_URL.replace(/\/$/, '')}/valutazioni/form`
   : 'http://localhost:8080/api/valutazioni/form';
-
 
 const StepUserType = ({
   onNext,
@@ -48,8 +48,8 @@ const StepUserType = ({
   const { control, handleSubmit } = useForm<UserTypeValues>({
     resolver: zodResolver(ownerSchema),
     defaultValues: {
-      emailUtente: data.emailUtente ?? '',
-      telefonoUtente: data.telefonoUtente ?? '',
+      contactEmail: data.contactEmail ?? '',
+      contactPhone: data.contactPhone ?? '',
     },
     shouldUnregister: false,
   });
@@ -59,23 +59,60 @@ const StepUserType = ({
     console.log('Tutti i dati del form:', allData);
     setData(allData);
 
+    // Map frontend keys to backend DTO (FormValutazioneRequest)
+    const payload = {
+      tipologia: allData.propertyType,
+      superficie: allData.area,
+      indirizzo: allData.address,
+      provincia: allData.province,
+      citta: allData.city,
+      cap: allData.cap,
+      nStanze: allData.rooms,
+      nBagni: allData.bathrooms,
+      finalitaRichiesta: allData.requestedPurpose === 'estimate' ? 'STIMA' : 'DOCUMENTO',
+
+      piano: allData.floor,
+      pianiTotali: allData.totalFloors,
+      ascensore: allData.elevator,
+      garage: allData.garage,
+      superficieGarage: allData.garageArea,
+      superficieBalconeTerrazzo: allData.balconyTerraceArea,
+      giardino: allData.garden,
+      superficieGiardino: allData.gardenArea,
+      cantina: allData.basement,
+      superficieCantina: allData.basementArea,
+
+      tipoRiscaldamento: allData.heatingType,
+      classeEnergetica: allData.energyClass,
+      annoCostruzione: allData.yearBuilt,
+      condizione: allData.condition,
+      esposizione: allData.exposure,
+
+      // User data
+      nomeUtente: undefined,
+      cognomeUtente: undefined,
+      emailUtente: allData.contactEmail,
+      telefonoUtente: allData.contactPhone,
+    };
+
     try {
+      console.log('Invio payload mapped al backend:', payload);
       const res = await fetch(URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(allData),
+        body: JSON.stringify(payload),
       });
 
       if (!res.ok) {
         const errorMessage = await res.text();
+        console.error('Errore dal backend:', res.status, errorMessage);
         throw new Error(errorMessage || 'Errore sconosciuto');
       }
 
       const result = await res.json();
-
       console.log('Risposta dal backend:', result);
     } catch (error) {
-      console.log('Error: ', error);
+      console.error('Error invio valutazione: ', error);
     }
 
     onNext();
@@ -96,7 +133,7 @@ const StepUserType = ({
         >
           <FieldGroup>
             <Controller
-              name="emailUtente"
+              name="contactEmail"
               control={control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
@@ -116,7 +153,7 @@ const StepUserType = ({
             />
 
             <Controller
-              name="telefonoUtente"
+              name="contactPhone"
               control={control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
@@ -167,3 +204,5 @@ const StepUserType = ({
 };
 
 export default StepUserType;
+
+```

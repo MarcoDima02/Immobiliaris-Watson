@@ -49,19 +49,19 @@ import { Building, House, School, Building2 } from 'lucide-react';
 import { propertySchema } from '@/hooks/schemas/valuationSchema';
 
 const allowedKeys: (keyof PropertyValues)[] = [
-  'propertyType',
-  'requestedPurpose',
-  'yearBuilt',
-  'area',
-  'rooms',
-  'bathrooms',
-  'condition',
-  'heatingType',
-  'balconyTerraceArea',
-  'gardenArea',
-  'basementArea',
-  'floor',
-  'totalFloors',
+  'tipologia',
+  'finalitaRichiesta',
+  'annoCostruzione',
+  'superficie',
+  'nStanze',
+  'nBagni',
+  'condizione',
+  'tipoRiscaldamento',
+  'superficieBalconeTerrazzo',
+  'superficieGiardino',
+  'superficieCantina',
+  'piano',
+  'pianiTotali',
 ];
 
 type PropertyValues = z.infer<typeof propertySchema>;
@@ -75,30 +75,30 @@ const StepProperty = ({
 }) => {
   const { data, setData } = useFormContext();
   const [selectedType, setSelectedType] = useState<string | undefined>(
-    data.propertyType || undefined
+    data.tipologia || undefined
   );
 
   const { control, handleSubmit, setValue } = useForm<PropertyValues>({
     resolver: zodResolver(propertySchema),
     defaultValues: {
       // required by schema ➜ MUST BE HERE
-      propertyType: data.propertyType ?? '',
-      requestedPurpose: data.requestedPurpose ?? 'estimate',
-      yearBuilt: data.yearBuilt ?? undefined,
+      tipologia: data.tipologia ?? '',
+      finalitaRichiesta: data.finalitaRichiesta ?? 'estimate',
+      annoCostruzione: data.annoCostruzione ?? undefined,
 
       // numeric fields
-      area: data.area ?? undefined,
-      rooms: data.rooms ?? undefined,
-      bathrooms: data.bathrooms ?? undefined,
+      superficie: data.superficie ?? undefined,
+      nStanze: data.nStanze ?? undefined,
+      nBagni: data.nBagni ?? undefined,
 
       // optional
-      condition: data.condition ?? 'new',
-      heatingType: data.heatingType ?? '',
-      balconyTerraceArea: data.balconyTerraceArea ?? undefined,
-      gardenArea: data.gardenArea ?? undefined,
-      basementArea: data.basementArea ?? undefined,
-      floor: data.floor ?? undefined,
-      totalFloors: data.totalFloors ?? undefined,
+      condizione: data.condizione ?? 'new',
+      tipoRiscaldamento: data.tipoRiscaldamento ?? '',
+      superficieBalconeTerrazzo: data.superficieBalconeTerrazzo ?? undefined,
+      superficieGiardino: data.superficieGiardino ?? undefined,
+      superficieCantina: data.superficieCantina ?? undefined,
+      piano: data.piano ?? undefined,
+      pianiTotali: data.pianiTotali ?? undefined,
     },
     shouldUnregister: false,
     mode: 'onSubmit',
@@ -111,8 +111,8 @@ const StepProperty = ({
         setValue(key, data[key] as PropertyValues[typeof key]);
       }
     });
-    if (data.propertyType) {
-      setSelectedType(data.propertyType);
+    if (data.tipologia) {
+      setSelectedType(data.tipologia);
     }
   }, [data, setValue]);
 
@@ -151,7 +151,7 @@ const StepProperty = ({
                   type="button"
                   onClick={() => {
                     setSelectedType(type.value);
-                    setValue('propertyType', type.value);
+                    setValue('tipologia', type.value);
                   }}
                   className={clsx('p-3 rounded-lg border transition', {
                     'border-primary bg-primary/10 text-primary':
@@ -193,7 +193,7 @@ const StepProperty = ({
                   )}
                 /> */}
                 <Controller
-                  name="area"
+                  name="superficie"
                   control={control}
                   render={({ field, fieldState }) => {
                     const [localValue, setLocalValue] = useState(
@@ -230,33 +230,9 @@ const StepProperty = ({
                 />
 
                 <div className="grid grid-cols-2 gap-3">
-                  {/* <Controller
-                    name="rooms"
-                    control={control}
-                    render={({ field, fieldState }) => (
-                      <Field>
-                        <FieldLabel>Numero di locali</FieldLabel>
-                        <Input
-                          className="w-1/2 min-w-1"
-                          type="number"
-                          {...field}
-                          placeholder="Es. 3"
-                          value={field.value ?? ''}
-                          onChange={(e) => {
-                            const raw = e.target.value;
-                            if (raw === '') return field.onChange(undefined);
-                            const num = Number(raw);
-                            if (!isNaN(num)) field.onChange(num);
-                          }}
-                        />
-                        {fieldState.error && (
-                          <FieldError>{fieldState.error.message}</FieldError>
-                        )}
-                      </Field>
-                    )}
-                  /> */}
+      
                   <Controller
-                    name="rooms"
+                    name="nStanze"
                     control={control}
                     render={({ field, fieldState }) => {
                       const [localValue, setLocalValue] = useState(
@@ -316,7 +292,7 @@ const StepProperty = ({
                     )}
                   /> */}
                   <Controller
-                    name="bathrooms"
+                    name="nBagni"
                     control={control}
                     render={({ field, fieldState }) => {
                       const [localValue, setLocalValue] = useState(
@@ -351,35 +327,9 @@ const StepProperty = ({
                     }}
                   />
                 </div>
-                {/* 
-                <Controller
-                  name="yearBuilt"
-                  control={control}
-                  render={({ field, fieldState }) => (
-                    <Field>
-                      <FieldLabel>Anno di costruzione</FieldLabel>
-                      <Input
-                        type="number"
-                        placeholder="Es. 2015"
-                        step={100}
-                        {...field}
-                        value={field.value ?? ''}
-                        onChange={(e) => {
-                          const raw = e.target.value;
-                          if (raw === '') return field.onChange(undefined);
-                          const num = Number(raw);
-                          if (!isNaN(num)) field.onChange(num);
-                        }}
-                      />
-                      {fieldState.error && (
-                        <FieldError>{fieldState.error.message}</FieldError>
-                      )}
-                    </Field>
-                  )}
-                /> */}
 
                 <Controller
-                  name="yearBuilt"
+                  name="annoCostruzione"
                   control={control}
                   render={({ field, fieldState }) => {
                     const [localValue, setLocalValue] = useState(
@@ -416,7 +366,7 @@ const StepProperty = ({
                 />
 
                 <Controller
-                  name="condition"
+                  name="condizione"
                   control={control}
                   render={({ field }) => (
                     <Field>

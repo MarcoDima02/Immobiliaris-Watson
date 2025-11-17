@@ -105,13 +105,45 @@ public class ValutazioneFormController {
         dettagli.setBalconeTerrazzo(request.getSuperficieBalconeTerrazzo() != null && request.getSuperficieBalconeTerrazzo().compareTo(BigDecimal.ZERO) > 0);
         dettagli.setGiardino(Boolean.TRUE.equals(request.getGiardino()));
         dettagli.setCantina(Boolean.TRUE.equals(request.getCantina()));
-        dettagli.setAnnoCostruzione(request.getAnnoCostruzione());
-        // Condizione
-        try {
-            if (request.getCondizione() != null) {
-                dettagli.setCondizioneImmobile(DettagliImmobile.CondizioneImmobile.valueOf(request.getCondizione().toUpperCase().replace(' ', '_')));
+        // Anno costruzione - MySQL YEAR type accepts 1901-2155, clamp if out of range
+        Integer anno = request.getAnnoCostruzione();
+        if (anno != null) {
+            if (anno < 1901) anno = 1901;
+            if (anno > 2155) anno = 2155;
+        }
+        dettagli.setAnnoCostruzione(anno);
+        // Condizione - mapping frontend values to enum
+        DettagliImmobile.CondizioneImmobile condizioneImmobile = DettagliImmobile.CondizioneImmobile.NUOVO; // default
+        if (request.getCondizione() != null && !request.getCondizione().isEmpty()) {
+            String cond = request.getCondizione().toLowerCase().trim();
+            switch (cond) {
+                case "new":
+                case "nuovo":
+                    condizioneImmobile = DettagliImmobile.CondizioneImmobile.NUOVO;
+                    break;
+                case "renovated":
+                case "ristrutturato":
+                    condizioneImmobile = DettagliImmobile.CondizioneImmobile.RISTRUTTURATO;
+                    break;
+                case "partially_renovated":
+                case "parzialmente ristrutturato":
+                case "parzialmente_ristrutturato":
+                    condizioneImmobile = DettagliImmobile.CondizioneImmobile.PARZIALMENTE_RISTRUTTURATO;
+                    break;
+                case "to_renovate":
+                case "da ristrutturare":
+                case "non ristrutturato":
+                case "non_ristrutturato":
+                    condizioneImmobile = DettagliImmobile.CondizioneImmobile.NON_RISTRUTTURATO;
+                    break;
+                default:
+                    // Try valueOf as fallback
+                    try {
+                        condizioneImmobile = DettagliImmobile.CondizioneImmobile.valueOf(cond.toUpperCase().replace(' ', '_'));
+                    } catch (IllegalArgumentException ignored) {}
             }
-        } catch (IllegalArgumentException ignored) {}
+        }
+        dettagli.setCondizioneImmobile(condizioneImmobile);
         // Classe energetica
         try {
             if (request.getClasseEnergetica() != null) {

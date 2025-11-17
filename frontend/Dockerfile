@@ -1,52 +1,39 @@
-# ============================================
-# Stage 1: Build con Node.js e Vite
-# ============================================
+# Stage 1: Build the React app
 FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Copia package.json e lock file per cache delle dipendenze
+# Copy package files
 COPY package*.json ./
+
+# Install dependencies
 RUN npm ci
 
-# Copia il codice sorgente
+# Copy source code
 COPY . .
 
-<<<<<<< HEAD
-ENV VITE_API_URL=http://localhost:8080/api
-ENV VITE_MAPBOX_ACCESS_TOKEN=pk.eyJ1IjoibWF4OTV3aGsiLCJhIjoiY21ocTFubGg5MGxvNzJpczQzZHpnaGkyNiJ9.ky28aP9RPnDYGetmYFl-lA
-=======
-# Variabili ambiente per build Vite (hardcoded per Docker)
-ENV VITE_API_URL=http://localhost:8080/api
->>>>>>> 54fa047f6af82d2ea8349583f837c9b46017c38b
+# Build args for environment variables (baked at build time)
+ARG VITE_API_URL
+ARG VITE_MAPBOX_ACCESS_TOKEN
 
-# Build production
+# Set environment variables for Vite build
+ENV VITE_API_URL=${VITE_API_URL}
+ENV VITE_MAPBOX_ACCESS_TOKEN=${VITE_MAPBOX_ACCESS_TOKEN}
+
+# Build the app
 RUN npm run build
 
-# ============================================
-# Stage 2: Serve con Nginx
-# ============================================
+# Stage 2: Serve with Nginx
 FROM nginx:alpine
 
-# Copia i file buildati
+# Copy built assets from builder stage
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Copia configurazione Nginx personalizzata per SPA
+# Copy nginx configuration
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Espone porta 80
+# Expose port 80
 EXPOSE 80
 
-RUN apk add --no-cache curl
-
-
-# Health check
-# HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
-#   CMD wget --no-verbose --tries=1 --spider http://localhost/health || exit 1
-HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
-  CMD curl -f http://localhost/health || exit 1
-
-
+# Start nginx
 CMD ["nginx", "-g", "daemon off;"]
-
-
