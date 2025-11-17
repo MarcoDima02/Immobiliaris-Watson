@@ -14,6 +14,7 @@ COPY . .
 
 # Variabili ambiente per build Vite (hardcoded per Docker)
 ENV VITE_API_URL=http://localhost:8080/api
+ENV VITE_MAPBOX_ACCESS_TOKEN=pk.eyJ1IjoibWF4OTV3aGsiLCJhIjoiY21ocTFubGg5MGxvNzJpczQzZHpnaGkyNiJ9.ky28aP9RPnDYGetmYFl-lA
 
 # Build production
 RUN npm run build
