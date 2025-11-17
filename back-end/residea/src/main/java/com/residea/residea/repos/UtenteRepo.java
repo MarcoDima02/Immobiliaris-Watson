@@ -10,4 +10,5 @@ import com.residea.residea.entities.Utente;
 @Repository
 public interface UtenteRepo extends JpaRepository<Utente, Integer> {
     List<Utente> findByTelefono(String telefono);
+        java.util.Optional<Utente> findByEmail(String email);
 }

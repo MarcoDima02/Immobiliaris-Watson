@@ -18,6 +18,16 @@
   <button onclick="crea()">Crea Utente</button>
 </section>
 
+<!-- login -->
+<section id="loginSection" style="margin-top:12px">
+  <h3>🔐 Login</h3>
+  <input id="loginEmail" placeholder="Email">
+  <input id="loginPassword" placeholder="Password" type="password">
+  <button onclick="loginUser()">Accedi</button>
+  <button onclick="logoutUser()">Logout</button>
+  <div id="loginResult" style="margin-top:8px"></div>
+</section>
+
 <!-- aggiunta: lista utenti -->
 <section id="listaUtenti">
   <h3>📋 Elenco Utenti</h3>
@@ -220,6 +230,38 @@ function mostraTutti() {
 }
 function escapeHtml(s){ return s==null ? "" : String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[c])); }
 
+</script>
+
+<script>
+// Login UI functions
+async function loginUser(){
+  const email = (document.getElementById('loginEmail')?.value || '').trim();
+  const password = (document.getElementById('loginPassword')?.value || '');
+  const out = document.getElementById('loginResult');
+  if(!email || !password){ if(out) out.innerHTML = '<span style="color:crimson">Inserisci email e password.</span>'; return; }
+  try{
+    const res = await fetch(api + '/login', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({email, password}) });
+    const text = await res.text();
+    if(!res.ok){
+      if(out) out.innerHTML = `<span style="color:crimson">Login fallito: ${escapeHtml(text)}</span>`;
+      return;
+    }
+    let user;
+    try{ user = JSON.parse(text); } catch(e){ user = text; }
+    if(out){
+      out.innerHTML = `<div style="color:green">Login OK. Benvenuto <strong>${escapeHtml(user.nome || user.email || '')}</strong></div>` +
+                      `<pre style="background:#f6f6f6;padding:8px;border:1px solid #ddd">${escapeHtml(JSON.stringify(user, null, 2))}</pre>`;
+    }
+    // store minimal user in sessionStorage for UI state (non-secure, for dev)
+    sessionStorage.setItem('loggedUser', JSON.stringify(user));
+  }catch(e){ console.error(e); if(out) out.innerHTML = '<span style="color:crimson">Errore di rete durante il login.</span>'; }
+}
+
+function logoutUser(){
+  sessionStorage.removeItem('loggedUser');
+  const out = document.getElementById('loginResult');
+  if(out) out.innerHTML = '<em>Utente disconnesso.</em>';
+}
 </script>
 
 </body>

@@ -11,6 +11,7 @@ public interface UtentiService {
     List<Utente> getAllUtenti();
     List<Utente> getUtenteByTelefono(String telefono);
     Utente getUtenteById(Integer idUtente);
+    Utente getUtenteByEmail(String email);
 
     boolean verificaPassword(Integer idutente, String passwordCriptata); // Verifica password
 
