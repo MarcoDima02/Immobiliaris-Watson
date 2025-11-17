@@ -338,29 +338,6 @@ export default function StepOptional({
               name="heatingType"
               control={control}
               render={({ field }) => (
-                <Field>
-                  <FieldLabel>Tipo di riscaldamento</FieldLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <SelectTrigger className='cursor-pointer border-primary! data-placeholder:text-primary'>
-                      <SelectValue placeholder="Seleziona..." />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="autonomous">Autonomo</SelectItem>
-                      <SelectItem value="centralized">Centralizzato</SelectItem>
-                      <SelectItem value="heat_pump">Pompa di calore</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </Field>
-              )}
-            />
-
-            <Controller
-              name="heatingType"
-              control={control}
-              render={({ field }) => (
                 <Field className="">
                   <FieldLabel>Tipo di riscaldamento</FieldLabel>
                   <Select

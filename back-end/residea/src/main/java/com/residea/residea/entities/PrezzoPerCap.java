@@ -12,7 +12,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "PrezzoPerCap")
+@Table(name = "PrezzoPerCAP")
 
 public class PrezzoPerCap {
 
