@@ -106,12 +106,12 @@ const StepUserType = ({
     return (
       <Card className="max-w-2xl mx-auto">
         <CardHeader>
-          <CardTitle><Award /> Valutazione completata</CardTitle>
+          <CardTitle className='flex gap-3 justify-center'><Award /> Valutazione completata</CardTitle>
         </CardHeader>
 
         <CardContent className="space-y-6">
-          <div className="p-5 bg-primary/10 rounded-lg border">
-            <p className="text-sm text-muted-foreground">Valore stimato</p>
+          <div className="p-5 bg-primary/10 rounded-lg border text-center">
+            <p className="text-sm text-primary">Valore stimato</p>
             <p className="text-3xl font-bold text-primary">
               € {valoreFinale.toLocaleString('it-IT')}
             </p>
