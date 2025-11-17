@@ -4,6 +4,9 @@
 import heroAvif from '@/assets/hero-alt.avif';
 import heroWebp from '@/assets/hero-alt.jpg';
 import heroJpg from '@/assets/hero-alt.jpg';
+import hero2Jpg from '@/assets/hero-alt-2.jpg';
+import hero2Avif from '@/assets/hero-alt-2.avif';
+import hero2Webp from '@/assets/hero-alt-2.webp';
 import heroAltAvif from '@/assets/hero-alt-3.avif';
 import heroAltWebp from '@/assets/hero-alt-3.webp';
 import heroAltJpg from '@/assets/hero-alt-3.jpg';
@@ -17,6 +20,9 @@ export {
   heroAvif,
   heroWebp,
   heroJpg,
+  hero2Jpg,
+  hero2Avif,
+  hero2Webp,
   heroAltAvif,
   heroAltWebp,
   heroAltJpg,
