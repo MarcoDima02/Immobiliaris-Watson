@@ -1,4 +1,4 @@
-import { heroAltAvif, heroAltWebp, heroAltJpg, hero2Jpg } from '@/assets';
+import { hero2Avif, hero2Webp, hero2Jpg } from '@/assets';
 
 /**
  * Components
@@ -32,6 +32,32 @@ const Hero = ({ id }: HeroProps) => {
           }}
         />
 
+        <figure className="absolute inset-0 pointer-events-none opacity-20 xl:opacity-100 w-full h-full bg-top"
+        >
+          <picture>
+            <source
+              srcSet={hero2Avif}
+              type="image/avif"
+            />
+            <source
+              srcSet={hero2Webp}
+              type="image/webp"
+            />
+            <img
+              src={hero2Jpg}
+              alt="Immagine di un appartamento"
+              loading="lazy"
+              style={{
+                backgroundPosition: 'top',
+                transform: 'scaleX(-1)',
+                transformOrigin: 'center',
+                zIndex: 0
+              }}
+              className='w-full h-full object-cover object-top!'
+
+            />
+          </picture>
+        </figure>
 
 
         <div className="container z-20 flex flex-col mx-auto justify-center xl:mt-48 p-10 text-start w-fit md:w-full h-full xl:h-fit">
