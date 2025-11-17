@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Gestione Leads</title>
+  <style>
+    body{font-family:Arial,Helvetica,sans-serif;padding:16px}
+    input,select,textarea{margin:4px 6px 10px 0;padding:6px}
+    table{border-collapse:collapse;width:100%;margin-top:8px}
+    th,td{border:1px solid #ddd;padding:8px;text-align:left}
+    tr:hover{background:#f5f5f5}
+    .form-row{display:flex;flex-wrap:wrap;gap:8px}
+    .form-row> *{flex:1 1 200px}
+    textarea{min-height:60px}
+  </style>
+</head>
+<body>
+
+<h1>Gestione Leads</h1>
+
+<section>
+  <h3>➕ Crea / Aggiorna Lead</h3>
+  <div class="form-row">
+    <input id="idLead" placeholder="ID (generato dal DB)" readonly style="max-width:140px">
+    <input id="utenteId" placeholder="ID utente (opzionale)" style="max-width:160px">
+    <input id="nome" placeholder="Nome">
+    <input id="email" placeholder="Email">
+  </div>
+  <div class="form-row">
+    <input id="telefono" placeholder="Telefono">
+    <input id="citta" placeholder="Città">
+    <input id="fonte" placeholder="Fonte">
+    <input id="campagna" placeholder="Campagna">
+  </div>
+  <div class="form-row">
+    <input id="utmSource" placeholder="UTM Source">
+    <input id="utmMedium" placeholder="UTM Medium">
+    <input id="utmCampaign" placeholder="UTM Campaign">
+    <input id="assegnatoA" placeholder="Assegnato a (id)" style="max-width:160px">
+  </div>
+  <div class="form-row">
+    <input type="checkbox" id="convertitoInRichiesta"> <label for="convertitoInRichiesta">Convertito in richiesta</label>
+    <input id="idRichiesta" placeholder="ID richiesta (se presente)" style="max-width:160px">
+  </div>
+  <div>
+    <textarea id="note" placeholder="Note"></textarea>
+  </div>
+  <div style="margin-top:8px">
+    <button onclick="createLead()">Crea</button>
+    <button onclick="updateLead()">Aggiorna</button>
+    <button onclick="deleteLead()">Elimina</button>
+    <button onclick="resetForm()">Pulisci</button>
+  </div>
+</section>
+
+<section id="listaLeads">
+  <h3>📋 Elenco Leads</h3>
+  <table id="tabLeads">
+    <thead>
+      <tr><th>ID</th><th>Nome</th><th>Email</th><th>Telefono</th><th>Città</th><th>Fonte</th><th>Convertito</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</section>
+
+<section style="margin-top:12px">
+  <input id="searchEmail" placeholder="Cerca per email" style="max-width:260px">
+  <button onclick="searchByEmail()">Cerca</button>
+  <input id="searchCitta" placeholder="Cerca per città" style="max-width:200px">
+  <button onclick="searchByCitta()">Cerca</button>
+  <input id="searchUtenteId" placeholder="Cerca per utente ID" style="max-width:160px">
+  <button onclick="searchByUtente()">Cerca</button>
+  <button onclick="loadAll()">Mostra tutti</button>
+  <div id="detail" style="margin-top:8px"></div>
+</section>
+
+<script>
+const api = '/api/leads';
+
+function buildFromForm(){
+  const id = (document.getElementById('idLead').value || '').trim();
+  const utenteId = (document.getElementById('utenteId').value || '').trim();
+  const payload = {};
+  if(id) payload.idLead = Number(id);
+  if(utenteId) payload.utente = { idUtente: Number(utenteId) };
+  payload.nome = document.getElementById('nome').value || null;
+  payload.email = document.getElementById('email').value || null;
+  payload.telefono = document.getElementById('telefono').value || null;
+  payload.citta = document.getElementById('citta').value || null;
+  payload.fonte = document.getElementById('fonte').value || null;
+  payload.campagna = document.getElementById('campagna').value || null;
+  payload.utmSource = document.getElementById('utmSource').value || null;
+  payload.utmMedium = document.getElementById('utmMedium').value || null;
+  payload.utmCampaign = document.getElementById('utmCampaign').value || null;
+  payload.convertitoInRichiesta = document.getElementById('convertitoInRichiesta').checked;
+  const idRich = (document.getElementById('idRichiesta').value || '').trim();
+  payload.idRichiesta = idRich ? Number(idRich) : null;
+  const ass = (document.getElementById('assegnatoA').value || '').trim();
+  payload.assegnatoA = ass ? Number(ass) : null;
+  payload.note = document.getElementById('note').value || null;
+  return payload;
+}
+
+async function createLead(){
+  const payload = buildFromForm();
+  // remove id if present
+  delete payload.idLead;
+  try{
+    const res = await fetch(api, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)});
+    if(!res.ok){ const txt = await res.text().catch(()=>res.statusText); alert('Errore create: '+txt); return; }
+    alert('Lead creato');
+    loadAll(); resetForm();
+  }catch(e){ console.error(e); alert('Errore rete: '+e.message); }
+}
+
+async function updateLead(){
+  const payload = buildFromForm();
+  if(!payload.idLead){ alert('Seleziona un lead per aggiornare (clicca riga)'); return; }
+  try{
+    const res = await fetch(api + '/' + payload.idLead, {method:'PUT', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)});
+    if(!res.ok){ const txt = await res.text().catch(()=>res.statusText); alert('Errore update: '+txt); return; }
+    alert('Lead aggiornato'); loadAll(); resetForm();
+  }catch(e){ console.error(e); alert('Errore rete: '+e.message); }
+}
+
+async function deleteLead(){
+  const id = (document.getElementById('idLead').value || '').trim();
+  if(!id){ alert('Seleziona un lead da eliminare'); return; }
+  if(!confirm('Eliminare il lead ID '+id+'?')) return;
+  try{
+    const res = await fetch(api + '/' + id, {method:'DELETE'});
+    if(!res.ok){ const txt = await res.text().catch(()=>res.statusText); alert('Errore delete: '+txt); return; }
+    alert('Lead eliminato'); loadAll(); resetForm();
+  }catch(e){ console.error(e); alert('Errore rete: '+e.message); }
+}
+
+function renderTable(leads){
+  const tbody = document.querySelector('#tabLeads tbody'); tbody.innerHTML = '';
+  if(!Array.isArray(leads)) leads = leads ? [leads] : [];
+  leads.forEach(l=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `\n      <td>${l.idLead ?? ''}</td>\n      <td>${escapeHtml(l.nome)}</td>\n      <td>${escapeHtml(l.email)}</td>\n      <td>${escapeHtml(l.telefono)}</td>\n      <td>${escapeHtml(l.citta)}</td>\n      <td>${escapeHtml(l.fonte)}</td>\n      <td>${l.convertitoInRichiesta? 'Sì':'No'}</td>\n    `;
+    tr.addEventListener('click', ()=>{ loadIntoForm(l); highlightRow(l.idLead); });
+    tbody.appendChild(tr);
+  });
+}
+
+function loadIntoForm(l){
+  document.getElementById('idLead').value = l.idLead ?? '';
+  document.getElementById('utenteId').value = l.utente ? (l.utente.idUtente ?? '') : '';
+  document.getElementById('nome').value = l.nome ?? '';
+  document.getElementById('email').value = l.email ?? '';
+  document.getElementById('telefono').value = l.telefono ?? '';
+  document.getElementById('citta').value = l.citta ?? '';
+  document.getElementById('fonte').value = l.fonte ?? '';
+  document.getElementById('campagna').value = l.campagna ?? '';
+  document.getElementById('utmSource').value = l.utmSource ?? '';
+  document.getElementById('utmMedium').value = l.utmMedium ?? '';
+  document.getElementById('utmCampaign').value = l.utmCampaign ?? '';
+  document.getElementById('convertitoInRichiesta').checked = !!l.convertitoInRichiesta;
+  document.getElementById('idRichiesta').value = l.idRichiesta ?? '';
+  document.getElementById('assegnatoA').value = l.assegnatoA ?? '';
+  document.getElementById('note').value = l.note ?? '';
+}
+
+function resetForm(){
+  ['idLead','utenteId','nome','email','telefono','citta','fonte','campagna','utmSource','utmMedium','utmCampaign','idRichiesta','assegnatoA','note'].forEach(id=>{ const el = document.getElementById(id); if(el) el.value=''; });
+  document.getElementById('convertitoInRichiesta').checked = false;
+  document.getElementById('detail').innerHTML = '';
+  document.querySelectorAll('#tabLeads tbody tr._highlight').forEach(r=>r.classList.remove('_highlight'));
+}
+
+function highlightRow(id){
+  const rows = Array.from(document.querySelectorAll('#tabLeads tbody tr'));
+  rows.forEach(r=>r.classList.remove('_highlight'));
+  if(!id) return;
+  const match = rows.find(r => (r.querySelectorAll('td')[0]?.textContent.trim()||'') === String(id));
+  if(match){ match.classList.add('_highlight'); match.scrollIntoView({behavior:'smooth', block:'center'}); }
+}
+
+function escapeHtml(s){ return s==null ? '' : String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[c])); }
+
+async function loadAll(){
+  try{
+    const res = await fetch(api, {method:'GET', headers:{'Accept':'application/json'}});
+    if(!res.ok){ const txt = await res.text().catch(()=>res.statusText); alert('Errore get: '+txt); return; }
+    const list = await res.json(); renderTable(list);
+  }catch(e){ console.error(e); alert('Errore rete: '+e.message); }
+}
+
+async function searchByEmail(){
+  const email = (document.getElementById('searchEmail').value || '').trim(); if(!email){ alert('Inserisci email'); return; }
+  try{
+    const res = await fetch(api + '/email/' + encodeURIComponent(email), {method:'GET', headers:{'Accept':'application/json'}});
+    if(!res.ok){ const txt = await res.text().catch(()=>res.statusText); alert('Errore: '+txt); return; }
+    const list = await res.json(); renderTable(list); document.getElementById('detail').innerHTML = `<strong>Risultati per email ${escapeHtml(email)}: ${Array.isArray(list)?list.length: (list?1:0)}</strong>`;
+  }catch(e){ console.error(e); alert('Errore rete: '+e.message); }
+}
+
+async function searchByCitta(){
+  const citta = (document.getElementById('searchCitta').value || '').trim(); if(!citta){ alert('Inserisci città'); return; }
+  try{
+    const res = await fetch(api + '/citta/' + encodeURIComponent(citta), {method:'GET', headers:{'Accept':'application/json'}});
+    if(!res.ok){ const txt = await res.text().catch(()=>res.statusText); alert('Errore: '+txt); return; }
+    const list = await res.json(); renderTable(list); document.getElementById('detail').innerHTML = `<strong>Risultati per città ${escapeHtml(citta)}: ${Array.isArray(list)?list.length: (list?1:0)}</strong>`;
+  }catch(e){ console.error(e); alert('Errore rete: '+e.message); }
+}
+
+async function searchByUtente(){
+  const id = (document.getElementById('searchUtenteId').value || '').trim(); if(!id){ alert('Inserisci id utente'); return; }
+  if(!/^\d+$/.test(id)){ alert('ID utente deve essere numerico'); return; }
+  try{
+    const res = await fetch(api + '/utente/' + encodeURIComponent(id), {method:'GET', headers:{'Accept':'application/json'}});
+    if(!res.ok){ const txt = await res.text().catch(()=>res.statusText); alert('Errore: '+txt); return; }
+    const list = await res.json(); renderTable(list); document.getElementById('detail').innerHTML = `<strong>Risultati per utente ID ${escapeHtml(id)}: ${Array.isArray(list)?list.length: (list?1:0)}</strong>`;
+  }catch(e){ console.error(e); alert('Errore rete: '+e.message); }
+}
+
+// init: do not auto load, use button
+
+</script>
+
+</body>
+</html>

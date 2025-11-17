@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.residea.residea.entities.Lead;
+import com.residea.residea.entities.Utente;
 import com.residea.residea.repos.LeadRepo;
 
 @Service
@@ -73,5 +74,10 @@ public class LeadServiceImpl implements LeadService {
     @Override
     public List<Lead> findByCitta(String citta) {
         return leadRepo.findByCitta(citta);
+    }
+
+    @Override
+    public List<Lead> findByUtente(Utente utente) {
+        return leadRepo.findByUtente(utente);
     }
 }
