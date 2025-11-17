@@ -36,6 +36,12 @@ public class UtentiServiceImpl implements UtentiService {
                 .orElseThrow(() -> new RuntimeException("Utente non trovato"));
     }
 
+    @Override
+    public Utente getUtenteByEmail(String email) {
+        return utenteRepo.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Utente non trovato per email"));
+    }
+
     // --- CREATE ---
     @Override
     public Utente salvaUtente(Utente utente) {
