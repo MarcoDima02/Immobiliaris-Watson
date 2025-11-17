@@ -17,7 +17,7 @@ const Evaluation = ({ id }: EvaluationProps) => {
   return (
     <section
       id={id}
-      className="px-4 py-8 mt-20 bg-card min-h-screen"
+      className="px-4 bg-card py-24"
     >
       <h2 className="title mx-auto text-center text-primary!">
         Valuta il tuo immobile

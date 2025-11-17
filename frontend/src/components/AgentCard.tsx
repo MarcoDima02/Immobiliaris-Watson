@@ -17,7 +17,7 @@ const AgentCard = ({
   soldProperties,
 }: AgentCardProps) => {
   return (
-    <div className="bg-white w-full rounded-[50px] flex flex-col border-16 border-white shadow-2xl hover:scale-105 hover:shadow-primary transition-transform duration-1000">
+    <div className="bg-white w-full rounded-[50px] flex flex-col border-16 border-white shadow-2xl hover:scale-105 hover:shadow-primary transition-transform duration-300">
       <div>
         <img
           src={agentImage}

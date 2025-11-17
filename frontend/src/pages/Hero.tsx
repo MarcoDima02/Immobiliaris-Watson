@@ -17,11 +17,11 @@ const Hero = ({ id }: HeroProps) => {
     >
 
       <div
-        className="relative h-[40vh] md:h-[60vh] xl:h-[80vh] w-full flex justify-start items-start flex-col text-start mx-auto"
+        className="relative h-[40vh] xl:h-[80vh] w-full flex justify-start items-start flex-col text-start mx-auto"
       >
         {/* Mirrored background image */}
         <div
-          className="absolute inset-0 pointer-events-none opacity-20 lg:opacity-35"
+          className="absolute inset-0 pointer-events-none opacity-20 xl:opacity-55"
           style={{
             backgroundImage: `url(${hero2Jpg})`,
             backgroundSize: 'cover',
@@ -32,7 +32,7 @@ const Hero = ({ id }: HeroProps) => {
           }}
         />
 
-        <figure className="absolute inset-0 pointer-events-none opacity-20 xl:opacity-55 w-full h-full bg-top"
+        <figure className="absolute inset-0 pointer-events-none opacity-20 xl:opacity-100 w-full h-full bg-top"
         >
           <picture>
             <source
