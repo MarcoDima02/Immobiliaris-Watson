@@ -56,7 +56,7 @@ CREATE TABLE DettagliImmobile (
     nStanze INT(2) NOT NULL,
     nBagni INT(2) NOT NULL,
     nPiano INT(2) NOT NULL,
-    nPianiImmobile INT(2) NOT NULL,
+    nPianiImmobile INT(2) NULL,
     balconeTerrazzo BOOLEAN NOT NULL DEFAULT FALSE,
     giardino BOOLEAN NOT NULL DEFAULT FALSE,
     garage BOOLEAN NOT NULL DEFAULT FALSE,
@@ -65,7 +65,7 @@ CREATE TABLE DettagliImmobile (
     tipoRiscaldamento ENUM('No','Autonomo','Condominiale','Pompe di calore','Pavimento') DEFAULT 'No' NOT NULL,
     annoCostruzione YEAR NOT NULL,
     condizioneImmobile ENUM('Nuovo', 'Ristrutturato','Parzialmente ristrutturato','Non ristrutturato') NOT NULL,
-    classeEnergetica ENUM('A+', 'A', 'B', 'C', 'D', 'E', 'F', 'G') NOT NULL,
+    classeEnergetica ENUM('A+', 'A', 'B', 'C', 'D', 'E', 'F', 'G') DEFAULT 'G' NULL,
     prezzo DECIMAL(10, 2),
     FOREIGN KEY (idImmobile) REFERENCES Immobile(idImmobile) ON DELETE CASCADE
 );

@@ -1,0 +1,101 @@
+services:
+  # ============================================
+  # Database MySQL
+  # ============================================
+  mysql:
+    image: mysql:8.0
+    container_name: residea-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpassword}
+      MYSQL_DATABASE: ${DB_NAME:-residea_db}
+      MYSQL_USER: ${DB_USER:-residea_user}
+      MYSQL_PASSWORD: ${DB_PASS:-ResideaP@ss}
+      TZ: Europe/Rome
+    ports:
+      - "${MYSQL_PORT:-3306}:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database/init:/docker-entrypoint-initdb.d:ro
+    networks:
+      - residea-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-rootpassword}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # ============================================
+  # Backend Spring Boot
+  # ============================================
+  backend:
+    build:
+      context: ./back-end/residea
+      dockerfile: Dockerfile
+    container_name: residea-backend
+    restart: unless-stopped
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: ${DB_NAME:-residea_db}
+      DB_USER: ${DB_USER:-residea_user}
+      DB_PASS: ${DB_PASS:-ResideaP@ss}
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILE:-prod}
+      TZ: Europe/Rome
+    ports:
+      - "${BACKEND_PORT:-8080}:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - residea-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  # ============================================
+  # Frontend React + Nginx
+  # ============================================
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: ${VITE_API_URL}
+        VITE_MAPBOX_ACCESS_TOKEN: ${VITE_MAPBOX_ACCESS_TOKEN}
+    container_name: residea-frontend
+    restart: unless-stopped
+    environment:
+      VITE_API_URL: ${VITE_API_URL:-http://localhost:8080/api}
+      VITE_MAPBOX_ACCESS_TOKEN: ${VITE_MAPBOX_ACCESS_TOKEN}
+      TZ: Europe/Rome
+    ports:
+      - "${FRONTEND_PORT:-80}:80"
+    depends_on:
+      - backend
+    networks:
+      - residea-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+
+# ============================================
+# Volumi persistenti
+# ============================================
+volumes:
+  mysql_data:
+    driver: local
+
+# ============================================
+# Network isolata
+# ============================================
+networks:
+  residea-network:
+    driver: bridge

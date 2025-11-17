@@ -16,7 +16,7 @@ const Agents = ({ id }: AgentsProps) => {
   return (
     <section
       id={id}
-      className="mt-12 mx-auto container max-w-xl lg:max-w-[1400px]"
+      className="py-24 my-12 mx-auto container max-w-xl lg:max-w-[1400px]"
     >
       <div className="flex flex-col items-center mx-auto text-center pb-8">
         <h2 className="title">I nostri agenti</h2>
@@ -25,7 +25,7 @@ const Agents = ({ id }: AgentsProps) => {
         </h3>
       </div>
 
-      <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-10 p-8">
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-10 p-12">
         <AgentCard
           agentName="Anna Abate"
           agentDescription="Specialista in compravendite residenziali a Torino."

@@ -1,0 +1,11 @@
+# .env locale - non committare in Git!
+.env
+
+# Docker
+docker-compose.override.yml
+*.env.local
+
+# Backup database
+*.sql
+!database/init/*.sql
+backup*.sql

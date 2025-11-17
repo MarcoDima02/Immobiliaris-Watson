@@ -23,16 +23,24 @@ import {
 import { Button } from '@/components/ui/button';
 import { Field, FieldLabel, FieldGroup } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
+import Loader from '@/components/Loader';
 
 /**
  * Types
  */
 import { ownerSchema } from '@/hooks/schemas/valuationSchema';
+import { useState } from 'react';
+
+/**
+ * Icons
+ */
+import { Award } from 'lucide-react';
 
 type UserTypeValues = z.infer<typeof ownerSchema>;
 
+const URL = `${import.meta.env.VITE_API_URL}/valutazioni/form`;
+
 const StepUserType = ({
-  onNext,
   onBack,
 }: {
   onNext: () => void;
@@ -40,20 +48,94 @@ const StepUserType = ({
 }) => {
   const { data, setData } = useFormContext();
 
+  const [loading, setLoading] = useState(false);
+  const [valuation, setValuation] = useState<any | null>(null);
+
   const { control, handleSubmit } = useForm<UserTypeValues>({
     resolver: zodResolver(ownerSchema),
     defaultValues: {
-      contactEmail: data.contactEmail ?? '',
-      contactPhone: data.contactPhone ?? '',
+      emailUtente: data.emailUtente ?? '',
+      telefonoUtente: data.telefonoUtente ?? '',
     },
+    shouldUnregister: false,
   });
 
-  const onSubmit = (values: UserTypeValues) => {
+  const onSubmit = async (values: UserTypeValues) => {
     const allData = { ...data, ...values };
     console.log('Tutti i dati del form:', allData);
-    setData(values);
-    onNext();
+    setData(allData);
+    setLoading(true);
+
+    try {
+      const res = await fetch(URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(allData),
+      });
+
+      if (!res.ok) {
+        const errorMessage = await res.text();
+        throw new Error(errorMessage || 'Errore sconosciuto');
+      }
+
+      const result = await res.json();
+      setValuation(result);
+
+      console.log('Risposta dal backend:', result);
+    } catch (error) {
+      console.log('Error: ', error);
+    } finally {
+      setLoading(false);
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 gap-4">
+        <Loader />
+        <p className="text-muted-foreground text-lg">
+          Stiamo calcolando la valutazione del tuo immobile...
+        </p>
+      </div>
+    );
+  }
+
+  if (valuation) {
+    const { valoreFinale, valoreMin, valoreMax } = valuation;
+
+    return (
+      <Card className="max-w-2xl mx-auto">
+        <CardHeader>
+          <CardTitle><Award /> Valutazione completata</CardTitle>
+        </CardHeader>
+
+        <CardContent className="space-y-6">
+          <div className="p-5 bg-primary/10 rounded-lg border">
+            <p className="text-sm text-muted-foreground">Valore stimato</p>
+            <p className="text-3xl font-bold text-primary">
+              € {valoreFinale.toLocaleString('it-IT')}
+            </p>
+
+            <p className="text-sm mt-2">
+              Range: <strong>€ {valoreMin.toLocaleString('it-IT')}</strong> –{' '}
+              <strong>€ {valoreMax.toLocaleString('it-IT')}</strong>
+            </p>
+          </div>
+        </CardContent>
+
+        <CardFooter className="flex justify-between">
+          <Button
+            variant="outline"
+            onClick={onBack}
+          >
+            Torna indietro
+          </Button>
+          <Button>Scarica report PDF</Button>
+        </CardFooter>
+      </Card>
+    );
+  }
+
   return (
     <Card className="max-w-xl mx-auto">
       <CardHeader>
@@ -70,14 +152,14 @@ const StepUserType = ({
         >
           <FieldGroup>
             <Controller
-              name="contactEmail"
+              name="emailUtente"
               control={control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel>Email</FieldLabel>
                   <Input
                     type="email"
-                    placeholder='Es. esempio@email.com'
+                    placeholder="Es. esempio@email.com"
                     {...field}
                   />
                   {fieldState.error && (
@@ -90,14 +172,14 @@ const StepUserType = ({
             />
 
             <Controller
-              name="contactPhone"
+              name="telefonoUtente"
               control={control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel>Telefono</FieldLabel>
                   <Input
                     type="tel"
-                    placeholder='Es. +39 345 678 9012'
+                    placeholder="Es. +39 345 678 9012"
                     {...field}
                     pattern="^(\+39\s?)?(\d{6,12})$"
                     onInvalid={(e) => {
@@ -131,7 +213,7 @@ const StepUserType = ({
         <Button
           type="submit"
           form="user-form"
-          className='hover:bg-card'
+          className="hover:bg-card"
         >
           Avanti
         </Button>

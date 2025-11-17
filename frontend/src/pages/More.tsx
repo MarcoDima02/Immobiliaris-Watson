@@ -14,7 +14,7 @@ interface MoreProps {
 
 const More = ({ id }: MoreProps) => {
   return (
-    <section id={id} className="p-5 md:px-12 bg-card mt-12 py-12 ">
+    <section id={id} className="p-5 md:px-12 bg-card mt-24 py-24 ">
       <div className="px-6 sm:px-8 lg:px-0 mx-auto container max-w-xl lg:max-w-[1400px]">
         <div className="grid gap-8 lg:grid-cols-2 items-center">
           <div className="w-full">

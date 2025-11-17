@@ -1,7 +1,7 @@
 /**
  * Node modules
  */
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -48,6 +48,22 @@ import { Building, House, School, Building2 } from 'lucide-react';
  */
 import { propertySchema } from '@/hooks/schemas/valuationSchema';
 
+const allowedKeys: (keyof PropertyValues)[] = [
+  'tipologia',
+  'finalitaRichiesta',
+  'annoCostruzione',
+  'superficie',
+  'nStanze',
+  'nBagni',
+  'condizione',
+  'tipoRiscaldamento',
+  'superficieBalconeTerrazzo',
+  'superficieGiardino',
+  'superficieCantina',
+  'piano',
+  'pianiTotali',
+];
+
 type PropertyValues = z.infer<typeof propertySchema>;
 
 const StepProperty = ({
@@ -59,32 +75,46 @@ const StepProperty = ({
 }) => {
   const { data, setData } = useFormContext();
   const [selectedType, setSelectedType] = useState<string | undefined>(
-    data.propertyType || undefined
+    data.tipologia || undefined
   );
 
   const { control, handleSubmit, setValue } = useForm<PropertyValues>({
     resolver: zodResolver(propertySchema),
     defaultValues: {
       // required by schema ➜ MUST BE HERE
-      propertyType: data.propertyType ?? '',
-      requestedPurpose: data.requestedPurpose ?? 'estimate',
-      yearBuilt: data.yearBuilt ?? undefined,
+      tipologia: data.tipologia ?? '',
+      finalitaRichiesta: data.finalitaRichiesta ?? 'estimate',
+      annoCostruzione: data.annoCostruzione ?? undefined,
 
       // numeric fields
-      area: data.area ?? undefined,
-      rooms: data.rooms ?? undefined,
-      bathrooms: data.bathrooms ?? undefined,
+      superficie: data.superficie ?? undefined,
+      nStanze: data.nStanze ?? undefined,
+      nBagni: data.nBagni ?? undefined,
 
       // optional
-      condition: data.condition ?? 'new',
-      heatingType: data.heatingType ?? '',
-      balconyTerraceArea: data.balconyTerraceArea ?? undefined,
-      gardenArea: data.gardenArea ?? undefined,
-      basementArea: data.basementArea ?? undefined,
-      floor: data.floor ?? undefined,
-      totalFloors: data.totalFloors ?? undefined,
+      condizione: data.condizione ?? 'new',
+      tipoRiscaldamento: data.tipoRiscaldamento ?? '',
+      superficieBalconeTerrazzo: data.superficieBalconeTerrazzo ?? undefined,
+      superficieGiardino: data.superficieGiardino ?? undefined,
+      superficieCantina: data.superficieCantina ?? undefined,
+      piano: data.piano ?? undefined,
+      pianiTotali: data.pianiTotali ?? undefined,
     },
+    shouldUnregister: false,
+    mode: 'onSubmit',
+    reValidateMode: 'onSubmit',
   });
+
+  useEffect(() => {
+    allowedKeys.forEach((key) => {
+      if (data[key] !== undefined) {
+        setValue(key, data[key] as PropertyValues[typeof key]);
+      }
+    });
+    if (data.tipologia) {
+      setSelectedType(data.tipologia);
+    }
+  }, [data, setValue]);
 
   const onSubmit = (values: PropertyValues) => {
     setData(values);
@@ -101,6 +131,7 @@ const StepProperty = ({
       icon: <School />,
     },
   ];
+
   return (
     <Card className="max-w-xl mx-auto">
       <CardHeader>
@@ -120,7 +151,7 @@ const StepProperty = ({
                   type="button"
                   onClick={() => {
                     setSelectedType(type.value);
-                    setValue('propertyType', type.value);
+                    setValue('tipologia', type.value);
                   }}
                   className={clsx('p-3 rounded-lg border transition', {
                     'border-primary bg-primary/10 text-primary':
@@ -136,7 +167,7 @@ const StepProperty = ({
 
             {selectedType && (
               <>
-                <Controller
+                {/* <Controller
                   name="area"
                   control={control}
                   render={({ field, fieldState }) => (
@@ -144,12 +175,15 @@ const StepProperty = ({
                       <FieldLabel>Superficie (m²)</FieldLabel>
                       <Input
                         type="number"
+                        step={10}
                         placeholder="Es. 120"
                         {...field}
                         value={field.value ?? ''}
                         onChange={(e) => {
-                          const val = e.target.valueAsNumber;
-                          field.onChange(isNaN(val) ? undefined : val);
+                          const raw = e.target.value;
+                          if (raw === '') return field.onChange(undefined);
+                          const num = Number(raw);
+                          if (!isNaN(num)) field.onChange(num);
                         }}
                       />
                       {fieldState.error && (
@@ -157,95 +191,197 @@ const StepProperty = ({
                       )}
                     </Field>
                   )}
+                /> */}
+                <Controller
+                  name="superficie"
+                  control={control}
+                  render={({ field, fieldState }) => {
+                    const [localValue, setLocalValue] = useState(
+                      field.value?.toString() ?? ''
+                    );
+
+                    return (
+                      <Field>
+                        <FieldLabel>Superficie (m²)</FieldLabel>
+                        <Input
+                          type="number"
+                          step={10}
+                          placeholder="Es. 120"
+                          value={localValue}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            setLocalValue(val);
+                            const num = Number(val);
+                            field.onChange(
+                              val === ''
+                                ? undefined
+                                : isNaN(num)
+                                  ? undefined
+                                  : num
+                            );
+                          }}
+                        />
+                        {fieldState.error && (
+                          <FieldError>{fieldState.error.message}</FieldError>
+                        )}
+                      </Field>
+                    );
+                  }}
                 />
 
                 <div className="grid grid-cols-2 gap-3">
+      
                   <Controller
-                    name="rooms"
+                    name="nStanze"
                     control={control}
-                    render={({ field }) => (
-                      <Field>
-                        <FieldLabel>Numero di locali</FieldLabel>
-                        <Input
-                          className="w-1/2 min-w-1"
-                          type="number"
-                          placeholder="Es. 5"
-                          {...field}
-                          value={field.value ?? ''}
-                          onChange={(e) => {
-                            const val = e.target.valueAsNumber;
-                            field.onChange(isNaN(val) ? undefined : val);
-                          }}
-                        />
-                      </Field>
-                    )}
-                  />
+                    render={({ field, fieldState }) => {
+                      const [localValue, setLocalValue] = useState(
+                        field.value?.toString() ?? ''
+                      );
 
-                  <Controller
+                      return (
+                        <Field>
+                          <FieldLabel>Numero di locali</FieldLabel>
+                          <Input
+                            className="w-1/2 min-w-1"
+                            type="number"
+                            placeholder="Es. 3"
+                            value={localValue}
+                            onChange={(e) => {
+                              const val = e.target.value;
+                              setLocalValue(val);
+                              const num = Number(val);
+                              field.onChange(
+                                val === ''
+                                  ? undefined
+                                  : isNaN(num)
+                                    ? undefined
+                                    : num
+                              );
+                            }}
+                          />
+                          {fieldState.error && (
+                            <FieldError>{fieldState.error.message}</FieldError>
+                          )}
+                        </Field>
+                      );
+                    }}
+                  />
+                  {/* <Controller
                     name="bathrooms"
                     control={control}
-                    render={({ field }) => (
+                    render={({ field, fieldState }) => (
                       <Field>
                         <FieldLabel>Numero di bagni</FieldLabel>
                         <Input
                           type="number"
                           placeholder="Es. 2"
-                          className="w-1/2 min-w-1"
                           {...field}
                           value={field.value ?? ''}
                           onChange={(e) => {
-                            const val = e.target.valueAsNumber;
-                            field.onChange(isNaN(val) ? undefined : val);
+                            const raw = e.target.value;
+                            if (raw === '') return field.onChange(undefined);
+                            const num = Number(raw);
+                            if (!isNaN(num)) field.onChange(num);
                           }}
                         />
+                        {fieldState.error && (
+                          <FieldError>{fieldState.error.message}</FieldError>
+                        )}
                       </Field>
                     )}
+                  /> */}
+                  <Controller
+                    name="nBagni"
+                    control={control}
+                    render={({ field, fieldState }) => {
+                      const [localValue, setLocalValue] = useState(
+                        field.value?.toString() ?? ''
+                      );
+
+                      return (
+                        <Field>
+                          <FieldLabel>Numero di bagni</FieldLabel>
+                          <Input
+                            type="number"
+                            placeholder="Es. 2"
+                            value={localValue}
+                            onChange={(e) => {
+                              const val = e.target.value;
+                              setLocalValue(val);
+                              const num = Number(val);
+                              field.onChange(
+                                val === ''
+                                  ? undefined
+                                  : isNaN(num)
+                                    ? undefined
+                                    : num
+                              );
+                            }}
+                          />
+                          {fieldState.error && (
+                            <FieldError>{fieldState.error.message}</FieldError>
+                          )}
+                        </Field>
+                      );
+                    }}
                   />
                 </div>
 
                 <Controller
-                  name="yearBuilt"
+                  name="annoCostruzione"
                   control={control}
-                  render={({ field, fieldState }) => (
-                    <Field>
-                      <FieldLabel>Anno di costruzione</FieldLabel>
-                      <Input
-                        type="number"
-                        placeholder="Es. 2015"
-                        {...field}
-                        value={field.value ?? ''}
-                        onChange={(e) => {
-                          const val = e.target.valueAsNumber;
-                          field.onChange(isNaN(val) ? undefined : val);
-                        }}
-                      />
-                      {fieldState.error && (
-                        <FieldError>{fieldState.error.message}</FieldError>
-                      )}
-                    </Field>
-                  )}
+                  render={({ field, fieldState }) => {
+                    const [localValue, setLocalValue] = useState(
+                      field.value?.toString() ?? ''
+                    );
+
+                    return (
+                      <Field>
+                        <FieldLabel>Anno di costruzione</FieldLabel>
+                        <Input
+                          type="number"
+                          placeholder="Es. 2015"
+                          step={100}
+                          value={localValue}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            setLocalValue(val);
+                            const num = Number(val);
+                            field.onChange(
+                              val === ''
+                                ? undefined
+                                : isNaN(num)
+                                  ? undefined
+                                  : num
+                            );
+                          }}
+                        />
+                        {fieldState.error && (
+                          <FieldError>{fieldState.error.message}</FieldError>
+                        )}
+                      </Field>
+                    );
+                  }}
                 />
 
                 <Controller
-                  name="condition"
+                  name="condizione"
                   control={control}
                   render={({ field }) => (
-                    <Field className="">
+                    <Field>
                       <FieldLabel>Seleziona lo stato immobile</FieldLabel>
+
                       <Select
-                        {...field}
+                        value={field.value ?? ''}
                         onValueChange={field.onChange}
                       >
-                        <SelectTrigger className="cursor-pointer ">
-                          <SelectValue />
+                        <SelectTrigger className="cursor-pointer">
+                          <SelectValue placeholder="Seleziona..." />
                         </SelectTrigger>
+
                         <SelectContent>
-                          <SelectItem
-                            value="new"
-                            className=""
-                          >
-                            Nuovo
-                          </SelectItem>
+                          <SelectItem value="new">Nuovo</SelectItem>
                           <SelectItem value="renovated">
                             Ristrutturato
                           </SelectItem>
@@ -257,30 +393,6 @@ const StepProperty = ({
                     </Field>
                   )}
                 />
-
-                {/* <Controller
-                  name="requestedPurpose"
-                  control={control}
-                  render={({ field }) => (
-                    <Field>
-                      <FieldLabel>Motivo della valutazione</FieldLabel>
-                      <Select
-                        {...field}
-                        onValueChange={field.onChange}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Seleziona" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="estimate">Preventivo</SelectItem>
-                          <SelectItem value="officialDocument">
-                            Documento ufficiale
-                          </SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </Field>
-                  )}
-                /> */}
               </>
             )}
           </FieldGroup>

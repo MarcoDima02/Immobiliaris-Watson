@@ -17,7 +17,7 @@ const OurServices = ({ id }: OurServicesProps) => {
   return (
     <section
       id={id}
-      className="container mx-auto mt-12 flex flex-col justify-center items-center text-center "
+      className="container mx-auto py-24 flex flex-col justify-center items-center text-center my-12"
     >
       <h2 className="title">Come funziona</h2>
       <h3 className="title-secondary">
