@@ -3,6 +3,8 @@ package com.residea.residea.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,4 +42,27 @@ public Utente creaUtente(@RequestBody Utente utente) {
     public List<Utente> getUtenteByTelefono(@PathVariable String telefono) {
         return utentiService.getUtenteByTelefono(telefono);
     }
+
+    // POST /api/utenti/login → login by email + password
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody java.util.Map<String, String> body) {
+        String email = body.get("email");
+        String password = body.get("password");
+        if (email == null || password == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("email and password are required");
+        }
+        try {
+            Utente u = utentiService.getUtenteByEmail(email);
+            boolean ok = utentiService.verificaPassword(u.getIdUtente(), password);
+            if (!ok) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+            }
+            // hide passwordHash before returning
+            u.setPasswordHash(null);
+            return ResponseEntity.ok(u);
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+        }
+    }
+
 }
