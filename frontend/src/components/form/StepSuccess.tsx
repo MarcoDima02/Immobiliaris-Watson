@@ -33,7 +33,7 @@ const StepSuccess = () => {
           href="/"
           
         >
-          Torna alla home
+          Ricarica il form
         </a>
       </Button>
     </div>
