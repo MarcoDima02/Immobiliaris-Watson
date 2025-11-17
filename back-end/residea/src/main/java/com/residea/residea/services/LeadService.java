@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.residea.residea.entities.Lead;
+import com.residea.residea.entities.Utente;
 
 public interface LeadService {
 
@@ -20,4 +21,5 @@ public interface LeadService {
     List<Lead> findByEmail(String email);
 
     List<Lead> findByCitta(String citta);
+    List<Lead> findByUtente(Utente utente);
 }

@@ -15,4 +15,9 @@ public class ViewController {
     public String immobili() {
         return "immobili"; // renderizza src/main/resources/templates/immobili.html
     }
+
+    @GetMapping("/leads")
+    public String leads() {
+        return "lead"; // renderizza src/main/resources/templates/lead.html
+    }
 }
