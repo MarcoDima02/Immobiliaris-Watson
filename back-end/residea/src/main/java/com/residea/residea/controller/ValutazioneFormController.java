@@ -144,6 +144,42 @@ public class ValutazioneFormController {
             }
         }
         dettagli.setCondizioneImmobile(condizioneImmobile);
+        
+        // Tipo riscaldamento - mapping frontend values to enum
+        DettagliImmobile.TipoRiscaldamento tipoRiscaldamento = DettagliImmobile.TipoRiscaldamento.NO; // default
+        if (request.getTipoRiscaldamento() != null && !request.getTipoRiscaldamento().isEmpty()) {
+            String tipo = request.getTipoRiscaldamento().toLowerCase().trim();
+            switch (tipo) {
+                case "autonomous":
+                case "autonomo":
+                    tipoRiscaldamento = DettagliImmobile.TipoRiscaldamento.AUTONOMO;
+                    break;
+                case "centralized":
+                case "condominiale":
+                    tipoRiscaldamento = DettagliImmobile.TipoRiscaldamento.CONDOMINIALE;
+                    break;
+                case "heat_pump":
+                case "pompe di calore":
+                case "pompe_di_calore":
+                    tipoRiscaldamento = DettagliImmobile.TipoRiscaldamento.POMPE_DI_CALORE;
+                    break;
+                case "floor":
+                case "pavimento":
+                    tipoRiscaldamento = DettagliImmobile.TipoRiscaldamento.PAVIMENTO;
+                    break;
+                case "no":
+                case "none":
+                    tipoRiscaldamento = DettagliImmobile.TipoRiscaldamento.NO;
+                    break;
+                default:
+                    // Try valueOf as fallback
+                    try {
+                        tipoRiscaldamento = DettagliImmobile.TipoRiscaldamento.valueOf(tipo.toUpperCase().replace(' ', '_'));
+                    } catch (IllegalArgumentException ignored) {}
+            }
+        }
+        dettagli.setTipoRiscaldamento(tipoRiscaldamento);
+        
         // Classe energetica
         try {
             if (request.getClasseEnergetica() != null) {
