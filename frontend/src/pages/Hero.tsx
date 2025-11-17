@@ -21,7 +21,7 @@ const Hero = ({ id }: HeroProps) => {
       >
         {/* Mirrored background image */}
         <div
-          className="absolute inset-0 pointer-events-none opacity-20 xl:opacity-100"
+          className="absolute inset-0 pointer-events-none opacity-20 xl:opacity-55"
           style={{
             backgroundImage: `url(${hero2Jpg})`,
             backgroundSize: 'cover',
