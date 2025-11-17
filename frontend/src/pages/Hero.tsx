@@ -60,7 +60,7 @@ const Hero = ({ id }: HeroProps) => {
         </figure>
 
 
-        <div className="container z-20 flex flex-col mx-auto justify-center xl:mt-48 p-10 text-start w-fit md:w-full h-full xl:h-fit">
+        <div className="container z-20 flex flex-col mx-auto justify-center xl:mt-20 p-10 text-start w-fit md:w-full h-full xl:h-fit">
           <h1 className="title lg:mx-0 mt-8 xl:text-6xl! 2xl:text-7xl! font-extrabold">
             Vuoi <span className='text-primary text-shadow-primary text-shadow-lg/10 '>vendere casa</span><br></br>senza stress?
           </h1>
