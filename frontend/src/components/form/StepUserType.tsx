@@ -23,27 +23,33 @@ import {
 import { Button } from '@/components/ui/button';
 import { Field, FieldLabel, FieldGroup } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
+import Loader from '@/components/Loader';
 
 /**
  * Types
  */
 import { ownerSchema } from '@/hooks/schemas/valuationSchema';
+import { useState } from 'react';
+
+/**
+ * Icons
+ */
+import { Award } from 'lucide-react';
 
 type UserTypeValues = z.infer<typeof ownerSchema>;
 
-const URL = import.meta.env.VITE_API_URL
-  ? `${import.meta.env.VITE_API_URL.replace(/\/$/, '')}`
-  : 'http://localhost:8080/api/valutazioni/form';
-
+const URL = `${import.meta.env.VITE_API_URL}/valutazioni/form`;
 
 const StepUserType = ({
-  onNext,
   onBack,
 }: {
   onNext: () => void;
   onBack: () => void;
 }) => {
   const { data, setData } = useFormContext();
+
+  const [loading, setLoading] = useState(false);
+  const [valuation, setValuation] = useState<any | null>(null);
 
   const { control, handleSubmit } = useForm<UserTypeValues>({
     resolver: zodResolver(ownerSchema),
@@ -58,6 +64,7 @@ const StepUserType = ({
     const allData = { ...data, ...values };
     console.log('Tutti i dati del form:', allData);
     setData(allData);
+    setLoading(true);
 
     try {
       const res = await fetch(URL, {
@@ -72,14 +79,63 @@ const StepUserType = ({
       }
 
       const result = await res.json();
+      setValuation(result);
 
       console.log('Risposta dal backend:', result);
     } catch (error) {
       console.log('Error: ', error);
+    } finally {
+      setLoading(false);
     }
-
-    onNext();
   };
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 gap-4">
+        <Loader />
+        <p className="text-muted-foreground text-lg">
+          Stiamo calcolando la valutazione del tuo immobile...
+        </p>
+      </div>
+    );
+  }
+
+  if (valuation) {
+    const { valoreFinale, valoreMin, valoreMax } = valuation;
+
+    return (
+      <Card className="max-w-2xl mx-auto">
+        <CardHeader>
+          <CardTitle><Award /> Valutazione completata</CardTitle>
+        </CardHeader>
+
+        <CardContent className="space-y-6">
+          <div className="p-5 bg-primary/10 rounded-lg border">
+            <p className="text-sm text-muted-foreground">Valore stimato</p>
+            <p className="text-3xl font-bold text-primary">
+              € {valoreFinale.toLocaleString('it-IT')}
+            </p>
+
+            <p className="text-sm mt-2">
+              Range: <strong>€ {valoreMin.toLocaleString('it-IT')}</strong> –{' '}
+              <strong>€ {valoreMax.toLocaleString('it-IT')}</strong>
+            </p>
+          </div>
+        </CardContent>
+
+        <CardFooter className="flex justify-between">
+          <Button
+            variant="outline"
+            onClick={onBack}
+          >
+            Torna indietro
+          </Button>
+          <Button>Scarica report PDF</Button>
+        </CardFooter>
+      </Card>
+    );
+  }
+
   return (
     <Card className="max-w-xl mx-auto">
       <CardHeader>
