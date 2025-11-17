@@ -71,6 +71,7 @@ services:
     restart: unless-stopped
     environment:
       VITE_API_URL: ${VITE_API_URL:-http://localhost:8080/api}
+      VITE_MAPBOX_ACCESS_TOKEN: ${VITE_MAPBOX_ACCESS_TOKEN}
       TZ: Europe/Rome
     ports:
       - "${FRONTEND_PORT:-80}:80"
