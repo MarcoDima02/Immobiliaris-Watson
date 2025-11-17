@@ -50,25 +50,25 @@ export default function StepOptional({
     resolver: zodResolver(propertySchema),
     defaultValues: {
       // required by schema ➜ MUST BE HERE
-      propertyType: data.propertyType ?? '',
-      requestedPurpose: data.requestedPurpose ?? 'estimate',
-      yearBuilt: data.yearBuilt ?? undefined,
+      tipologia: data.tipologia ?? '',
+      finalitaRichiesta: data.finalitaRichiesta ?? 'estimate',
+      annoCostruzione: data.annoCostruzione ?? undefined,
 
       // numeric fields
-      area: data.area ?? undefined,
-      rooms: data.rooms ?? undefined,
-      bathrooms: data.bathrooms ?? undefined,
+      superficie: data.superficie ?? undefined,
+      nStanze: data.nStanze ?? undefined,
+      nBagni: data.nBagni ?? undefined,
 
       // optional
-      condition: data.condition ?? 'new',
-      heatingType: data.heatingType ?? '',
-      balconyTerraceArea: data.balconyTerraceArea ?? undefined,
-      gardenArea: data.gardenArea ?? undefined,
-      garageArea: data.gardenArea ?? undefined,
-      basementArea: data.basementArea ?? undefined,
-      floor: data.floor ?? undefined,
-      totalFloors: data.totalFloors ?? undefined,
-      exposure: data.exposure ?? '',
+      condizione: data.condizione ?? 'new',
+      tipoRiscaldamento: data.tipoRiscaldamento ?? '',
+      superficieBalconeTerrazzo: data.superficieBalconeTerrazzo ?? undefined,
+      superficieGiardino: data.superficieGiardino ?? undefined,
+      superficieGarage: data.superficieGarage ?? undefined,
+      superficieCantina: data.superficieCantina ?? undefined,
+      piano: data.piano ?? undefined,
+      pianiTotali: data.pianiTotali ?? undefined,
+      esposizione: data.esposizione ?? '',
     },
     shouldUnregister: false,
   });
@@ -101,8 +101,8 @@ export default function StepOptional({
   };
 
   const garageValue = watch('garage');
-  const gardenValue = watch('garden');
-  const basementValue = watch('basement');
+  const gardenValue = watch('giardino');
+  const basementValue = watch('cantina');
 
   return (
     <Card className="max-w-xl mx-auto">
@@ -119,7 +119,7 @@ export default function StepOptional({
             {/* Piano + Piani totali */}
             <div className="grid grid-cols-2 gap-3">
               <Controller
-                name="floor"
+                name="piano"
                 control={control}
                 render={({ field }) => (
                   <Field>
@@ -142,7 +142,7 @@ export default function StepOptional({
               />
 
               <Controller
-                name="totalFloors"
+                name="pianiTotali"
                 control={control}
                 render={({ field }) => (
                   <Field>
@@ -167,7 +167,7 @@ export default function StepOptional({
 
             {/* Ascensore */}
             <Controller
-              name="elevator"
+              name="ascensore"
               control={control}
               render={({ field }) => (
                 <Field className="flex items-center justify-between mt-4 max-w-xs">
@@ -181,7 +181,6 @@ export default function StepOptional({
                 </Field>
               )}
             />
-            
 
             {/* Garage */}
             <Controller
@@ -202,7 +201,7 @@ export default function StepOptional({
 
             {garageValue && (
               <Controller
-                name="garageArea"
+                name="superficieGarage"
                 control={control}
                 render={({ field }) => (
                   <Field>
@@ -227,7 +226,7 @@ export default function StepOptional({
 
             {/* Balcone/Terrazzo */}
             <Controller
-              name="balconyTerraceArea"
+              name="superficieBalconeTerrazzo"
               control={control}
               render={({ field }) => (
                 <Field>
@@ -251,7 +250,7 @@ export default function StepOptional({
 
             {/* Giardino + Mq */}
             <Controller
-              name="garden"
+              name="giardino"
               control={control}
               render={({ field }) => (
                 <Field className="flex items-center justify-between mt-4 max-w-xs">
@@ -267,7 +266,7 @@ export default function StepOptional({
             />
             {gardenValue && (
               <Controller
-                name="gardenArea"
+                name="superficieGiardino"
                 control={control}
                 render={({ field }) => (
                   <Field>
@@ -290,10 +289,9 @@ export default function StepOptional({
               />
             )}
 
-  
             {/* Cantina + mq */}
             <Controller
-              name="basement"
+              name="cantina"
               control={control}
               render={({ field }) => (
                 <Field className="flex items-center justify-between mt-4 max-w-xs">
@@ -310,7 +308,7 @@ export default function StepOptional({
 
             {basementValue && (
               <Controller
-                name="basementArea"
+                name="superficieCantina"
                 control={control}
                 render={({ field }) => (
                   <Field>
@@ -335,7 +333,7 @@ export default function StepOptional({
 
             {/* Riscaldamento */}
             <Controller
-              name="heatingType"
+              name="tipoRiscaldamento"
               control={control}
               render={({ field }) => (
                 <Field>
@@ -344,34 +342,8 @@ export default function StepOptional({
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
-                    <SelectTrigger className='cursor-pointer border-primary! data-placeholder:text-primary'>
-                      <SelectValue placeholder="Seleziona..." />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="autonomous">Autonomo</SelectItem>
-                      <SelectItem value="centralized">Centralizzato</SelectItem>
-                      <SelectItem value="heat_pump">Pompa di calore</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </Field>
-              )}
-            />
-
-            <Controller
-              name="heatingType"
-              control={control}
-              render={({ field }) => (
-                <Field className="">
-                  <FieldLabel>Tipo di riscaldamento</FieldLabel>
-                  <Select
-                    {...field}
-                    onValueChange={field.onChange}
-                  >
                     <SelectTrigger className="cursor-pointer border-primary! data-placeholder:text-primary">
-                      <SelectValue
-                        placeholder="Seleziona..."
-                        className=""
-                      />
+                      <SelectValue placeholder="Seleziona..." />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="autonomous">Autonomo</SelectItem>
@@ -385,7 +357,7 @@ export default function StepOptional({
 
             {/* Classe Energetica */}
             <Controller
-              name="energyClass"
+              name="classeEnergetica"
               control={control}
               render={({ field }) => (
                 <Field>
@@ -414,7 +386,7 @@ export default function StepOptional({
 
             {/* Esposizione */}
             <Controller
-              name="exposure"
+              name="esposizione"
               control={control}
               render={({ field }) => (
                 <Field>

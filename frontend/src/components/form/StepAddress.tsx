@@ -48,9 +48,9 @@ mapboxgl.accessToken = mapboxgl.accessToken =
 type FormValues = z.infer<typeof addressSchema>;
 
 const allowedKeys: (keyof FormValues)[] = [
-  'address',
-  'city',
-  'province',
+  'indirizzo',
+  'citta',
+  'provincia',
   'cap',
 ];
 
@@ -59,9 +59,9 @@ const StepAddress = ({ onNext }: { onNext: () => void }) => {
   const { control, handleSubmit, setValue, watch } = useForm<FormValues>({
     resolver: zodResolver(addressSchema),
     defaultValues: {
-      address: data.address ?? '',
-      city: data.city ?? '',
-      province: data.province ?? '',
+      indirizzo: data.indirizzo ?? '',
+      citta: data.citta ?? '',
+      provincia: data.provincia ?? '',
       cap: data.cap ?? '',
     },
     shouldUnregister: false,
@@ -77,7 +77,7 @@ const StepAddress = ({ onNext }: { onNext: () => void }) => {
     });
   }, [data, setValue]);
 
-  const address = watch('address');
+  const address = watch('indirizzo');
 
   const [suggestions, setSuggestions] = useState<any[]>([]);
   const [selectedAddress, setSelectedAddress] = useState<string | null>(null);
@@ -142,27 +142,27 @@ const StepAddress = ({ onNext }: { onNext: () => void }) => {
     const selectedAddress = feature.place_name;
     const [longitude, latitude] = feature.center;
 
-    setValue('address', selectedAddress, { shouldValidate: true });
+    setValue('indirizzo', selectedAddress, { shouldValidate: true });
 
-    let city = '';
-    let province = '';
+    let citta = '';
+    let provincia = '';
     let cap = '';
 
     feature.context?.forEach((ctx: any) => {
       const id = ctx.id ?? '';
-      if (id.startsWith('place.')) city = ctx.text;
-      if (id.startsWith('district.')) province = ctx.text;
+      if (id.startsWith('place.')) citta = ctx.text;
+      if (id.startsWith('district.')) provincia = ctx.text;
       if (id.startsWith('postcode.')) cap = ctx.text;
     });
 
-    setValue('city', city);
-    setValue('province', province);
+    setValue('citta', citta);
+    setValue('provincia', provincia);
     setValue('cap', cap);
 
     setData({
-      address: selectedAddress,
-      city,
-      province,
+      indirizzo: selectedAddress,
+      citta,
+      provincia,
       cap,
       longitude,
       latitude,
@@ -200,7 +200,7 @@ const StepAddress = ({ onNext }: { onNext: () => void }) => {
         >
           <FieldGroup>
             <Controller
-              name="address"
+              name="indirizzo"
               control={control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
@@ -265,7 +265,7 @@ const StepAddress = ({ onNext }: { onNext: () => void }) => {
             />
 
             <Controller
-              name="city"
+              name="citta"
               control={control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
@@ -285,7 +285,7 @@ const StepAddress = ({ onNext }: { onNext: () => void }) => {
             />
 
             <Controller
-              name="province"
+              name="provincia"
               control={control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>

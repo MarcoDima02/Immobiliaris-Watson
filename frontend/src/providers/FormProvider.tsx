@@ -6,52 +6,52 @@ import FormContext from '@/context/FormContext';
 
 export type FormPayload = {
   // mandatory
-  propertyType: string;
-  area?: number;
-  address: string;
-  province: string;
-  city: string;
+  tipologia: string;
+  superficie?: number;
+  indirizzo: string;
+  provincia: string;
+  citta: string;
   cap: string;
-  rooms?: number;
-  bathrooms?: number;
-  requestedPurpose: 'estimate' | 'officialDocument';
+  nStanze?: number;
+  nBagni?: number;
+  finalitaRichiesta: 'estimate' | 'officialDocument';
 
   // optional
-  floor?: number;
-  totalFloors?: number;
-  elevator?: boolean;
+  piano?: number;
+  pianiTotali?: number;
+  ascensore?: boolean;
   garage?: boolean;
-  garageArea?: number;
-  balconyTerraceArea?: number;
-  garden?: boolean;
-  gardenArea?: number; 
-  basement?: boolean;
-  basementArea?: number;
-  heatingType?: string;
-  energyClass?: string; 
-  yearBuilt?: number;
-  condition?: string;
-  exposure?: string;
+  superficieGarage?: number;
+  superficieBalconeTerrazzo?: number;
+  giardino?: boolean;
+  superficieGiardino?: number; 
+  cantina?: boolean;
+  superficieCantina?: number;
+  tipoRiscaldamento?: string;
+  classeEnergetica?: string; 
+  annoCostruzione?: number;
+  condizione?: string;
+  esposizione?: string;
 
   // geolocation from mapbox
   latitude?: number;
   longitude?: number;
 
   // contacts
-  contactEmail?: string;
-  contactPhone?: string;
+  emailUtente?: string;
+  telefonoUtente?: string;
 };
 
 const defaultPayload: FormPayload = {
-  propertyType: '',
-  area: undefined,
-  address: '',
-  province: '',
-  city: '',
+  tipologia: '',
+  superficie: undefined,
+  indirizzo: '',
+  provincia: '',
+  citta: '',
   cap: '',
-  rooms: undefined,
-  bathrooms: undefined,
-  requestedPurpose: 'estimate',
+  nStanze: undefined,
+  nBagni: undefined,
+  finalitaRichiesta: 'estimate',
 };
 
 const FormProvider = ({ children }: { children: ReactNode }) => {

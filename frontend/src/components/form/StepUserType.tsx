@@ -31,7 +31,10 @@ import { ownerSchema } from '@/hooks/schemas/valuationSchema';
 
 type UserTypeValues = z.infer<typeof ownerSchema>;
 
-const URL = 'http://localhost:8080/api/valutazioni/form';
+const URL = import.meta.env.VITE_API_URL
+  ? `${import.meta.env.VITE_API_URL.replace(/\/$/, '')}`
+  : 'http://localhost:8080/api/valutazioni/form';
+
 
 const StepUserType = ({
   onNext,
@@ -45,8 +48,8 @@ const StepUserType = ({
   const { control, handleSubmit } = useForm<UserTypeValues>({
     resolver: zodResolver(ownerSchema),
     defaultValues: {
-      contactEmail: data.contactEmail ?? '',
-      contactPhone: data.contactPhone ?? '',
+      emailUtente: data.emailUtente ?? '',
+      telefonoUtente: data.telefonoUtente ?? '',
     },
     shouldUnregister: false,
   });
@@ -93,7 +96,7 @@ const StepUserType = ({
         >
           <FieldGroup>
             <Controller
-              name="contactEmail"
+              name="emailUtente"
               control={control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
@@ -113,7 +116,7 @@ const StepUserType = ({
             />
 
             <Controller
-              name="contactPhone"
+              name="telefonoUtente"
               control={control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
