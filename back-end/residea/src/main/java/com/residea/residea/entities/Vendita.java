@@ -10,9 +10,19 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Table(name = "Vendite")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString(exclude = {"contratto", "immobile", "utente"}) // Evita lazy loading issues
 public class Vendita {
 
     @Id
@@ -34,66 +44,4 @@ public class Vendita {
 
     @Column(precision = 5, scale = 2)
     private BigDecimal commissionePercentuale;
-
-    // --- COSTRUTTORI ---
-    public Vendita() {}
-
-    public Vendita(Contratto contratto, Immobile immobile, Utente utente, BigDecimal commissionePercentuale) {
-        this.contratto = contratto;
-        this.immobile = immobile;
-        this.utente = utente;
-        this.commissionePercentuale = commissionePercentuale;
-    }
-
-    // --- GETTER & SETTER ---
-    public Integer getIdVendita() {
-        return idVendita;
-    }
-
-    public void setIdVendita(Integer idVendita) {
-        this.idVendita = idVendita;
-    }
-
-    public Contratto getContratto() {
-        return contratto;
-    }
-
-    public void setContratto(Contratto contratto) {
-        this.contratto = contratto;
-    }
-
-    public Immobile getImmobile() {
-        return immobile;
-    }
-
-    public void setImmobile(Immobile immobile) {
-        this.immobile = immobile;
-    }
-
-    public Utente getUtente() {
-        return utente;
-    }
-
-    public void setUtente(Utente utente) {
-        this.utente = utente;
-    }
-
-    public BigDecimal getCommissionePercentuale() {
-        return commissionePercentuale;
-    }
-
-    public void setCommissionePercentuale(BigDecimal commissionePercentuale) {
-        this.commissionePercentuale = commissionePercentuale;
-    }
-
-    @Override
-    public String toString() {
-        return "Vendita{" +
-                "idVendita=" + idVendita +
-                ", contratto=" + (contratto != null ? contratto.getIdContratto() : null) +
-                ", immobile=" + (immobile != null ? immobile.getIdImmobile() : null) +
-                ", utente=" + (utente != null ? utente.getIdUtente() : null) +
-                ", commissionePercentuale=" + commissionePercentuale +
-                '}';
-    }
 }
