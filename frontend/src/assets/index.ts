@@ -16,6 +16,7 @@ import agent2 from '@/assets/agent2.jpg';
 import agent3 from '@/assets/agent3.jpg';
 import agent4 from '@/assets/agent4.jpg';
 import logo from '@/assets/logo.png';
+import logoWhite from '@/assets/logo_white.png';
 
 export {
   heroAvif,
@@ -33,4 +34,5 @@ export {
   agent3,
   agent4,
   logo,
+  logoWhite,
 };

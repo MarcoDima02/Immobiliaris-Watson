@@ -11,6 +11,13 @@ import { Separator } from '@/components/ui/separator';
 /**
  * Icons
  */
+
+/**
+ * Assets
+ */
+import { logoWhite } from '@/assets';
+
+
 import {
   FaFacebookF,
   FaInstagram,
@@ -20,13 +27,20 @@ import {
   FaEnvelope,
 } from 'react-icons/fa';
 
+
 const Footer = () => {
   return (
     <footer className="bg-primary text-white">
       <div className="container mx-auto px-6 md:px-12 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
           <div>
-            <h3 className="text-2xl font-bold mb-3">Logo</h3>
+
+            <figure className='text-2xl font-bold mb-3'>
+              <picture>
+                <img src={logoWhite} alt="Logo Residea" className='w-[120px]' />
+              </picture>
+            </figure>
+
             <p className="text-sm text-white/80 leading-relaxed">
               La tua agenzia immobiliare di fiducia. Valutazioni rapide,
               trasparenti e professionali.
