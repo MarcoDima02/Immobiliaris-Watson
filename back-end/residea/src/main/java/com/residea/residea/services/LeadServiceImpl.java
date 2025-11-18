@@ -44,14 +44,6 @@ public class LeadServiceImpl implements LeadService {
                     existingLead.setTelefono(updatedLead.getTelefono());
                     existingLead.setCitta(updatedLead.getCitta());
                     existingLead.setFonte(updatedLead.getFonte());
-                    existingLead.setCampagna(updatedLead.getCampagna());
-                    existingLead.setUtmSource(updatedLead.getUtmSource());
-                    existingLead.setUtmMedium(updatedLead.getUtmMedium());
-                    existingLead.setUtmCampaign(updatedLead.getUtmCampaign());
-                    existingLead.setConvertitoInRichiesta(updatedLead.isConvertitoInRichiesta());
-                    existingLead.setIdRichiesta(updatedLead.getIdRichiesta());
-                    existingLead.setAssegnatoA(updatedLead.getAssegnatoA());
-                    existingLead.setNote(updatedLead.getNote());
                     existingLead.setUtente(updatedLead.getUtente());
                     return leadRepo.save(existingLead);
                 })

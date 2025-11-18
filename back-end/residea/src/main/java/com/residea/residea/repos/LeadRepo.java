@@ -17,8 +17,6 @@ public interface LeadRepo extends JpaRepository<Lead, Integer> {
 
     List<Lead> findByCitta(String citta);
 
-    List<Lead> findByConvertitoInRichiesta(boolean convertitoInRichiesta);
-
     List<Lead> findByNomeContainingIgnoreCase(String nome);
 
     List<Lead> findAllByOrderByCreatedAtDesc();

@@ -4,219 +4,561 @@
   <meta charset="utf-8">
   <title>Gestione Leads</title>
   <style>
-    body{font-family:Arial,Helvetica,sans-serif;padding:16px}
-    input,select,textarea{margin:4px 6px 10px 0;padding:6px}
-    table{border-collapse:collapse;width:100%;margin-top:8px}
-    th,td{border:1px solid #ddd;padding:8px;text-align:left}
-    tr:hover{background:#f5f5f5}
-    .form-row{display:flex;flex-wrap:wrap;gap:8px}
-    .form-row> *{flex:1 1 200px}
-    textarea{min-height:60px}
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      padding: 16px;
+      background-color: #f9f9f9;
+    }
+    h1, h3 {
+      color: #333;
+    }
+    input, select {
+      margin: 4px 6px 10px 0;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    input:focus, select:focus {
+      outline: none;
+      border-color: #007bff;
+      box-shadow: 0 0 4px rgba(0, 123, 255, 0.25);
+    }
+    button {
+      padding: 8px 16px;
+      margin: 4px 4px 8px 0;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    button:active {
+      background-color: #004085;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 16px;
+      background-color: white;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    th {
+      background-color: #007bff;
+      color: white;
+      padding: 12px;
+      text-align: left;
+      font-weight: bold;
+    }
+    td {
+      border: 1px solid #ddd;
+      padding: 10px;
+    }
+    tr:hover {
+      background-color: #f5f5f5;
+      cursor: pointer;
+    }
+    tr._highlight {
+      background-color: #fff3cd;
+    }
+    .form-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .form-row > * {
+      flex: 1 1 200px;
+      min-width: 140px;
+    }
+    section {
+      background-color: white;
+      padding: 16px;
+      margin-bottom: 16px;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+    .search-section {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .search-section input {
+      flex: 1 1 200px;
+      min-width: 140px;
+    }
+    .detail {
+      margin-top: 12px;
+      padding: 10px;
+      background-color: #e7f3ff;
+      border-left: 4px solid #007bff;
+      border-radius: 2px;
+    }
   </style>
 </head>
 <body>
 
-<h1>Gestione Leads</h1>
+<h1>📋 Gestione Leads</h1>
 
 <section>
   <h3>➕ Crea / Aggiorna Lead</h3>
   <div class="form-row">
-    <input id="idLead" placeholder="ID (generato dal DB)" readonly style="max-width:140px">
-    <input id="utenteId" placeholder="ID utente (opzionale)" style="max-width:160px">
-    <input id="nome" placeholder="Nome">
-    <input id="email" placeholder="Email">
-  </div>
-  <div class="form-row">
+    <input id="nome" placeholder="Nome completo *" required>
+    <input id="email" placeholder="Email *" type="email" required>
     <input id="telefono" placeholder="Telefono">
     <input id="citta" placeholder="Città">
-    <input id="fonte" placeholder="Fonte">
-    <input id="campagna" placeholder="Campagna">
+    <input id="fonte" placeholder="Fonte (es. Google, Facebook)">
   </div>
   <div class="form-row">
-    <input id="utmSource" placeholder="UTM Source">
-    <input id="utmMedium" placeholder="UTM Medium">
-    <input id="utmCampaign" placeholder="UTM Campaign">
-    <input id="assegnatoA" placeholder="Assegnato a (id)" style="max-width:160px">
+    <select id="utenteSelect" style="max-width: 240px;">
+      <option value="">--- Nessun utente ---</option>
+    </select>
   </div>
-  <div class="form-row">
-    <input type="checkbox" id="convertitoInRichiesta"> <label for="convertitoInRichiesta">Convertito in richiesta</label>
-    <input id="idRichiesta" placeholder="ID richiesta (se presente)" style="max-width:160px">
+  <div style="margin-top: 12px;">
+    <button onclick="createLead()">✅ Crea</button>
+    <button onclick="updateLead()">✏️ Aggiorna</button>
+    <button onclick="deleteLead()">🗑️ Elimina</button>
+    <button onclick="resetForm()">🔄 Pulisci</button>
   </div>
-  <div>
-    <textarea id="note" placeholder="Note"></textarea>
-  </div>
-  <div style="margin-top:8px">
-    <button onclick="createLead()">Crea</button>
-    <button onclick="updateLead()">Aggiorna</button>
-    <button onclick="deleteLead()">Elimina</button>
-    <button onclick="resetForm()">Pulisci</button>
-  </div>
+  <div id="formMessage" class="detail" style="display: none; margin-top: 12px;"></div>
 </section>
 
-<section id="listaLeads">
-  <h3>📋 Elenco Leads</h3>
-  <table id="tabLeads">
-    <thead>
-      <tr><th>ID</th><th>Nome</th><th>Email</th><th>Telefono</th><th>Città</th><th>Fonte</th><th>Convertito</th></tr>
-    </thead>
-    <tbody></tbody>
-  </table>
-</section>
-
-<section style="margin-top:12px">
-  <input id="searchEmail" placeholder="Cerca per email" style="max-width:260px">
-  <button onclick="searchByEmail()">Cerca</button>
-  <input id="searchCitta" placeholder="Cerca per città" style="max-width:200px">
-  <button onclick="searchByCitta()">Cerca</button>
-  <input id="searchUtenteId" placeholder="Cerca per utente ID" style="max-width:160px">
-  <button onclick="searchByUtente()">Cerca</button>
-  <button onclick="loadAll()">Mostra tutti</button>
-  <div id="detail" style="margin-top:8px"></div>
+  <section>
+    <h3>📊 Elenco Leads</h3>
+    <table id="tabLeads">
+      <thead>
+        <tr>
+          <th style="width: 40px;">✓</th>
+          <th>ID</th>
+          <th>Nome</th>
+          <th>Email</th>
+          <th>Telefono</th>
+          <th>Città</th>
+          <th>Fonte</th>
+          <th>Proprietario</th>
+          <th>Data Creazione</th>
+          <th>Data Aggiornamento</th>
+          <th style="width: 100px;">Azioni</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </section><section>
+  <h3>🔍 Ricerca Leads</h3>
+  <div class="search-section">
+    <input id="searchEmail" placeholder="Cerca per email">
+    <button onclick="searchByEmail()">Cerca Email</button>
+  </div>
+  <div class="search-section">
+    <input id="searchCitta" placeholder="Cerca per città">
+    <button onclick="searchByCitta()">Cerca Città</button>
+  </div>
+  <div class="search-section">
+    <input id="searchUtenteId" placeholder="Cerca per ID utente" type="number">
+    <button onclick="searchByUtente()">Cerca Utente</button>
+  </div>
+  <div class="search-section">
+    <button onclick="loadAll()" style="flex: 0 1 auto;">📋 Mostra Tutti</button>
+  </div>
+  <div id="searchResult" class="detail" style="display: none;"></div>
 </section>
 
 <script>
 const api = '/api/leads';
 
-function buildFromForm(){
-  const id = (document.getElementById('idLead').value || '').trim();
-  const utenteId = (document.getElementById('utenteId').value || '').trim();
+// ===== UTILITY FUNCTIONS =====
+
+function escapeHtml(s) {
+  if (!s) return '';
+  return String(s).replace(/[&<>"']/g, c => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  }[c]));
+}
+
+function formatDate(dateStr) {
+  if (!dateStr) return '';
+  try {
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return dateStr;
+    return d.toLocaleString('it-IT');
+  } catch (e) {
+    return dateStr;
+  }
+}
+
+function showMessage(msg, isError = false) {
+  const el = document.getElementById('formMessage');
+  el.textContent = msg;
+  el.style.backgroundColor = isError ? '#f8d7da' : '#d4edda';
+  el.style.borderLeftColor = isError ? '#dc3545' : '#28a745';
+  el.style.display = 'block';
+  setTimeout(() => { el.style.display = 'none'; }, 4000);
+}
+
+// ===== FORM HANDLING =====
+
+async function loadUsers() {
+  try {
+    const res = await fetch('/api/utenti', { headers: { 'Accept': 'application/json' } });
+    if (!res.ok) return;
+    const list = await res.json();
+    const sel = document.getElementById('utenteSelect');
+    if (!sel) return;
+    sel.innerHTML = '<option value="">--- Nessun utente ---</option>';
+    if (Array.isArray(list)) {
+      list.forEach(u => {
+        const opt = document.createElement('option');
+        opt.value = u.idUtente || '';
+        opt.textContent = (u.nome || u.email || ('ID: ' + (u.idUtente || '')));
+        sel.appendChild(opt);
+      });
+    }
+  } catch (e) {
+    console.error('loadUsers error:', e);
+  }
+}
+
+function buildFromForm() {
+  const utenteSel = document.getElementById('utenteSelect');
+  const utenteId = (utenteSel?.value || '').trim();
+
   const payload = {};
-  if(id) payload.idLead = Number(id);
-  if(utenteId) payload.utente = { idUtente: Number(utenteId) };
+  if (window.currentLeadId) payload.idLead = window.currentLeadId;
+  if (utenteId) payload.utente = { idUtente: Number(utenteId) };
+
   payload.nome = document.getElementById('nome').value || null;
   payload.email = document.getElementById('email').value || null;
   payload.telefono = document.getElementById('telefono').value || null;
   payload.citta = document.getElementById('citta').value || null;
   payload.fonte = document.getElementById('fonte').value || null;
-  payload.campagna = document.getElementById('campagna').value || null;
-  payload.utmSource = document.getElementById('utmSource').value || null;
-  payload.utmMedium = document.getElementById('utmMedium').value || null;
-  payload.utmCampaign = document.getElementById('utmCampaign').value || null;
-  payload.convertitoInRichiesta = document.getElementById('convertitoInRichiesta').checked;
-  const idRich = (document.getElementById('idRichiesta').value || '').trim();
-  payload.idRichiesta = idRich ? Number(idRich) : null;
-  const ass = (document.getElementById('assegnatoA').value || '').trim();
-  payload.assegnatoA = ass ? Number(ass) : null;
-  payload.note = document.getElementById('note').value || null;
+
   return payload;
 }
 
-async function createLead(){
+function loadIntoForm(lead) {
+  // Memorizza l'ID in una variabile globale per create/update/delete
+  window.currentLeadId = lead.idLead ?? null;
+  
+  document.getElementById('nome').value = lead.nome ?? '';
+  document.getElementById('email').value = lead.email ?? '';
+  document.getElementById('telefono').value = lead.telefono ?? '';
+  document.getElementById('citta').value = lead.citta ?? '';
+  document.getElementById('fonte').value = lead.fonte ?? '';
+
+  const utenteSel = document.getElementById('utenteSelect');
+  if (utenteSel) {
+    utenteSel.value = lead.utente?.idUtente ?? '';
+  }
+
+  highlightRow(lead.idLead);
+}
+
+function resetForm() {
+  ['nome', 'email', 'telefono', 'citta', 'fonte'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  document.getElementById('utenteSelect').value = '';
+  window.currentLeadId = null;
+
+  document.querySelectorAll('#tabLeads tbody tr._highlight').forEach(r => r.classList.remove('_highlight'));
+  document.getElementById('formMessage').style.display = 'none';
+}
+
+async function createLead() {
   const payload = buildFromForm();
-  // remove id if present
   delete payload.idLead;
-  try{
-    const res = await fetch(api, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)});
-    if(!res.ok){ const txt = await res.text().catch(()=>res.statusText); alert('Errore create: '+txt); return; }
-    alert('Lead creato');
-    loadAll(); resetForm();
-  }catch(e){ console.error(e); alert('Errore rete: '+e.message); }
+
+  if (!payload.nome?.trim() || !payload.email?.trim()) {
+    showMessage('⚠️ Nome ed Email sono obbligatori', true);
+    return;
+  }
+
+  try {
+    const res = await fetch(api, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok) {
+      const txt = await res.text().catch(() => res.statusText);
+      showMessage('❌ Errore creazione: ' + txt, true);
+      return;
+    }
+    showMessage('✅ Lead creato con successo');
+    loadAll();
+    resetForm();
+  } catch (e) {
+    console.error(e);
+    showMessage('❌ Errore rete: ' + e.message, true);
+  }
 }
 
-async function updateLead(){
+async function updateLead() {
+  if (!window.currentLeadId) {
+    showMessage('⚠️ Seleziona un lead dalla tabella per aggiornare', true);
+    return;
+  }
   const payload = buildFromForm();
-  if(!payload.idLead){ alert('Seleziona un lead per aggiornare (clicca riga)'); return; }
-  try{
-    const res = await fetch(api + '/' + payload.idLead, {method:'PUT', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)});
-    if(!res.ok){ const txt = await res.text().catch(()=>res.statusText); alert('Errore update: '+txt); return; }
-    alert('Lead aggiornato'); loadAll(); resetForm();
-  }catch(e){ console.error(e); alert('Errore rete: '+e.message); }
+
+  try {
+    const res = await fetch(api + '/' + window.currentLeadId, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok) {
+      const txt = await res.text().catch(() => res.statusText);
+      showMessage('❌ Errore aggiornamento: ' + txt, true);
+      return;
+    }
+    showMessage('✅ Lead aggiornato con successo');
+    loadAll();
+    resetForm();
+  } catch (e) {
+    console.error(e);
+    showMessage('❌ Errore rete: ' + e.message, true);
+  }
 }
 
-async function deleteLead(){
-  const id = (document.getElementById('idLead').value || '').trim();
-  if(!id){ alert('Seleziona un lead da eliminare'); return; }
-  if(!confirm('Eliminare il lead ID '+id+'?')) return;
-  try{
-    const res = await fetch(api + '/' + id, {method:'DELETE'});
-    if(!res.ok){ const txt = await res.text().catch(()=>res.statusText); alert('Errore delete: '+txt); return; }
-    alert('Lead eliminato'); loadAll(); resetForm();
-  }catch(e){ console.error(e); alert('Errore rete: '+e.message); }
+async function deleteLead() {
+  if (!window.currentLeadId) {
+    showMessage('⚠️ Seleziona un lead dalla tabella per eliminare', true);
+    return;
+  }
+
+  if (!confirm('Sei sicuro di voler eliminare il lead ID ' + window.currentLeadId + '?')) return;
+
+  try {
+    const res = await fetch(api + '/' + window.currentLeadId, { method: 'DELETE' });
+    if (!res.ok) {
+      const txt = await res.text().catch(() => res.statusText);
+      showMessage('❌ Errore eliminazione: ' + txt, true);
+      return;
+    }
+    showMessage('✅ Lead eliminato con successo');
+    loadAll();
+    resetForm();
+  } catch (e) {
+    console.error(e);
+    showMessage('❌ Errore rete: ' + e.message, true);
+  }
 }
 
-function renderTable(leads){
-  const tbody = document.querySelector('#tabLeads tbody'); tbody.innerHTML = '';
-  if(!Array.isArray(leads)) leads = leads ? [leads] : [];
-  leads.forEach(l=>{
+async function deleteLeadById(id) {
+  if (!id) {
+    showMessage('⚠️ ID lead non valido', true);
+    return;
+  }
+
+  if (!confirm('Sei sicuro di voler eliminare il lead ID ' + id + '?')) return;
+
+  try {
+    const res = await fetch(api + '/' + id, { method: 'DELETE' });
+    if (!res.ok) {
+      const txt = await res.text().catch(() => res.statusText);
+      showMessage('❌ Errore eliminazione: ' + txt, true);
+      return;
+    }
+    showMessage('✅ Lead eliminato con successo');
+    loadAll();
+    resetForm();
+  } catch (e) {
+    console.error(e);
+    showMessage('❌ Errore rete: ' + e.message, true);
+  }
+}
+
+function renderTable(leads) {
+  const tbody = document.querySelector('#tabLeads tbody');
+  tbody.innerHTML = '';
+
+  if (!Array.isArray(leads)) {
+    leads = leads ? [leads] : [];
+  }
+
+  if (leads.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="11" style="text-align: center; color: #999;">Nessun lead trovato</td></tr>';
+    return;
+  }
+
+  leads.forEach(l => {
     const tr = document.createElement('tr');
-    tr.innerHTML = `\n      <td>${l.idLead ?? ''}</td>\n      <td>${escapeHtml(l.nome)}</td>\n      <td>${escapeHtml(l.email)}</td>\n      <td>${escapeHtml(l.telefono)}</td>\n      <td>${escapeHtml(l.citta)}</td>\n      <td>${escapeHtml(l.fonte)}</td>\n      <td>${l.convertitoInRichiesta? 'Sì':'No'}</td>\n    `;
-    tr.addEventListener('click', ()=>{ loadIntoForm(l); highlightRow(l.idLead); });
+    tr.innerHTML = `
+      <td style="text-align: center;">
+        <input type="checkbox" class="lead-checkbox" data-id="${l.idLead}" style="cursor: pointer;">
+      </td>
+      <td>${l.idLead ?? ''}</td>
+      <td>${escapeHtml(l.nome)}</td>
+      <td>${escapeHtml(l.email)}</td>
+      <td>${escapeHtml(l.telefono)}</td>
+      <td>${escapeHtml(l.citta)}</td>
+      <td>${escapeHtml(l.fonte)}</td>
+      <td>${escapeHtml(l.utente ? (l.utente.nome || ('ID: ' + l.utente.idUtente)) : '')}</td>
+      <td>${formatDate(l.createdAt)}</td>
+      <td>${formatDate(l.updatedAt)}</td>
+      <td style="text-align: center; white-space: nowrap;">
+        <button class="btn-edit" data-id="${l.idLead}" style="padding: 4px 8px; font-size: 12px; background-color: #28a745;">✏️ Modifica</button>
+        <button class="btn-delete" data-id="${l.idLead}" style="padding: 4px 8px; font-size: 12px; background-color: #dc3545; margin-left: 4px;">🗑️ Elimina</button>
+      </td>
+    `;
+    
+    // Event listener per checkbox
+    const checkbox = tr.querySelector('.lead-checkbox');
+    checkbox.addEventListener('change', (e) => {
+      if (e.target.checked) {
+        loadIntoForm(l);
+      } else {
+        resetForm();
+      }
+    });
+
+    // Event listener per bottone Modifica
+    tr.querySelector('.btn-edit').addEventListener('click', (e) => {
+      e.stopPropagation();
+      loadIntoForm(l);
+    });
+
+    // Event listener per bottone Elimina
+    tr.querySelector('.btn-delete').addEventListener('click', (e) => {
+      e.stopPropagation();
+      deleteLeadById(l.idLead);
+    });
+
     tbody.appendChild(tr);
   });
 }
 
-function loadIntoForm(l){
-  document.getElementById('idLead').value = l.idLead ?? '';
-  document.getElementById('utenteId').value = l.utente ? (l.utente.idUtente ?? '') : '';
-  document.getElementById('nome').value = l.nome ?? '';
-  document.getElementById('email').value = l.email ?? '';
-  document.getElementById('telefono').value = l.telefono ?? '';
-  document.getElementById('citta').value = l.citta ?? '';
-  document.getElementById('fonte').value = l.fonte ?? '';
-  document.getElementById('campagna').value = l.campagna ?? '';
-  document.getElementById('utmSource').value = l.utmSource ?? '';
-  document.getElementById('utmMedium').value = l.utmMedium ?? '';
-  document.getElementById('utmCampaign').value = l.utmCampaign ?? '';
-  document.getElementById('convertitoInRichiesta').checked = !!l.convertitoInRichiesta;
-  document.getElementById('idRichiesta').value = l.idRichiesta ?? '';
-  document.getElementById('assegnatoA').value = l.assegnatoA ?? '';
-  document.getElementById('note').value = l.note ?? '';
-}
-
-function resetForm(){
-  ['idLead','utenteId','nome','email','telefono','citta','fonte','campagna','utmSource','utmMedium','utmCampaign','idRichiesta','assegnatoA','note'].forEach(id=>{ const el = document.getElementById(id); if(el) el.value=''; });
-  document.getElementById('convertitoInRichiesta').checked = false;
-  document.getElementById('detail').innerHTML = '';
-  document.querySelectorAll('#tabLeads tbody tr._highlight').forEach(r=>r.classList.remove('_highlight'));
-}
-
-function highlightRow(id){
+function highlightRow(id) {
   const rows = Array.from(document.querySelectorAll('#tabLeads tbody tr'));
-  rows.forEach(r=>r.classList.remove('_highlight'));
-  if(!id) return;
-  const match = rows.find(r => (r.querySelectorAll('td')[0]?.textContent.trim()||'') === String(id));
-  if(match){ match.classList.add('_highlight'); match.scrollIntoView({behavior:'smooth', block:'center'}); }
+  rows.forEach(r => r.classList.remove('_highlight'));
+
+  if (!id) return;
+
+  const match = rows.find(r => {
+    const idCell = r.querySelector('td:first-child');
+    return idCell && idCell.textContent.trim() === String(id);
+  });
+
+  if (match) {
+    match.classList.add('_highlight');
+    match.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
 }
 
-function escapeHtml(s){ return s==null ? '' : String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[c])); }
+// ===== API CALLS =====
 
-async function loadAll(){
-  try{
-    const res = await fetch(api, {method:'GET', headers:{'Accept':'application/json'}});
-    if(!res.ok){ const txt = await res.text().catch(()=>res.statusText); alert('Errore get: '+txt); return; }
-    const list = await res.json(); renderTable(list);
-  }catch(e){ console.error(e); alert('Errore rete: '+e.message); }
+async function loadAll() {
+  try {
+    const res = await fetch(api, {
+      method: 'GET',
+      headers: { 'Accept': 'application/json' }
+    });
+    if (!res.ok) {
+      const txt = await res.text().catch(() => res.statusText);
+      showMessage('❌ Errore caricamento: ' + txt, true);
+      return;
+    }
+    const list = await res.json();
+    renderTable(list);
+    document.getElementById('searchResult').style.display = 'none';
+  } catch (e) {
+    console.error(e);
+    showMessage('❌ Errore rete: ' + e.message, true);
+  }
 }
 
-async function searchByEmail(){
-  const email = (document.getElementById('searchEmail').value || '').trim(); if(!email){ alert('Inserisci email'); return; }
-  try{
-    const res = await fetch(api + '/email/' + encodeURIComponent(email), {method:'GET', headers:{'Accept':'application/json'}});
-    if(!res.ok){ const txt = await res.text().catch(()=>res.statusText); alert('Errore: '+txt); return; }
-    const list = await res.json(); renderTable(list); document.getElementById('detail').innerHTML = `<strong>Risultati per email ${escapeHtml(email)}: ${Array.isArray(list)?list.length: (list?1:0)}</strong>`;
-  }catch(e){ console.error(e); alert('Errore rete: '+e.message); }
+async function searchByEmail() {
+  const email = (document.getElementById('searchEmail').value || '').trim();
+  if (!email) {
+    showMessage('⚠️ Inserisci un email per cercare', true);
+    return;
+  }
+
+  try {
+    const res = await fetch(api + '/email/' + encodeURIComponent(email), {
+      method: 'GET',
+      headers: { 'Accept': 'application/json' }
+    });
+    if (!res.ok) {
+      const txt = await res.text().catch(() => res.statusText);
+      showMessage('❌ Errore ricerca: ' + txt, true);
+      return;
+    }
+    const list = await res.json();
+    renderTable(list);
+    const srch = document.getElementById('searchResult');
+    const count = Array.isArray(list) ? list.length : (list ? 1 : 0);
+    srch.innerHTML = `<strong>🔍 Risultati per email ${escapeHtml(email)}: ${count}</strong>`;
+    srch.style.display = 'block';
+  } catch (e) {
+    console.error(e);
+    showMessage('❌ Errore rete: ' + e.message, true);
+  }
 }
+
+
 
 async function searchByCitta(){
-  const citta = (document.getElementById('searchCitta').value || '').trim(); if(!citta){ alert('Inserisci città'); return; }
+  const citta = (document.getElementById('searchCitta').value || '').trim();
+  if (!citta) {
+    showMessage('⚠️ Inserisci una città per cercare', true);
+    return;
+  }
+
   try{
     const res = await fetch(api + '/citta/' + encodeURIComponent(citta), {method:'GET', headers:{'Accept':'application/json'}});
-    if(!res.ok){ const txt = await res.text().catch(()=>res.statusText); alert('Errore: '+txt); return; }
-    const list = await res.json(); renderTable(list); document.getElementById('detail').innerHTML = `<strong>Risultati per città ${escapeHtml(citta)}: ${Array.isArray(list)?list.length: (list?1:0)}</strong>`;
-  }catch(e){ console.error(e); alert('Errore rete: '+e.message); }
+    if(!res.ok){ const txt = await res.text().catch(()=>res.statusText); showMessage('❌ Errore ricerca: ' + txt, true); return; }
+    const list = await res.json(); 
+    renderTable(list);
+    const srch = document.getElementById('searchResult');
+    const count = Array.isArray(list) ? list.length : (list ? 1 : 0);
+    srch.innerHTML = `<strong>🔍 Risultati per città ${escapeHtml(citta)}: ${count}</strong>`;
+    srch.style.display = 'block';
+  }catch(e){ console.error(e); showMessage('❌ Errore rete: ' + e.message, true); }
 }
 
 async function searchByUtente(){
-  const id = (document.getElementById('searchUtenteId').value || '').trim(); if(!id){ alert('Inserisci id utente'); return; }
-  if(!/^\d+$/.test(id)){ alert('ID utente deve essere numerico'); return; }
+  const id = (document.getElementById('searchUtenteId').value || '').trim();
+  if (!id) {
+    showMessage('⚠️ Inserisci un ID utente per cercare', true);
+    return;
+  }
+
+  if (!/^\d+$/.test(id)) {
+    showMessage('⚠️ L\'ID utente deve essere un numero', true);
+    return;
+  }
+
   try{
     const res = await fetch(api + '/utente/' + encodeURIComponent(id), {method:'GET', headers:{'Accept':'application/json'}});
-    if(!res.ok){ const txt = await res.text().catch(()=>res.statusText); alert('Errore: '+txt); return; }
-    const list = await res.json(); renderTable(list); document.getElementById('detail').innerHTML = `<strong>Risultati per utente ID ${escapeHtml(id)}: ${Array.isArray(list)?list.length: (list?1:0)}</strong>`;
-  }catch(e){ console.error(e); alert('Errore rete: '+e.message); }
+    if(!res.ok){ const txt = await res.text().catch(()=>res.statusText); showMessage('❌ Errore ricerca: ' + txt, true); return; }
+    const list = await res.json(); 
+    renderTable(list);
+    const srch = document.getElementById('searchResult');
+    const count = Array.isArray(list) ? list.length : (list ? 1 : 0);
+    srch.innerHTML = `<strong>🔍 Risultati per utente ID ${escapeHtml(id)}: ${count}</strong>`;
+    srch.style.display = 'block';
+  }catch(e){ console.error(e); showMessage('❌ Errore rete: ' + e.message, true); }
 }
 
-// init: do not auto load, use button
+// ===== INITIALIZATION =====
+window.currentLeadId = null;
+
+document.addEventListener('DOMContentLoaded', () => {
+  loadUsers();
+  loadAll();
+});
 
 </script>
 

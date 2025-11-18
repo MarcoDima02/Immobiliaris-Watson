@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -23,7 +24,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = "utente") // Evita lazy loading issues
+@ToString(exclude = "utente")
 public class Lead {
 
     @Id
@@ -35,7 +36,7 @@ public class Lead {
     @JoinColumn(name = "idUtente", referencedColumnName = "idUtente")
     private Utente utente;
 
-    @Column(length = 100)
+    @Column(name = "nome_completo", length = 100)
     private String nome;
 
     @Column(length = 150)
@@ -50,34 +51,18 @@ public class Lead {
     @Column(length = 100)
     private String fonte;
 
-    @Column(length = 100)
-    private String campagna;
-
-    @Column(length = 100)
-    private String utmSource;
-
-    @Column(length = 100)
-    private String utmMedium;
-
-    @Column(length = 100)
-    private String utmCampaign;
-
-    @Column(nullable = false)
-    private boolean convertitoInRichiesta = false;
-
-    private Integer idRichiesta;
-    private Integer assegnatoA;
-
-    @Column(columnDefinition = "TEXT")
-    private String note;
-
     @Column(name = "createdAt", nullable = false, updatable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime createdAt;
 
     @Column(name = "updatedAt")
-    private LocalDateTime updatedAt = LocalDateTime.now();
+    private LocalDateTime updatedAt;
 
-    // --- CALLBACK AUTOMATICO PER UPDATE ---
+    @PrePersist
+    public void onCreate() {
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
     @PreUpdate
     public void onUpdate() {
         this.updatedAt = LocalDateTime.now();
