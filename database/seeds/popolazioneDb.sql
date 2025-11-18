@@ -37,6 +37,7 @@ VALUES
   ('10138', 1, 2100.00, 'seed_torino_agg_v1', '2025-11-01', NULL, 0.72, CURRENT_TIMESTAMP),
   ('10139', 1, 2000.00, 'seed_torino_agg_v1', '2025-11-01', NULL, 0.70, CURRENT_TIMESTAMP),
   ('10141', 1, 1900.00, 'seed_torino_agg_v1', '2025-11-01', NULL, 0.68, CURRENT_TIMESTAMP),
+  ('10142', 1, 1900.00, 'seed_torino_agg_v1', '2025-11-01', NULL, 0.68, CURRENT_TIMESTAMP),
   ('10143', 1, 1800.00, 'seed_torino_agg_v1', '2025-11-01', NULL, 0.66, CURRENT_TIMESTAMP),
   ('10144', 1, 1750.00, 'seed_torino_agg_v1', '2025-11-01', NULL, 0.65, CURRENT_TIMESTAMP),
   ('10145', 1, 1700.00, 'seed_torino_agg_v1', '2025-11-01', NULL, 0.64, CURRENT_TIMESTAMP),
