@@ -3,7 +3,9 @@ package com.residea.residea.dto;
 import java.math.BigDecimal;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
 
+@Data
 public class FormValutazioneRequest {
 
     // Obbligatori
@@ -55,92 +57,4 @@ public class FormValutazioneRequest {
     private String cognomeUtente;
     private String emailUtente;
     private String telefonoUtente;
-
-    // Getters & Setters
-    public String getTipologia() { return tipologia; }
-    public void setTipologia(String tipologia) { this.tipologia = tipologia; }
-
-    public BigDecimal getSuperficie() { return superficie; }
-    public void setSuperficie(BigDecimal superficie) { this.superficie = superficie; }
-
-    public String getIndirizzo() { return indirizzo; }
-    public void setIndirizzo(String indirizzo) { this.indirizzo = indirizzo; }
-
-    public String getProvincia() { return provincia; }
-    public void setProvincia(String provincia) { this.provincia = provincia; }
-
-    public String getCitta() { return citta; }
-    public void setCitta(String citta) { this.citta = citta; }
-
-    public String getCap() { return cap; }
-    public void setCap(String cap) { this.cap = cap; }
-
-    public Integer getNStanze() { return nStanze; }
-    public void setNStanze(Integer nStanze) { this.nStanze = nStanze; }
-
-    public Integer getNBagni() { return nBagni; }
-    public void setNBagni(Integer nBagni) { this.nBagni = nBagni; }
-
-    public String getFinalitaRichiesta() { return finalitaRichiesta; }
-    public void setFinalitaRichiesta(String finalitaRichiesta) { this.finalitaRichiesta = finalitaRichiesta; }
-
-    public Integer getPiano() { return piano; }
-    public void setPiano(Integer piano) { this.piano = piano; }
-
-    public Integer getPianiTotali() { return pianiTotali; }
-    public void setPianiTotali(Integer pianiTotali) { this.pianiTotali = pianiTotali; }
-
-    public Boolean getAscensore() { return ascensore; }
-    public void setAscensore(Boolean ascensore) { this.ascensore = ascensore; }
-
-    public Boolean getGarage() { return garage; }
-    public void setGarage(Boolean garage) { this.garage = garage; }
-
-    public BigDecimal getSuperficieGarage() { return superficieGarage; }
-    public void setSuperficieGarage(BigDecimal superficieGarage) { this.superficieGarage = superficieGarage; }
-
-    public BigDecimal getSuperficieBalconeTerrazzo() { return superficieBalconeTerrazzo; }
-    public void setSuperficieBalconeTerrazzo(BigDecimal superficieBalconeTerrazzo) { this.superficieBalconeTerrazzo = superficieBalconeTerrazzo; }
-
-    public Boolean getGiardino() { return giardino; }
-    public void setGiardino(Boolean giardino) { this.giardino = giardino; }
-
-    public BigDecimal getSuperficieGiardino() { return superficieGiardino; }
-    public void setSuperficieGiardino(BigDecimal superficieGiardino) { this.superficieGiardino = superficieGiardino; }
-
-    public Boolean getCantina() { return cantina; }
-    public void setCantina(Boolean cantina) { this.cantina = cantina; }
-
-    public BigDecimal getSuperficieCantina() { return superficieCantina; }
-    public void setSuperficieCantina(BigDecimal superficieCantina) { this.superficieCantina = superficieCantina; }
-
-    public String getTipoRiscaldamento() { return tipoRiscaldamento; }
-    public void setTipoRiscaldamento(String tipoRiscaldamento) { this.tipoRiscaldamento = tipoRiscaldamento; }
-
-    public String getClasseEnergetica() { return classeEnergetica; }
-    public void setClasseEnergetica(String classeEnergetica) { this.classeEnergetica = classeEnergetica; }
-
-    public Integer getAnnoCostruzione() { return annoCostruzione; }
-    public void setAnnoCostruzione(Integer annoCostruzione) { this.annoCostruzione = annoCostruzione; }
-
-    public String getCondizione() { return condizione; }
-    public void setCondizione(String condizione) { this.condizione = condizione; }
-
-    public String getEsposizione() { return esposizione; }
-    public void setEsposizione(String esposizione) { this.esposizione = esposizione; }
-
-    public Integer getIdUtente() { return idUtente; }
-    public void setIdUtente(Integer idUtente) { this.idUtente = idUtente; }
-
-    public String getNomeUtente() { return nomeUtente; }
-    public void setNomeUtente(String nomeUtente) { this.nomeUtente = nomeUtente; }
-
-    public String getCognomeUtente() { return cognomeUtente; }
-    public void setCognomeUtente(String cognomeUtente) { this.cognomeUtente = cognomeUtente; }
-
-    public String getEmailUtente() { return emailUtente; }
-    public void setEmailUtente(String emailUtente) { this.emailUtente = emailUtente; }
-
-    public String getTelefonoUtente() { return telefonoUtente; }
-    public void setTelefonoUtente(String telefonoUtente) { this.telefonoUtente = telefonoUtente; }
 }
