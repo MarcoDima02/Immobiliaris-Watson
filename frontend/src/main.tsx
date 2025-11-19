@@ -16,5 +16,7 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import router from '@/routes';
 
 createRoot(document.getElementById('root')!).render(<StrictMode>
-  <RouterProvider router={router}/>
+
+    <RouterProvider router={router} />
+
 </StrictMode>);
