@@ -11,7 +11,7 @@ const About = ({ id }: AboutProps) => {
   return (
     <section
       id={id}
-      className="container max-w-xl lg:max-w-[1400px] mx-auto py-24 my-12"
+      className="container max-w-xl lg:max-w-[1400px] mx-auto my-12"
     >
       <div className="flex flex-col items-center mx-auto text-center pb-8">
         <h2 className="title">Chi siamo</h2>
