@@ -42,6 +42,8 @@ export const propertySchema = z.object({
 });
 
 export const ownerSchema = z.object({
-  emailUtente: z.email('Email non valida').optional(),
-  telefonoUtente: z.string().max(10, 'Il numero deve essere di 10 cifre').optional(),
+  nomeUtente: z.string().min(3, 'Inserisci un nome valido'),
+  cognomeUtente: z.string().min(3, 'Inserisci un cognome valido'),
+  emailUtente: z.email('Email non valida'),
+  telefonoUtente: z.string('Inserisci un numero telefonico valido').max(10, 'Il numero deve essere di 10 cifre'),
 });

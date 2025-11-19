@@ -22,7 +22,7 @@ const Hero = ({ id }: HeroProps) => {
       </picture>
 
       {/* Overlay leggero per contrasto testo */}
-      <div className="absolute inset-0 bg-black/35 z-10 backdrop-blur-sm xl:backdrop-blur-none"></div>
+      <div className="absolute inset-0 bg-black/35 lg:bg-black/20 z-10 backdrop-blur-sm xl:backdrop-blur-none"></div>
 
       {/* Contenuto hero */}
       <div className="relative z-20 container mx-auto flex flex-col justify-center items-center xl:items-start xl:justify-start xl:mt-20 h-full px-6 md:px-8 xl:px-20 text-start">

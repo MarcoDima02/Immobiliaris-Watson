@@ -24,6 +24,16 @@ import { Button } from '@/components/ui/button';
 import { Field, FieldLabel, FieldGroup } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import Loader from '@/components/Loader';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 /**
  * Types
@@ -36,7 +46,7 @@ import { useState } from 'react';
  */
 import { Award } from 'lucide-react';
 
-type UserTypeValues = z.infer<typeof ownerSchema>;
+type UserValues = z.infer<typeof ownerSchema>;
 
 const URL = `${import.meta.env.VITE_API_URL}/valutazioni/form`;
 
@@ -51,17 +61,29 @@ const StepUserType = ({
   const [loading, setLoading] = useState(false);
   const [valuation, setValuation] = useState<any | null>(null);
 
-  const { control, handleSubmit } = useForm<UserTypeValues>({
+  const [openConfirm, setOpenConfirm] = useState(false);
+  const [pendingValues, setPendingValues] = useState<UserValues | null>(null);
+
+  const { control, handleSubmit } = useForm<UserValues>({
     resolver: zodResolver(ownerSchema),
     defaultValues: {
+      nomeUtente: data.nomeUtente ?? '',
+      cognomeUtente: data.cognomeUtente ?? '',
       emailUtente: data.emailUtente ?? '',
       telefonoUtente: data.telefonoUtente ?? '',
     },
     shouldUnregister: false,
   });
 
-  const onSubmit = async (values: UserTypeValues) => {
-    const allData = { ...data, ...values };
+  const prepareSubmit = handleSubmit((values) => {
+    setPendingValues(values);
+    setOpenConfirm(true);
+  });
+
+  const onSubmitConfirm = async () => {
+    if (!pendingValues) return;
+
+    const allData = { ...data, ...pendingValues };
     console.log('Tutti i dati del form:', allData);
     setData(allData);
     setLoading(true);
@@ -101,21 +123,18 @@ const StepUserType = ({
   }
 
   if (valuation) {
-    const { valoreFinale, valoreMin, valoreMax } = valuation;
+    const { valoreMin, valoreMax } = valuation;
 
     return (
       <Card className="max-w-2xl mx-auto">
         <CardHeader>
-          <CardTitle className='flex gap-3 justify-center'><Award /> Valutazione completata</CardTitle>
+          <CardTitle className="flex gap-3 justify-center">
+            <Award /> Valutazione completata
+          </CardTitle>
         </CardHeader>
 
         <CardContent className="space-y-6">
           <div className="p-5 bg-primary/10 rounded-lg border text-center">
-            <p className="text-sm text-primary">Valore stimato</p>
-            <p className="text-3xl font-bold text-primary">
-              € {valoreFinale.toLocaleString('it-IT')}
-            </p>
-
             <p className="text-sm mt-2">
               Range: <strong>€ {valoreMin.toLocaleString('it-IT')}</strong> –{' '}
               <strong>€ {valoreMax.toLocaleString('it-IT')}</strong>
@@ -130,95 +149,163 @@ const StepUserType = ({
           >
             Torna indietro
           </Button>
-          <Button>Scarica report PDF</Button>
+          <Button>Torna alla home</Button>
         </CardFooter>
       </Card>
     );
   }
 
   return (
-    <Card className="max-w-xl mx-auto">
-      <CardHeader>
-        <CardTitle>
-          Lasci i suoi riferimenti e un nostro consulente la contatterà al più
-          presto.
-        </CardTitle>
-      </CardHeader>
+    <>
+      <AlertDialog
+        open={openConfirm}
+        onOpenChange={setOpenConfirm}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confermi l’invio dei dati?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Assicurati che le informazioni inserite siano corrette prima di
+              continuare.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
 
-      <CardContent>
-        <form
-          id="user-form"
-          onSubmit={handleSubmit(onSubmit)}
-        >
-          <FieldGroup>
-            <Controller
-              name="emailUtente"
-              control={control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel>Email</FieldLabel>
-                  <Input
-                    type="email"
-                    placeholder="Es. esempio@email.com"
-                    {...field}
-                  />
-                  {fieldState.error && (
-                    <p className="text-red-500 text-sm">
-                      {fieldState.error.message}
-                    </p>
-                  )}
-                </Field>
-              )}
-            />
+          <AlertDialogFooter>
+            <AlertDialogCancel>Annulla</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                setOpenConfirm(false);
+                onSubmitConfirm();
+              }}
+            >
+              Conferma
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
-            <Controller
-              name="telefonoUtente"
-              control={control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel>Telefono</FieldLabel>
-                  <Input
-                    type="tel"
-                    placeholder="Es. +39 345 678 9012"
-                    {...field}
-                    pattern="^(\+39\s?)?(\d{6,12})$"
-                    onInvalid={(e) => {
-                      e.currentTarget.setCustomValidity(
-                        'Inserisci un numero di telefono valido'
-                      );
-                    }}
-                    onInput={(e) => {
-                      // resetta l’errore quando l’utente digita
-                      e.currentTarget.setCustomValidity('');
-                    }}
-                  />
-                  {fieldState.error && (
-                    <p className="text-red-500 text-sm">
-                      {fieldState.error.message}
-                    </p>
-                  )}
-                </Field>
-              )}
-            />
-          </FieldGroup>
-        </form>
-      </CardContent>
-      <CardFooter className="flex justify-between">
-        <Button
-          variant="outline"
-          onClick={onBack}
-        >
-          Indietro
-        </Button>
-        <Button
-          type="submit"
-          form="user-form"
-          className="hover:bg-card"
-        >
-          Avanti
-        </Button>
-      </CardFooter>
-    </Card>
+      <Card className="max-w-xl mx-auto">
+        <CardHeader>
+          <CardTitle>
+            Lascia i tuoi riferimenti e un nostro consulente la contatterà al
+            più presto.
+          </CardTitle>
+        </CardHeader>
+
+        <CardContent>
+          <form id="user-form">
+            <FieldGroup>
+              <Controller
+                name="nomeUtente"
+                control={control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel>Nome</FieldLabel>
+                    <Input
+                      type="text"
+                      placeholder="Es. Marco"
+                      {...field}
+                    />
+                    {fieldState.error && (
+                      <p className="text-red-500 text-sm">
+                        {fieldState.error.message}
+                      </p>
+                    )}
+                  </Field>
+                )}
+              />
+
+              <Controller
+                name="cognomeUtente"
+                control={control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel>Cognome</FieldLabel>
+                    <Input
+                      type="email"
+                      placeholder="Es. Rossi"
+                      {...field}
+                    />
+                    {fieldState.error && (
+                      <p className="text-red-500 text-sm">
+                        {fieldState.error.message}
+                      </p>
+                    )}
+                  </Field>
+                )}
+              />
+
+              <Controller
+                name="emailUtente"
+                control={control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel>Email</FieldLabel>
+                    <Input
+                      type="email"
+                      placeholder="Es. esempio@email.com"
+                      {...field}
+                    />
+                    {fieldState.error && (
+                      <p className="text-red-500 text-sm">
+                        {fieldState.error.message}
+                      </p>
+                    )}
+                  </Field>
+                )}
+              />
+
+              <Controller
+                name="telefonoUtente"
+                control={control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel>Telefono</FieldLabel>
+                    <Input
+                      type="tel"
+                      placeholder="Es. +39 345 678 9012"
+                      {...field}
+                      pattern="^(\+39\s?)?(\d{6,12})$"
+                      onInvalid={(e) => {
+                        e.currentTarget.setCustomValidity(
+                          'Inserisci un numero di telefono valido'
+                        );
+                      }}
+                      onInput={(e) => {
+                        // resetta l’errore quando l’utente digita
+                        e.currentTarget.setCustomValidity('');
+                      }}
+                    />
+                    {fieldState.error && (
+                      <p className="text-red-500 text-sm">
+                        {fieldState.error.message}
+                      </p>
+                    )}
+                  </Field>
+                )}
+              />
+            </FieldGroup>
+          </form>
+        </CardContent>
+        <CardFooter className="flex justify-between">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onBack}
+          >
+            Indietro
+          </Button>
+          <Button
+            type="button"
+            form="user-form"
+            className="hover:bg-card"
+            onClick={prepareSubmit}
+          >
+            Avanti
+          </Button>
+        </CardFooter>
+      </Card>
+    </>
   );
 };
 

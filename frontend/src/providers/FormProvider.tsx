@@ -38,6 +38,8 @@ export type FormPayload = {
   longitude?: number;
 
   // contacts
+  nomeUtente?: string;
+  cognomeUtente?: string;
   emailUtente?: string;
   telefonoUtente?: string;
 };

@@ -148,41 +148,6 @@ const StepAddress = ({ onNext }: { onNext: () => void }) => {
     geocode(address);
   }, [address, selectedAddress]);
 
-  // const onSelectSuggestion = (feature: any) => {
-  //   const selectedAddress = feature.place_name;
-  //   const [lng, lat] = feature.center;
-
-  //   let cap = '';
-  //   let citta = '';
-  //   feature.context?.forEach((ctx: any) => {
-  //     if (ctx.id.startsWith('postcode.')) cap = ctx.text;
-  //     if (ctx.id.startsWith('place.') || ctx.id.startsWith('locality.')) {
-  //       citta = ctx.text;
-  //     }
-  //   });
-
-  //   // Provincia tramite CAP
-  //   const provincia = capToProvinceMap[cap] ?? '';
-
-  //   setValue('indirizzo', selectedAddress, { shouldValidate: true });
-  //   setValue('citta', citta);
-  //   setValue('provincia', provincia);
-  //   setValue('cap', cap);
-
-  //   setData({
-  //     indirizzo: selectedAddress,
-  //     citta,
-  //     provincia,
-  //     cap,
-  //     longitude: lng,
-  //     latitude: lat,
-  //   });
-
-  //   setMarker(lng, lat);
-  //   setSelectedAddress(selectedAddress);
-  //   setSuggestions([]);
-  // };
-
   const onSelectSuggestion = (feature: any) => {
     const selectedAddress = feature.place_name;
     const [longitude, latitude] = feature.center;
@@ -418,14 +383,9 @@ const StepAddress = ({ onNext }: { onNext: () => void }) => {
       <CardFooter>
         <Field
           orientation="horizontal"
-          className="flex justify-between"
+          className="flex justify-end"
         >
-          <Button
-            type="button"
-            variant="outline"
-          >
-            Indietro
-          </Button>
+  
           <Button
             type="submit"
             form="address-form"

@@ -124,10 +124,10 @@ const StepProperty = ({
   const propertyTypes = [
     { label: 'Appartamento', value: 'appartamento', icon: <Building /> },
     { label: 'Villa', value: 'villa', icon: <House /> },
-    { label: 'Monolocale', value: 'monolocale', icon: <Building2 /> },
+    { label: 'Attico', value: 'attico', icon: <Building2 /> },
     {
-      label: 'Casa indipendente',
-      value: 'casa_indipendente',
+      label: 'Loft',
+      value: 'loft',
       icon: <School />,
     },
   ];
@@ -230,7 +230,6 @@ const StepProperty = ({
                 />
 
                 <div className="grid grid-cols-2 gap-3">
-      
                   <Controller
                     name="nStanze"
                     control={control}

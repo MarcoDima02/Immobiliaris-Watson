@@ -108,6 +108,7 @@ export default function StepOptional({
     <Card className="max-w-xl mx-auto">
       <CardHeader>
         <CardTitle>Dettagli aggiuntivi dell'immobile</CardTitle>
+        <h3 className='text-yellow-700'>I seguenti campi sono facoltativi, ma più dettagli inserisci sull’immobile, più precisa sarà la stima del prezzo.</h3>
       </CardHeader>
 
       <CardContent>
