@@ -1,8 +1,4 @@
 import { hero2Avif, hero2Webp, hero2Jpg } from '@/assets';
-
-/**
- * Components
- */
 import { Button } from '@/components/ui/button';
 
 interface HeroProps {
@@ -11,76 +7,42 @@ interface HeroProps {
 
 const Hero = ({ id }: HeroProps) => {
   return (
-    <section
-      id={id}
-      className=""
-    >
-
-      <div
-        className="relative h-[40vh] xl:h-[80vh] w-full flex justify-start items-start flex-col text-start mx-auto"
-      >
-        {/* Mirrored background image */}
-        <div
-          className="absolute inset-0 pointer-events-none opacity-20 xl:opacity-55"
-          style={{
-            backgroundImage: `url(${hero2Jpg})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'top',
-            transform: 'scaleX(-1)',
-            transformOrigin: 'center',
-            zIndex: 0
-          }}
+    <section id={id} className="relative w-full h-[60vh] lg:h-[80vh]  xl:h-[85vh] overflow-hidden">
+      
+      {/* Background image con supporto responsive e fallback */}
+      <picture className="absolute inset-0 w-full h-full -scale-x-100">
+        <source srcSet={hero2Avif} type="image/avif" />
+        <source srcSet={hero2Webp} type="image/webp" />
+        <img
+          src={hero2Jpg}
+          alt="Immagine di un appartamento"
+          className="w-full h-full object-cover object-top opacity-30 md:opacity-50 xl:opacity-100"
+          loading="lazy"
         />
+      </picture>
 
-        <figure className="absolute inset-0 pointer-events-none opacity-20 xl:opacity-100 w-full h-full bg-top"
-        >
-          <picture>
-            <source
-              srcSet={hero2Avif}
-              type="image/avif"
-            />
-            <source
-              srcSet={hero2Webp}
-              type="image/webp"
-            />
-            <img
-              src={hero2Jpg}
-              alt="Immagine di un appartamento"
-              loading="lazy"
-              style={{
-                backgroundPosition: 'top',
-                transform: 'scaleX(-1)',
-                transformOrigin: 'center',
-                zIndex: 0
-              }}
-              className='w-full h-full object-cover object-top!'
+      {/* Overlay leggero per contrasto testo */}
+      <div className="absolute inset-0 bg-black/35 z-10 backdrop-blur-sm xl:backdrop-blur-none"></div>
 
-            />
-          </picture>
-        </figure>
-
-
-        <div className="container z-20 flex flex-col mx-auto justify-center xl:mt-20 p-10 text-start w-fit md:w-full h-full xl:h-fit">
-          <h1 className="title lg:mx-0 mt-8 xl:text-6xl! 2xl:text-7xl! font-extrabold">
-            Vuoi <span className='text-primary text-shadow-primary text-shadow-lg/10 '>vendere casa</span><br></br>senza stress?
-          </h1>
-          <h2 className="title-secondary lg:mx-0 xl:text-2xl! mb-6">
-            Con noi, il tuo immobile trova presto il suo nuovo proprietario.
-          </h2>
-          <div className="flex justify-start">
-            <Button
-              asChild
-              size="lg"
-              className="text-md lg:text-lg"
-            >
-              <a href="#valutazione">Valuta ora</a>
-            </Button>
-          </div>
+      {/* Contenuto hero */}
+      <div className="relative z-20 container mx-auto flex flex-col justify-center items-center xl:items-start xl:justify-start xl:mt-20 h-full px-6 md:px-8 xl:px-20 text-start">
+        <h1 className="text-3xl md:text-4xl xl:text-6xl 2xl:text-7xl font-extrabold leading-tight text-white drop-shadow-lg">
+          Vuoi{' '}
+          <span className="text-primary text-shadow-primary">
+            vendere casa
+          </span>
+          <br />
+          senza stress?
+        </h1>
+        <p className="mt-4 md:mt-6 text-md md:text-lg xl:text-2xl text-white/90 max-w-xl drop-shadow-md">
+          Con noi, il tuo immobile trova presto il suo nuovo proprietario.
+        </p>
+        <div className="mt-6 md:mt-8">
+          <Button asChild size="lg" className="text-md lg:text-lg">
+            <a href="#valutazione">Valuta ora</a>
+          </Button>
         </div>
       </div>
-
-
-
     </section>
   );
 };
