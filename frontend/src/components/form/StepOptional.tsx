@@ -1,8 +1,12 @@
+/**
+ * Node modules
+ */
+import { useState } from 'react';
 import { z } from 'zod';
 /**
  * Context
  */
-import { useFormContext } from '@/hooks/useFormContext ';
+import { useFormContext } from '@/hooks/useFormContext';
 import { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -25,7 +29,12 @@ import {
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 
-import { Field, FieldLabel, FieldGroup } from '@/components/ui/field';
+import {
+  Field,
+  FieldLabel,
+  FieldGroup,
+  FieldError,
+} from '@/components/ui/field';
 
 /**
  * Types
@@ -97,7 +106,7 @@ export default function StepOptional({
   const onSubmit = (values: PropertyValues) => {
     setData(values);
     onNext();
-    window.scrollBy({ top: -400, left: 0, behavior: 'smooth' });
+    window.scrollBy({ top: -600, left: 0, behavior: 'smooth' });
   };
 
   const garageValue = watch('garage');
@@ -108,7 +117,10 @@ export default function StepOptional({
     <Card className="max-w-xl mx-auto">
       <CardHeader>
         <CardTitle>Dettagli aggiuntivi dell'immobile</CardTitle>
-        <h3 className='text-yellow-700'>I seguenti campi sono facoltativi, ma più dettagli inserisci sull’immobile, più precisa sarà la stima del prezzo.</h3>
+        <h3 className="text-yellow-700">
+          I seguenti campi sono facoltativi, ma più dettagli inserisci
+          sull’immobile, più precisa sarà la stima del prezzo.
+        </h3>
       </CardHeader>
 
       <CardContent>
@@ -122,47 +134,73 @@ export default function StepOptional({
               <Controller
                 name="piano"
                 control={control}
-                render={({ field }) => (
-                  <Field>
-                    <FieldLabel>Piano</FieldLabel>
-                    <Input
-                      type="number"
-                      placeholder="Es. 2"
-                      {...field}
-                      value={field.value ?? ''}
-                      onChange={(e) =>
-                        field.onChange(
-                          isNaN(e.target.valueAsNumber)
-                            ? undefined
-                            : e.target.valueAsNumber
-                        )
-                      }
-                    />
-                  </Field>
-                )}
+                render={({ field, fieldState }) => {
+                  const [localValue, setLocalValue] = useState(
+                    field.value?.toString() ?? ''
+                  );
+
+                  return (
+                    <Field>
+                      <FieldLabel>Piano</FieldLabel>
+                      <Input
+                        type="number"
+                        placeholder="Es. 2"
+                        value={localValue}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          setLocalValue(val);
+                          const num = Number(val);
+                          field.onChange(
+                            val === ''
+                              ? undefined
+                              : isNaN(num)
+                                ? undefined
+                                : num
+                          );
+                        }}
+                      />
+                      {fieldState.error && (
+                        <FieldError>{fieldState.error.message}</FieldError>
+                      )}
+                    </Field>
+                  );
+                }}
               />
 
               <Controller
                 name="pianiTotali"
                 control={control}
-                render={({ field }) => (
-                  <Field>
-                    <FieldLabel>Piani totali</FieldLabel>
-                    <Input
-                      type="number"
-                      placeholder="Es. 5"
-                      {...field}
-                      value={field.value ?? ''}
-                      onChange={(e) =>
-                        field.onChange(
-                          isNaN(e.target.valueAsNumber)
-                            ? undefined
-                            : e.target.valueAsNumber
-                        )
-                      }
-                    />
-                  </Field>
-                )}
+                render={({ field, fieldState }) => {
+                  const [localValue, setLocalValue] = useState(
+                    field.value?.toString() ?? ''
+                  );
+
+                  return (
+                    <Field>
+                      <FieldLabel>Piani totali</FieldLabel>
+                      <Input
+                        type="number"
+                        placeholder="Es. 2"
+                        value={localValue}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          setLocalValue(val);
+                          const num = Number(val);
+                          field.onChange(
+                            val === ''
+                              ? undefined
+                              : isNaN(num)
+                                ? undefined
+                                : num
+                          );
+                        }}
+                      />
+                      {fieldState.error && (
+                        <FieldError>{fieldState.error.message}</FieldError>
+                      )}
+                    </Field>
+                  );
+                }}
               />
             </div>
 
@@ -204,49 +242,95 @@ export default function StepOptional({
               <Controller
                 name="superficieGarage"
                 control={control}
-                render={({ field }) => (
-                  <Field>
-                    <FieldLabel>Superficie Garage (m²)</FieldLabel>
-                    <Input
-                      type="number"
-                      placeholder="Es. 20"
-                      {...field}
-                      value={field.value ?? ''}
-                      onChange={(e) =>
-                        field.onChange(
-                          isNaN(e.target.valueAsNumber)
-                            ? undefined
-                            : e.target.valueAsNumber
-                        )
-                      }
-                    />
-                  </Field>
-                )}
+                render={({ field, fieldState }) => {
+                  const [localValue, setLocalValue] = useState(
+                    field.value?.toString() ?? ''
+                  );
+
+                  return (
+                    <Field>
+                      <FieldLabel>Superficie Garage (m²)</FieldLabel>
+                      <Input
+                        type="number"
+                        placeholder="Es. 20"
+                        value={localValue}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          setLocalValue(val);
+                          const num = Number(val);
+                          field.onChange(
+                            val === ''
+                              ? undefined
+                              : isNaN(num)
+                                ? undefined
+                                : num
+                          );
+                        }}
+                      />
+                      {fieldState.error && (
+                        <FieldError>{fieldState.error.message}</FieldError>
+                      )}
+                    </Field>
+                  );
+                }}
               />
+
+              // <Controller
+              //   name="superficieGarage"
+              //   control={control}
+              //   render={({ field }) => (
+              //     <Field>
+              //       <FieldLabel>Superficie Garage (m²)</FieldLabel>
+              //       <Input
+              //         type="number"
+              //         placeholder="Es. 20"
+              //         {...field}
+              //         value={field.value ?? ''}
+              //         onChange={(e) =>
+              //           field.onChange(
+              //             isNaN(e.target.valueAsNumber)
+              //               ? undefined
+              //               : e.target.valueAsNumber
+              //           )
+              //         }
+              //       />
+              //     </Field>
+              //   )}
+              // />
             )}
 
             {/* Balcone/Terrazzo */}
+
             <Controller
               name="superficieBalconeTerrazzo"
               control={control}
-              render={({ field }) => (
-                <Field>
-                  <FieldLabel>Balcone/Terrazzo (m²)</FieldLabel>
-                  <Input
-                    type="number"
-                    placeholder="Es. 12"
-                    {...field}
-                    value={field.value ?? ''}
-                    onChange={(e) =>
-                      field.onChange(
-                        isNaN(e.target.valueAsNumber)
-                          ? undefined
-                          : e.target.valueAsNumber
-                      )
-                    }
-                  />
-                </Field>
-              )}
+              render={({ field, fieldState }) => {
+                const [localValue, setLocalValue] = useState(
+                  field.value?.toString() ?? ''
+                );
+
+                return (
+                  <Field>
+                    <FieldLabel>Balcone/Terrazzo (m²)</FieldLabel>
+                    <Input
+                      type="number"
+                      placeholder="Es. 12"
+                      value={localValue}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setLocalValue(val);
+                        const num = Number(val);
+                        field.onChange(
+                          val === '' ? undefined : isNaN(num) ? undefined : num
+                        );
+                      }}
+                    />
+                    {fieldState.error && (
+                      <FieldError>{fieldState.error.message}</FieldError>
+                    )}
+                  </Field>
+                );
+              }}
             />
 
             {/* Giardino + Mq */}
@@ -269,24 +353,37 @@ export default function StepOptional({
               <Controller
                 name="superficieGiardino"
                 control={control}
-                render={({ field }) => (
-                  <Field>
-                    <FieldLabel>Superficie Giardino (m²)</FieldLabel>
-                    <Input
-                      type="number"
-                      placeholder="Es. 50"
-                      {...field}
-                      value={field.value ?? ''}
-                      onChange={(e) =>
-                        field.onChange(
-                          isNaN(e.target.valueAsNumber)
-                            ? undefined
-                            : e.target.valueAsNumber
-                        )
-                      }
-                    />
-                  </Field>
-                )}
+                render={({ field, fieldState }) => {
+                  const [localValue, setLocalValue] = useState(
+                    field.value?.toString() ?? ''
+                  );
+
+                  return (
+                    <Field>
+                      <FieldLabel>Superficie Giardino (m²)</FieldLabel>
+                      <Input
+                        type="number"
+                        placeholder="Es. 2"
+                        value={localValue}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          setLocalValue(val);
+                          const num = Number(val);
+                          field.onChange(
+                            val === ''
+                              ? undefined
+                              : isNaN(num)
+                                ? undefined
+                                : num
+                          );
+                        }}
+                      />
+                      {fieldState.error && (
+                        <FieldError>{fieldState.error.message}</FieldError>
+                      )}
+                    </Field>
+                  );
+                }}
               />
             )}
 
@@ -311,24 +408,37 @@ export default function StepOptional({
               <Controller
                 name="superficieCantina"
                 control={control}
-                render={({ field }) => (
-                  <Field>
-                    <FieldLabel>Superficie Cantina (m²)</FieldLabel>
-                    <Input
-                      type="number"
-                      placeholder="Es. 8"
-                      {...field}
-                      value={field.value ?? ''}
-                      onChange={(e) =>
-                        field.onChange(
-                          isNaN(e.target.valueAsNumber)
-                            ? undefined
-                            : e.target.valueAsNumber
-                        )
-                      }
-                    />
-                  </Field>
-                )}
+                render={({ field, fieldState }) => {
+                  const [localValue, setLocalValue] = useState(
+                    field.value?.toString() ?? ''
+                  );
+
+                  return (
+                    <Field>
+                      <FieldLabel>Superficie Cantina (m²)</FieldLabel>
+                      <Input
+                        type="number"
+                        placeholder="Es. 2"
+                        value={localValue}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          setLocalValue(val);
+                          const num = Number(val);
+                          field.onChange(
+                            val === ''
+                              ? undefined
+                              : isNaN(num)
+                                ? undefined
+                                : num
+                          );
+                        }}
+                      />
+                      {fieldState.error && (
+                        <FieldError>{fieldState.error.message}</FieldError>
+                      )}
+                    </Field>
+                  );
+                }}
               />
             )}
 

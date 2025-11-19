@@ -8,7 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 /**
  * Hooks
  */
-import { useFormContext } from '@/hooks/useFormContext ';
+import { useFormContext } from '@/hooks/useFormContext';
 
 /**
  * Components
@@ -115,7 +115,7 @@ const StepUserType = ({
     return (
       <div className="flex flex-col items-center justify-center py-20 gap-4">
         <Loader />
-        <p className="text-muted-foreground text-lg">
+        <p className="text-primary text-lg">
           Stiamo calcolando la valutazione del tuo immobile...
         </p>
       </div>
@@ -135,7 +135,7 @@ const StepUserType = ({
 
         <CardContent className="space-y-6">
           <div className="p-5 bg-primary/10 rounded-lg border text-center">
-            <p className="text-sm mt-2">
+            <p className="text-md mt-2">
               Range: <strong>€ {valoreMin.toLocaleString('it-IT')}</strong> –{' '}
               <strong>€ {valoreMax.toLocaleString('it-IT')}</strong>
             </p>
@@ -149,7 +149,9 @@ const StepUserType = ({
           >
             Torna indietro
           </Button>
-          <Button>Torna alla home</Button>
+          <Button asChild>
+            <a href="/">Ricarica il form</a>
+          </Button>
         </CardFooter>
       </Card>
     );
@@ -164,7 +166,7 @@ const StepUserType = ({
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Confermi l’invio dei dati?</AlertDialogTitle>
-            <AlertDialogDescription>
+            <AlertDialogDescription className="text-primary!">
               Assicurati che le informazioni inserite siano corrette prima di
               continuare.
             </AlertDialogDescription>
@@ -193,7 +195,10 @@ const StepUserType = ({
         </CardHeader>
 
         <CardContent>
-          <form id="user-form">
+          <form
+            id="user-form"
+            onSubmit={(e) => e.preventDefault()}
+          >
             <FieldGroup>
               <Controller
                 name="nomeUtente"
@@ -222,7 +227,7 @@ const StepUserType = ({
                   <Field data-invalid={fieldState.invalid}>
                     <FieldLabel>Cognome</FieldLabel>
                     <Input
-                      type="email"
+                      type="text"
                       placeholder="Es. Rossi"
                       {...field}
                     />

@@ -20,7 +20,7 @@ import { addressSchema } from '@/hooks/schemas/valuationSchema';
 /**
  * Context
  */
-import { useFormContext } from '@/hooks/useFormContext ';
+import { useFormContext } from '@/hooks/useFormContext';
 
 /**
  * Components
@@ -385,7 +385,6 @@ const StepAddress = ({ onNext }: { onNext: () => void }) => {
           orientation="horizontal"
           className="flex justify-end"
         >
-  
           <Button
             type="submit"
             form="address-form"
