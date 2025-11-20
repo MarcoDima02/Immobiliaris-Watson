@@ -85,7 +85,7 @@ function RequestDetails() {
                 <div className="w-full lg:w-[60%]">
                     <div className="bg-white rounded-xl h-48 shadow-md mt-5 p-4">
                         <p className="font-bold text-black">Stima dell'immobile</p>
-                        <div className="flex justify-between text-primary text-4xl px-5 py-3 font-extrabold">
+                        <div className="flex justify-between text-primary text-xl md:text-3xl lg:text-4xl xl:text-6xl px-5 py-3 font-extrabold">
                             <p className="w-[45%]">115.000 €</p>
                             <p className="w-[10%] text-center"> - </p>
                             <p className="w-[45%] text-end">165.000 €</p>
