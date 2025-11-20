@@ -105,9 +105,9 @@ const Header = () => {
         {/* Navigation */}
         <ul
           className={cn(
-            'text-center flex flex-col lg:flex-row gap-6 lg:gap-8 fixed lg:static top-20 lg:top-0 left-0 lg:left-auto w-full lg:w-auto shadow-lg lg:shadow-none py-6 lg:py-0 items-center lg:items-center justify-center lg:justify-end transform -translate-y-full lg:translate-y-0 opacity-0 lg:opacity-100 pointer-events-none lg:pointer-events-auto z-999',
+            'text-center flex flex-col lg:flex-row gap-6 lg:gap-8 fixed lg:static top-19 lg:top-0 left-0 lg:left-auto w-full lg:w-auto shadow-lg lg:shadow-none py-6 lg:py-0 items-center lg:items-center justify-center lg:justify-end transform -translate-y-full lg:translate-y-0 opacity-0 lg:opacity-100 pointer-events-none lg:pointer-events-auto z-999',
             isOpen
-              ? 'translate-y-0 opacity-100 pointer-events-auto transition-all duration-300 ease-in-out backdrop-blur-xl bg-[hsla(0,0%,100%,0.1)]'
+              ? 'translate-y-0 opacity-100 pointer-events-auto transition-all duration-300 ease-in-out backdrop-blur-xl bg-[hsla(0,0%,100%,0.4)]'
               : 'transition-none'
           )}
         >

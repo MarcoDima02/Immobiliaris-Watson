@@ -6,10 +6,6 @@ import mapboxgl from 'mapbox-gl';
 import debounce from 'lodash.debounce';
 import type z from 'zod';
 import { useForm, Controller } from 'react-hook-form';
-
-/**
- * Resolvers
- */
 import { zodResolver } from '@hookform/resolvers/zod';
 
 /**
