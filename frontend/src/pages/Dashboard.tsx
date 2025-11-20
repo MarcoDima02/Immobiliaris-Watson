@@ -1,5 +1,5 @@
-import AgentHome from "@/components/dashboard/AgentHome";
-import AgentNavbar from "@/components/dashboard/components/agentNavbar";
+import AgentNavbar from "@/components/dashboard/components/AgentNavbar";
+import WaitingRequestPage from "@/components/dashboard/pages/WaitingRequestPage";
 
 
 
@@ -12,7 +12,9 @@ export default function Dashboard() {
                     <AgentNavbar />
                 </div>
                 <div className="ms-16 md:ms-64 p-4">
-                    <AgentHome />
+                    {/* <AgentHome /> */}
+                    <WaitingRequestPage />
+
                 </div>
             </div>
 

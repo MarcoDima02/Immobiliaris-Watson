@@ -1,4 +1,4 @@
-import AgentRequestContainer from "./components/agentRequestContainer";
+import AgentRequestContainer from "../components/AgentRequestContainer";
 
 function AgentHome() {
     return (
