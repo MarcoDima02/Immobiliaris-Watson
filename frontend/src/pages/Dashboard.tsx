@@ -11,7 +11,7 @@ export default function Dashboard() {
                 <div>
                     <AgentNavbar />
                 </div>
-                <div className="ms-16 md:ms-64 p-4">
+                <div className="ms-13 md:ms-64 p-4 -mt-16">
                     {/* <AgentHome /> */}
                     <WaitingRequestPage />
 
