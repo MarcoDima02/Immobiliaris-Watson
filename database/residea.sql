@@ -180,10 +180,6 @@ CREATE TABLE Leads (
     telefono VARCHAR(20),
     citta VARCHAR(100),
     fonte VARCHAR(100),
-    campagna VARCHAR(100),
-    utm_source VARCHAR(100),
-    utm_medium VARCHAR(100),
-    utm_campaign VARCHAR(100),
     convertitoInRichiesta BOOLEAN DEFAULT FALSE,
     idRichiesta INT,
     assegnatoA INT,
@@ -191,12 +187,9 @@ CREATE TABLE Leads (
     createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
     updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (idUtente) REFERENCES Utente(idUtente) ON DELETE SET NULL,
-    FOREIGN KEY (idRichiesta) REFERENCES Richiesta(idRichiesta)
-    ON DELETE SET NULL ON UPDATE CASCADE,
-    FOREIGN KEY (assegnatoA) REFERENCES Utente(idUtente)
-    ON DELETE SET NULL ON UPDATE CASCADE
+    FOREIGN KEY (idRichiesta) REFERENCES Richiesta(idRichiesta) ON DELETE SET NULL ON UPDATE CASCADE,
+    FOREIGN KEY (assegnatoA) REFERENCES Utente(idUtente) ON DELETE SET NULL ON UPDATE CASCADE
 );
-
 
 -- ========================
 -- TABELLA: Vendite
