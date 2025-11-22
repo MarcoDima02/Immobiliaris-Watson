@@ -195,6 +195,22 @@ CREATE TABLE IF NOT EXISTS Vendite (
     FOREIGN KEY (idUtente) REFERENCES Utente(idUtente) ON DELETE CASCADE
 );
 
+-- ========================
+-- TABELLA: EmailLog (storico invii mail)
+-- ========================
+CREATE TABLE IF NOT EXISTS EmailLog (
+    idEmail INT AUTO_INCREMENT PRIMARY KEY,
+    destinatario VARCHAR(200),
+    subject VARCHAR(255),
+    template VARCHAR(150),
+    variablesJson TEXT,
+    status VARCHAR(20) DEFAULT 'PENDING',
+    attempts INT DEFAULT 0,
+    providerResponse TEXT,
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
 -- ============================================
 -- Dati di esempio per testing
 -- ============================================

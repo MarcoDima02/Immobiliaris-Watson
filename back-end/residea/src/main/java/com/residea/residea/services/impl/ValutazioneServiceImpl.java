@@ -22,6 +22,8 @@ import com.residea.residea.repos.ImmobileRepo;
 import com.residea.residea.repos.PrezzoPerCapRepo;
 import com.residea.residea.repos.SuperficiRepo;
 import com.residea.residea.repos.ValutazioneImmobileRepo;
+import org.springframework.context.ApplicationEventPublisher;
+import com.residea.residea.events.ValutazioneCreatedEvent;
 import com.residea.residea.services.ValutazioneImmobileService;
 
 @Service
@@ -33,16 +35,18 @@ public class ValutazioneServiceImpl implements ValutazioneImmobileService {
     private final DettagliImmobileRepo dettagliRepo;
     private final SuperficiRepo superficiRepo;
     private final ValutazioneImmobileRepo valutazioneRepo;
+    private final ApplicationEventPublisher publisher;
 
     public ValutazioneServiceImpl(PrezzoPerCapRepo prezzoRepo, CittaRepo cittaRepo, ImmobileRepo immobileRepo,
                                   DettagliImmobileRepo dettagliRepo, SuperficiRepo superficiRepo,
-                                  ValutazioneImmobileRepo valutazioneRepo) {
+                                  ValutazioneImmobileRepo valutazioneRepo, ApplicationEventPublisher publisher) {
         this.prezzoRepo = prezzoRepo;
         this.cittaRepo = cittaRepo;
         this.immobileRepo = immobileRepo;
         this.dettagliRepo = dettagliRepo;
         this.superficiRepo = superficiRepo;
         this.valutazioneRepo = valutazioneRepo;
+        this.publisher = publisher;
     }
 
     @Override
@@ -473,6 +477,27 @@ public class ValutazioneServiceImpl implements ValutazioneImmobileService {
         valutazione.setConfidence(result.getConfidence());
         
         valutazioneRepo.save(valutazione);
+
+        // Publish event so email listeners can notify the user (if email available)
+        try {
+            String email = null;
+            String name = null;
+            if (immobile.getProprietario() != null) {
+                email = immobile.getProprietario().getEmail();
+                name = immobile.getProprietario().getNome();
+            }
+
+            if ((email == null || email.isBlank()) && req.getEmailUtente() != null && !req.getEmailUtente().isBlank()) {
+                email = req.getEmailUtente();
+                name = req.getNomeUtente();
+            }
+
+            if (email != null && !email.isBlank()) {
+                publisher.publishEvent(new ValutazioneCreatedEvent(valutazione.getIdValutazione(), email, name, result.getValoreMedio()));
+            }
+        } catch (Exception ex) {
+            // non-blocking: log and continue
+        }
         
         // Aggiungi idImmobile alla response
         result.setIdImmobile(idImmobile);

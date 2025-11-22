@@ -39,6 +39,15 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/residea_db
       - SPRING_DATASOURCE_USERNAME=residea_user
       - SPRING_DATASOURCE_PASSWORD=ResideaP@ss
+      # Mail configuration will be taken from the project .env so dev compose uses same SMTP settings
+      - MAIL_HOST=${MAIL_HOST}
+      - MAIL_PORT=${MAIL_PORT}
+      - MAIL_USER=${MAIL_USER}
+      - MAIL_PASS=${MAIL_PASS}
+      - MAIL_SMTP_AUTH=${MAIL_SMTP_AUTH}
+      - MAIL_STARTTLS=${MAIL_STARTTLS}
+      - MAIL_DEFAULT_FROM=${MAIL_DEFAULT_FROM}
+      - MAIL_REAL_ENABLED=${MAIL_REAL_ENABLED}
       - SPRING_DEVTOOLS_RESTART_ENABLED=true
     depends_on:
       - mysql
@@ -63,6 +72,20 @@ services:
       - VITE_API_URL=http://localhost:8080/api
     depends_on:
       - backend
+    networks:
+      - residea-network
+
+  # ============================================
+  # MailHog (SMTP capture for dev)
+  # Web UI: http://localhost:8025
+  # SMTP: localhost:1025
+  # ============================================
+  mailhog:
+    image: mailhog/mailhog
+    container_name: residea-mailhog-dev
+    ports:
+      - "1025:1025"   # SMTP
+      - "8025:8025"   # Web UI
     networks:
       - residea-network
 
