@@ -47,22 +47,38 @@ public class ValutazioneFormController {
         if (request.getCap() == null || !request.getCap().matches("\\d{5}")) {
             return ResponseEntity.badRequest().build();
         }
+        // Validazione campi obbligatori
+        if (request.getNStanze() == null || request.getNBagni() == null || request.getAnnoCostruzione() == null) {
+            return ResponseEntity.badRequest().build();
+        }
 
         Utente proprietario = null;
         if (request.getIdUtente() != null) {
             proprietario = utenteRepo.findById(request.getIdUtente()).orElse(null);
         } else if (request.getEmailUtente() != null && !request.getEmailUtente().isEmpty()) {
-            proprietario = Utente.builder()
-                .nome(request.getNomeUtente() != null ? request.getNomeUtente() : "")
-                .cognome(request.getCognomeUtente() != null ? request.getCognomeUtente() : "")
-                .email(request.getEmailUtente())
-                .telefono(request.getTelefonoUtente() != null ? request.getTelefonoUtente() : "")
-                .passwordHash(null)
-                .ruolo(Utente.Ruolo.PROPRIETARIO)
-                .verificaEmail(false)
-                .consensoPrivacy(true)
-                .build();
-            proprietario = utenteRepo.save(proprietario);
+            // Cerca utente esistente per email o telefono
+            proprietario = utenteRepo.findByEmail(request.getEmailUtente()).orElse(null);
+            
+            if (proprietario == null && request.getTelefonoUtente() != null) {
+                var utenti = utenteRepo.findByTelefono(request.getTelefonoUtente());
+                if (!utenti.isEmpty()) {
+                    proprietario = utenti.get(0);
+                }
+            }
+
+            if (proprietario == null) {
+                proprietario = Utente.builder()
+                    .nome(request.getNomeUtente() != null ? request.getNomeUtente() : "")
+                    .cognome(request.getCognomeUtente() != null ? request.getCognomeUtente() : "")
+                    .email(request.getEmailUtente())
+                    .telefono(request.getTelefonoUtente() != null ? request.getTelefonoUtente() : "")
+                    .passwordHash(null)
+                    .ruolo(Utente.Ruolo.PROPRIETARIO)
+                    .verificaEmail(false)
+                    .consensoPrivacy(true)
+                    .build();
+                proprietario = utenteRepo.save(proprietario);
+            }
         }
 
         // Creazione Immobile con builder pattern
@@ -94,6 +110,7 @@ public class ValutazioneFormController {
             .condizioneImmobile(EnumMapper.mapCondizione(request.getCondizione()))
             .tipoRiscaldamento(EnumMapper.mapTipoRiscaldamento(request.getTipoRiscaldamento()))
             .classeEnergetica(EnumMapper.mapClasseEnergetica(request.getClasseEnergetica()))
+            .esposizione(request.getEsposizione())
             .build();
         dettagliRepo.save(dettagli);
 

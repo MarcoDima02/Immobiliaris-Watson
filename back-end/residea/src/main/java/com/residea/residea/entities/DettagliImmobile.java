@@ -55,7 +55,7 @@ public class DettagliImmobile {
     private boolean cantina;
 
     @Convert(converter = com.residea.residea.entities.converters.TipoRiscaldamentoConverter.class)
-    @Column(nullable = false, length = 20)
+    @Column(length = 20)
     @lombok.Builder.Default
     private TipoRiscaldamento tipoRiscaldamento = TipoRiscaldamento.NO;
 
@@ -68,6 +68,9 @@ public class DettagliImmobile {
     @Convert(converter = com.residea.residea.entities.converters.ClasseEnergeticaConverter.class)
     @Column(length = 2)
     private ClasseEnergetica classeEnergetica;
+
+    @Column(length = 50)
+    private String esposizione;
 
     @Column(precision = 10, scale = 2)
     private BigDecimal prezzo;
