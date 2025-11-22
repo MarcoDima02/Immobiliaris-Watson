@@ -1,11 +1,11 @@
 /**
  * Node modules
  */
-import { Link, useNavigate, useFetcher } from 'react-router';
-import { z } from 'zod';
+// import { useNavigate  } from 'react-router';
+// import { z } from 'zod';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useCallback, useEffect } from 'react';
+import { useCallback,  } from 'react';
 
 /**
  * Helpers
@@ -16,11 +16,10 @@ import { cn } from '@/lib/utils';
  * Components
  */
 import { Button } from '@/components/ui/button';
-import { Card, CardHeader, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import {
   Field,
-  FieldError,
   FieldGroup,
   FieldLabel,
 } from '@/components/ui/field';
@@ -35,7 +34,7 @@ import { logo } from '@/assets';
 /**
  * Icons
  */
-import { LoaderCircleIcon } from 'lucide-react';
+// import { LoaderCircleIcon } from 'lucide-react';
 
 /**
  * Schemas
@@ -47,7 +46,7 @@ import { loginSchema } from '@/schemas/loginSchema';
  */
 import type { LoginSchemaType } from '@/schemas/loginSchema';
 
-type LoginFieldName = 'email' | 'password';
+// type LoginFieldName = 'email' | 'password';
 
 /**
  * Constants
@@ -59,7 +58,7 @@ const LOGIN_FORM = {
 } as const;
 
 const LoginForm = ({ className, ...props }: React.ComponentProps<'div'>) => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const { control, handleSubmit } = useForm<LoginSchemaType>({
     resolver: zodResolver(loginSchema),

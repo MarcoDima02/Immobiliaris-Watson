@@ -26,12 +26,13 @@ export type FormPayload = {
   giardino?: boolean;
   superficieGiardino?: number; 
   cantina?: boolean;
+  balconeTerrazzo?: boolean;
   superficieCantina?: number;
   tipoRiscaldamento?: string;
   classeEnergetica?: string; 
   annoCostruzione?: number;
   condizione?: string;
-  esposizione?: string;
+  esposizione?: 'Nord' | 'Sud' | 'Ovest' | 'Est';
 
   // geolocation from mapbox
   latitude?: number;

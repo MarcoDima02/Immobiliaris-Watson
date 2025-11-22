@@ -71,13 +71,17 @@ export default function StepOptional({
       // optional
       condizione: data.condizione ?? 'new',
       tipoRiscaldamento: data.tipoRiscaldamento ?? '',
+      balconeTerrazzo: data.balconeTerrazzo ?? undefined,
       superficieBalconeTerrazzo: data.superficieBalconeTerrazzo ?? undefined,
       superficieGiardino: data.superficieGiardino ?? undefined,
       superficieGarage: data.superficieGarage ?? undefined,
       superficieCantina: data.superficieCantina ?? undefined,
       piano: data.piano ?? undefined,
+      garage: data.garage ?? undefined,
+      giardino: data.giardino ?? undefined,
+      cantina: data.cantina ?? undefined,
       pianiTotali: data.pianiTotali ?? undefined,
-      esposizione: data.esposizione ?? '',
+      esposizione: data.esposizione ?? undefined,
     },
     shouldUnregister: false,
   });
@@ -112,6 +116,7 @@ export default function StepOptional({
   const garageValue = watch('garage');
   const gardenValue = watch('giardino');
   const basementValue = watch('cantina');
+  const balconeTerrazzoValue = watch('balconeTerrazzo');
 
   return (
     <Card className="max-w-xl mx-auto">
@@ -274,64 +279,63 @@ export default function StepOptional({
                   );
                 }}
               />
-
-              // <Controller
-              //   name="superficieGarage"
-              //   control={control}
-              //   render={({ field }) => (
-              //     <Field>
-              //       <FieldLabel>Superficie Garage (m²)</FieldLabel>
-              //       <Input
-              //         type="number"
-              //         placeholder="Es. 20"
-              //         {...field}
-              //         value={field.value ?? ''}
-              //         onChange={(e) =>
-              //           field.onChange(
-              //             isNaN(e.target.valueAsNumber)
-              //               ? undefined
-              //               : e.target.valueAsNumber
-              //           )
-              //         }
-              //       />
-              //     </Field>
-              //   )}
-              // />
             )}
 
             {/* Balcone/Terrazzo */}
 
             <Controller
-              name="superficieBalconeTerrazzo"
+              name="balconeTerrazzo"
               control={control}
-              render={({ field, fieldState }) => {
-                const [localValue, setLocalValue] = useState(
-                  field.value?.toString() ?? ''
-                );
-
-                return (
-                  <Field>
-                    <FieldLabel>Balcone/Terrazzo (m²)</FieldLabel>
-                    <Input
-                      type="number"
-                      placeholder="Es. 12"
-                      value={localValue}
-                      onChange={(e) => {
-                        const val = e.target.value;
-                        setLocalValue(val);
-                        const num = Number(val);
-                        field.onChange(
-                          val === '' ? undefined : isNaN(num) ? undefined : num
-                        );
-                      }}
+              render={({ field }) => (
+                <Field className="flex items-center justify-between mt-4 max-w-xs">
+                  <FieldLabel>Balcone/Terrazzo</FieldLabel>
+                  <div className="shrink-0">
+                    <Switch
+                      checked={field.value ?? false}
+                      onCheckedChange={field.onChange}
                     />
-                    {fieldState.error && (
-                      <FieldError>{fieldState.error.message}</FieldError>
-                    )}
-                  </Field>
-                );
-              }}
+                  </div>
+                </Field>
+              )}
             />
+
+            {balconeTerrazzoValue && (
+              <Controller
+                name="superficieBalconeTerrazzo"
+                control={control}
+                render={({ field, fieldState }) => {
+                  const [localValue, setLocalValue] = useState(
+                    field.value?.toString() ?? ''
+                  );
+
+                  return (
+                    <Field>
+                      <FieldLabel>Balcone/Terrazzo (m²)</FieldLabel>
+                      <Input
+                        type="number"
+                        placeholder="Es. 12"
+                        value={localValue}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          setLocalValue(val);
+                          const num = Number(val);
+                          field.onChange(
+                            val === ''
+                              ? undefined
+                              : isNaN(num)
+                                ? undefined
+                                : num
+                          );
+                        }}
+                      />
+                      {fieldState.error && (
+                        <FieldError>{fieldState.error.message}</FieldError>
+                      )}
+                    </Field>
+                  );
+                }}
+              />
+            )}
 
             {/* Giardino + Mq */}
             <Controller
@@ -496,7 +500,7 @@ export default function StepOptional({
             />
 
             {/* Esposizione */}
-            <Controller
+            {/* <Controller
               name="esposizione"
               control={control}
               render={({ field }) => (
@@ -506,6 +510,34 @@ export default function StepOptional({
                     placeholder="Nord, Sud, Est, Ovest..."
                     {...field}
                   />
+                </Field>
+              )}
+            /> */}
+
+            <Controller
+              name="esposizione"
+              control={control}
+              render={({ field }) => (
+                <Field>
+                  <FieldLabel>Esposizione</FieldLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value}
+                  >
+                    <SelectTrigger className="cursor-pointer border-primary! data-placeholder:text-primary">
+                      <SelectValue placeholder="Seleziona esposizione..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {['Nord', 'Sud', 'Ovest', 'Est'].map((dir) => (
+                        <SelectItem
+                          key={dir}
+                          value={dir}
+                        >
+                          {dir}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </Field>
               )}
             />
