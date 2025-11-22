@@ -292,14 +292,14 @@ public class ValutazioneServiceImpl implements ValutazioneImmobileService {
     private double classeCoeff(String classe) {
         if (classe == null) return 1.0;
         return switch (classe.toUpperCase()) {
-            case "A_PLUS", "A+" -> 1.08;  // +8%
-            case "A" -> 1.06;              // +6%
-            case "B" -> 1.04;              // +4%
-            case "C" -> 1.02;              // +2%
-            case "D" -> 1.00;              // baseline
-            case "E" -> 0.98;              // -2%
-            case "F" -> 0.96;              // -4%
-            case "G" -> 0.96;              // -4%
+            case "A4", "A3", "A2", "A1", "A_PLUS", "A+" -> 1.15;  // +15%
+            case "A" -> 1.10;              // +10%
+            case "B" -> 1.05;              // +5%
+            case "C" -> 1.00;              // baseline
+            case "D" -> 0.95;              // -5%
+            case "E" -> 0.90;              // -10%
+            case "F" -> 0.85;              // -15%
+            case "G" -> 0.80;              // -20%
             default -> 1.0;
         };
     }
@@ -313,10 +313,11 @@ public class ValutazioneServiceImpl implements ValutazioneImmobileService {
         int currentYear = java.time.Year.now().getValue();
         int age = currentYear - annoCostruzione;
         
-        if (age <= 10) return 1.03;       // +3% (nuovo)
-        if (age <= 30) return 1.01;       // +1% (buono)
-        if (age <= 50) return 1.00;       // baseline
-        return 0.95;                       // -5% (vecchio, se non ristrutturato)
+        if (age <= 5) return 1.10;        // +10% (nuovissimo)
+        if (age <= 10) return 1.05;       // +5% (recente)
+        if (age <= 30) return 1.00;       // baseline
+        if (age <= 50) return 0.95;       // -5%
+        return 0.90;                       // -10% (vecchio)
     }
     
     /**
@@ -325,10 +326,10 @@ public class ValutazioneServiceImpl implements ValutazioneImmobileService {
     private double condizioneCoeff(String cond) {
         if (cond == null) return 1.0;
         return switch (cond.toUpperCase()) {
-            case "NUOVO" -> 1.05;                         // +5%
-            case "RISTRUTTURATO" -> 1.05;                 // +5% (equivale a ristrutturazione recente)
-            case "PARZIALMENTE_RISTRUTTURATO" -> 1.02;    // +2%
-            case "NON_RISTRUTTURATO" -> 1.00;             // baseline
+            case "NUOVO" -> 1.20;                         // +20%
+            case "RISTRUTTURATO" -> 1.12;                 // +12%
+            case "PARZIALMENTE_RISTRUTTURATO" -> 1.00;    // baseline
+            case "NON_RISTRUTTURATO" -> 0.90;             // -10%
             default -> 1.0;
         };
     }

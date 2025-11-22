@@ -213,36 +213,54 @@ VALUES  (1, 'Torino', 'TO', 'Piemonte', '001272'),
 INSERT IGNORE INTO PrezzoPerCAP (cap, idCitta, prezzoMq, fonte, validFrom, qualityScore) 
 VALUES 
     -- Torino (idCitta = 1)
-  ('10121', 1, 3300.00, 'seed_torino_agg_v1', '2025-11-01', NULL, 0.92, CURRENT_TIMESTAMP),
-  ('10122', 1, 3200.00, 'seed_torino_agg_v1', '2025-11-01', NULL, 0.90, CURRENT_TIMESTAMP),
-  ('10123', 1, 3100.00, 'seed_torino_agg_v1', '2025-11-01', NULL, 0.89, CURRENT_TIMESTAMP),
-  ('10124', 1, 3000.00, 'seed_torino_agg_v1', '2025-11-01', NULL, 0.88, CURRENT_TIMESTAMP),
-  ('10125', 1, 2900.00, 'seed_torino_agg_v1', '2025-11-01', NULL, 0.86, CURRENT_TIMESTAMP),
-  ('10126', 1, 2800.00, 'seed_torino_agg_v1', '2025-11-01', NULL, 0.85, CURRENT_TIMESTAMP),
-  ('10128', 1, 2700.00, 'seed_torino_agg_v1', '2025-11-01', NULL, 0.82, CURRENT_TIMESTAMP),
-  ('10129', 1, 2600.00, 'seed_torino_agg_v1', '2025-11-01', NULL, 0.80, CURRENT_TIMESTAMP),
-  ('10131', 1, 2400.00, 'seed_torino_agg_v1', '2025-11-01', NULL, 0.78, CURRENT_TIMESTAMP),
-  ('10135', 1, 2200.00, 'seed_torino_agg_v1', '2025-11-01', NULL, 0.75, CURRENT_TIMESTAMP),
-  ('10138', 1, 2100.00, 'seed_torino_agg_v1', '2025-11-01', NULL, 0.72, CURRENT_TIMESTAMP),
-  ('10139', 1, 2000.00, 'seed_torino_agg_v1', '2025-11-01', NULL, 0.70, CURRENT_TIMESTAMP),
-  ('10141', 1, 1900.00, 'seed_torino_agg_v1', '2025-11-01', NULL, 0.68, CURRENT_TIMESTAMP),
-  ('10142', 1, 1900.00, 'seed_torino_agg_v1', '2025-11-01', NULL, 0.68, CURRENT_TIMESTAMP),
-  ('10143', 1, 1800.00, 'seed_torino_agg_v1', '2025-11-01', NULL, 0.66, CURRENT_TIMESTAMP),
-  ('10144', 1, 1750.00, 'seed_torino_agg_v1', '2025-11-01', NULL, 0.65, CURRENT_TIMESTAMP),
-  ('10145', 1, 1700.00, 'seed_torino_agg_v1', '2025-11-01', NULL, 0.64, CURRENT_TIMESTAMP),
-  ('10149', 1, 1650.00, 'seed_torino_agg_v1', '2025-11-01', NULL, 0.62, CURRENT_TIMESTAMP),
-  ('10152', 1, 1600.00, 'seed_torino_agg_v1', '2025-11-01', NULL, 0.60, CURRENT_TIMESTAMP),
-  ('10153', 1, 1550.00, 'seed_torino_agg_v1', '2025-11-01', NULL, 0.58, CURRENT_TIMESTAMP),
-  ('10154', 1, 1500.00, 'seed_torino_agg_v1', '2025-11-01', NULL, 0.57, CURRENT_TIMESTAMP),
-  ('10155', 1, 1450.00, 'seed_torino_agg_v1', '2025-11-01', NULL, 0.56, CURRENT_TIMESTAMP),
-  ('10156', 1, 1400.00, 'seed_torino_agg_v1', '2025-11-01', NULL, 0.55, CURRENT_TIMESTAMP),
-  ('15121', 2, 1600.00, 'seed_piemonte_agg_v1', '2025-11-01', NULL, 0.70, CURRENT_TIMESTAMP), -- Alessandria
-  ('14100', 3, 1400.00, 'seed_piemonte_agg_v1', '2025-11-01', NULL, 0.68, CURRENT_TIMESTAMP), -- Asti
-  ('13900', 4, 1350.00, 'seed_piemonte_agg_v1', '2025-11-01', NULL, 0.66, CURRENT_TIMESTAMP), -- Biella
-  ('12100', 5, 1450.00, 'seed_piemonte_agg_v1', '2025-11-01', NULL, 0.65, CURRENT_TIMESTAMP), -- Cuneo
-  ('28100', 6, 1550.00, 'seed_piemonte_agg_v1', '2025-11-01', NULL, 0.67, CURRENT_TIMESTAMP), -- Novara
-  ('28922', 7, 2300.00, 'seed_piemonte_agg_v1', '2025-11-01', NULL, 0.75, CURRENT_TIMESTAMP), -- Verbania
-  ('13100', 8, 1250.00, 'seed_piemonte_agg_v1', '2025-11-01', NULL, 0.63, CURRENT_TIMESTAMP) -- Vercelli
+    -- Centro (Prestigio)
+  ('10121', 1, 4800.00, 'seed_torino_agg_v2', '2025-11-01', 0.95), -- Via Roma, Centro Storico
+  ('10122', 1, 4200.00, 'seed_torino_agg_v2', '2025-11-01', 0.92), -- Piazza Castello, Quadrilatero
+  ('10123', 1, 4600.00, 'seed_torino_agg_v2', '2025-11-01', 0.94), -- Piazza Vittorio, Gran Madre
+  
+    -- Zone Residenziali Prestigio (Crocetta, Cit Turin, Collina)
+  ('10128', 1, 3800.00, 'seed_torino_agg_v2', '2025-11-01', 0.90), -- Crocetta
+  ('10129', 1, 3700.00, 'seed_torino_agg_v2', '2025-11-01', 0.90), -- Crocetta
+  ('10131', 1, 3900.00, 'seed_torino_agg_v2', '2025-11-01', 0.88), -- Borgo Po, Cavoretto (Collina)
+  ('10132', 1, 3800.00, 'seed_torino_agg_v2', '2025-11-01', 0.88), -- Madonna del Pilone (Collina)
+  ('10133', 1, 3600.00, 'seed_torino_agg_v2', '2025-11-01', 0.87), -- Cavoretto (Collina)
+  ('10138', 1, 3300.00, 'seed_torino_agg_v2', '2025-11-01', 0.89), -- Cit Turin (Liberty)
+
+    -- Zone Semicentrali / Residenziali (San Salvario, Vanchiglia, San Paolo, Santa Rita)
+  ('10124', 1, 3000.00, 'seed_torino_agg_v2', '2025-11-01', 0.85), -- Vanchiglia
+  ('10125', 1, 2900.00, 'seed_torino_agg_v2', '2025-11-01', 0.84), -- San Salvario
+  ('10126', 1, 2800.00, 'seed_torino_agg_v2', '2025-11-01', 0.82), -- San Salvario / Nizza
+  ('10134', 1, 1600.00, 'seed_torino_agg_v2', '2025-11-01', 0.75), -- Mirafiori Sud
+  ('10135', 1, 1800.00, 'seed_torino_agg_v2', '2025-11-01', 0.78), -- Mirafiori Sud
+  ('10136', 1, 2100.00, 'seed_torino_agg_v2', '2025-11-01', 0.80), -- Santa Rita
+  ('10137', 1, 2000.00, 'seed_torino_agg_v2', '2025-11-01', 0.79), -- Santa Rita / Mirafiori Nord
+  ('10139', 1, 2200.00, 'seed_torino_agg_v2', '2025-11-01', 0.80), -- Cenisia
+  ('10141', 1, 2300.00, 'seed_torino_agg_v2', '2025-11-01', 0.81), -- San Paolo
+  ('10142', 1, 2000.00, 'seed_torino_agg_v2', '2025-11-01', 0.78), -- Pozzo Strada
+  ('10143', 1, 1900.00, 'seed_torino_agg_v2', '2025-11-01', 0.77), -- Parella
+  ('10144', 1, 1850.00, 'seed_torino_agg_v2', '2025-11-01', 0.76), -- San Donato
+  ('10146', 1, 2000.00, 'seed_torino_agg_v2', '2025-11-01', 0.78), -- Parella / Campidoglio
+
+    -- Periferia / Zone Popolari
+  ('10145', 1, 1500.00, 'seed_torino_agg_v2', '2025-11-01', 0.70), -- Barriera di Milano
+  ('10147', 1, 1600.00, 'seed_torino_agg_v2', '2025-11-01', 0.72), -- Borgo Vittoria
+  ('10148', 1, 1400.00, 'seed_torino_agg_v2', '2025-11-01', 0.68), -- Barriera di Lanzo
+  ('10149', 1, 1650.00, 'seed_torino_agg_v2', '2025-11-01', 0.70), -- Lucento
+  ('10151', 1, 1300.00, 'seed_torino_agg_v2', '2025-11-01', 0.65), -- Vallette
+  ('10152', 1, 1600.00, 'seed_torino_agg_v2', '2025-11-01', 0.70), -- Aurora
+  ('10153', 1, 1700.00, 'seed_torino_agg_v2', '2025-11-01', 0.72), -- Regio Parco (in riqualificazione)
+  ('10154', 1, 1500.00, 'seed_torino_agg_v2', '2025-11-01', 0.68), -- Barriera di Milano
+  ('10155', 1, 1450.00, 'seed_torino_agg_v2', '2025-11-01', 0.67), -- Barriera di Milano
+  ('10156', 1, 1400.00, 'seed_torino_agg_v2', '2025-11-01', 0.65), -- Falchera
+
+    -- Altre Città Piemonte
+  ('15121', 2, 1600.00, 'seed_piemonte_agg_v1', '2025-11-01', 0.70), -- Alessandria
+  ('14100', 3, 1400.00, 'seed_piemonte_agg_v1', '2025-11-01', 0.68), -- Asti
+  ('13900', 4, 1350.00, 'seed_piemonte_agg_v1', '2025-11-01', 0.66), -- Biella
+  ('12100', 5, 1450.00, 'seed_piemonte_agg_v1', '2025-11-01', 0.65), -- Cuneo
+  ('28100', 6, 1550.00, 'seed_piemonte_agg_v1', '2025-11-01', 0.67), -- Novara
+  ('28922', 7, 2300.00, 'seed_piemonte_agg_v1', '2025-11-01', 0.75), -- Verbania
+  ('13100', 8, 1250.00, 'seed_piemonte_agg_v1', '2025-11-01', 0.63); -- Vercelli
 -- Utente di test
 INSERT IGNORE INTO Utente (idUtente, nome, cognome, telefono, email, ruolo, verifica_email, consenso_privacy)
 VALUES (1, 'Mario', 'Rossi', '3331234567', 'mario.rossi@example.com', 'proprietario', TRUE, TRUE);
