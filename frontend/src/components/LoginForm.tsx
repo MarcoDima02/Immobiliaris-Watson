@@ -16,7 +16,7 @@ import { cn } from '@/lib/utils';
  * Components
  */
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardHeader, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import {
   Field,
@@ -29,7 +29,8 @@ import InputPassword from '@/components/InputPassword';
 /**
  * Assets
  */
-import { flat } from '@/assets';
+import { loginBanner } from '@/assets';
+import { logo } from '@/assets';
 
 /**
  * Icons
@@ -84,8 +85,14 @@ const LoginForm = ({ className, ...props }: React.ComponentProps<'div'>) => {
             onSubmit={handleSubmit(onSubmit)}
           >
             <div className="flex flex-col gap-6">
-              <div className="flex flex-col items-center text-center">
-                <h1 className="text-2xl font-semibold">{LOGIN_FORM.title}</h1>
+              <div className="flex flex-col items-center">
+                <figure>
+                  <img
+                    src={logo}
+                    width={75}
+                    alt="Logo del sito"
+                  />
+                </figure>
 
                 <p className="text-balance">{LOGIN_FORM.description}</p>
               </div>
@@ -131,8 +138,32 @@ const LoginForm = ({ className, ...props }: React.ComponentProps<'div'>) => {
                   )}
                 />
               </FieldGroup>
+
+              <Button
+                type="submit"
+                className="w-full"
+                // disabled={isLoading}
+              >
+                {/* {isLoading && <LoaderCircleIcon className='animate-spin'/>} */}
+
+                <span>Login</span>
+              </Button>
+            </div>
+
+            <div className="mt-4 text-center text-sm">
+              {LOGIN_FORM.footerText}
             </div>
           </form>
+
+          <figure className=" relative hidden md:block">
+            <img
+              src={loginBanner}
+              alt="Immagine di un appartamento"
+              width={400}
+              height={400}
+              className="absolute inset-0 h-full object-cover"
+            />
+          </figure>
         </CardContent>
       </Card>
     </div>
