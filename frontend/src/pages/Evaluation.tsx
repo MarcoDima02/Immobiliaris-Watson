@@ -5,7 +5,7 @@ import MultiStepForm from '@/components/MultiStepForm';
 import StepAddress from '@/components/form/StepAddress';
 import StepProperty from '@/components/form/StepProperty';
 import StepOptional from '@/components/form/StepOptional';
-import StepUserType from '@/components/form/StepUserType';
+import StepUserType from '@/components/form/StepUser';
 
 interface EvaluationProps {
   id: string;

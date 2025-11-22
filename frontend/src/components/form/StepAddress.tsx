@@ -6,10 +6,6 @@ import mapboxgl from 'mapbox-gl';
 import debounce from 'lodash.debounce';
 import type z from 'zod';
 import { useForm, Controller } from 'react-hook-form';
-
-/**
- * Resolvers
- */
 import { zodResolver } from '@hookform/resolvers/zod';
 
 /**
@@ -20,7 +16,7 @@ import { addressSchema } from '@/hooks/schemas/valuationSchema';
 /**
  * Context
  */
-import { useFormContext } from '@/hooks/useFormContext ';
+import { useFormContext } from '@/hooks/useFormContext';
 
 /**
  * Components
@@ -41,6 +37,11 @@ import {
 import { Input } from '@/components/ui/input';
 // import { Toaster } from '.@/components/ui/sonner';
 import { Button } from '@/components/ui/button';
+
+/**
+ * Constants
+ */
+import { capToProvinceMap, cityToProvinceMap } from '@/constants';
 
 mapboxgl.accessToken = mapboxgl.accessToken =
   import.meta.env.VITE_MAPBOX_ACCESS_TOKEN ?? 'MAPBOX_TOKEN';
@@ -82,6 +83,8 @@ const StepAddress = ({ onNext }: { onNext: () => void }) => {
   const [suggestions, setSuggestions] = useState<any[]>([]);
   const [selectedAddress, setSelectedAddress] = useState<string | null>(null);
   const [activeIndex, setActiveIndex] = useState<number>(-1);
+  const [provinceWarning, setProvinceWarning] = useState<string>('');
+  const [capWarning, setCapWarning] = useState<string>('');
 
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
@@ -118,9 +121,12 @@ const StepAddress = ({ onNext }: { onNext: () => void }) => {
       return;
     }
     const token = mapboxgl.accessToken;
+    // const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
+    //   query
+    // )}.json?autocomplete=true&country=it&limit=5&access_token=${token}`;
     const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
       query
-    )}.json?autocomplete=true&country=it&limit=5&access_token=${token}`;
+    )}.json?autocomplete=true&country=it&limit=5&language=it&access_token=${token}`;
     try {
       const res = await fetch(url);
       const json = await res.json();
@@ -142,22 +148,46 @@ const StepAddress = ({ onNext }: { onNext: () => void }) => {
     const selectedAddress = feature.place_name;
     const [longitude, latitude] = feature.center;
 
-    setValue('indirizzo', selectedAddress, { shouldValidate: true });
-
     let citta = '';
-    let provincia = '';
     let cap = '';
 
     feature.context?.forEach((ctx: any) => {
-      const id = ctx.id ?? '';
-      if (id.startsWith('place.')) citta = ctx.text;
-      if (id.startsWith('district.')) provincia = ctx.text;
-      if (id.startsWith('postcode.')) cap = ctx.text;
+      if (ctx.id.startsWith('place.')) citta = ctx.text;
+      if (ctx.id.startsWith('postcode.')) cap = ctx.text;
     });
 
+    if (!cap) {
+      const match = selectedAddress.match(/\b\d{5}\b/);
+      if (match) cap = match[0];
+    }
+
+    let provincia = '';
+    if (cap && capToProvinceMap[cap]) {
+      provincia = capToProvinceMap[cap];
+    } else if (citta && cityToProvinceMap[citta]) {
+      provincia = cityToProvinceMap[citta];
+    }
+
+    setValue('indirizzo', selectedAddress, { shouldValidate: true });
     setValue('citta', citta);
     setValue('provincia', provincia);
     setValue('cap', cap);
+
+    if (!provincia) {
+      setProvinceWarning(
+        'Non siamo riusciti a determinare automaticamente la provincia. Inseriscila manualmente.'
+      );
+    } else {
+      setProvinceWarning('');
+    }
+
+    if (!cap) {
+      setCapWarning(
+        'Non siamo riusciti a determinare automaticamente il CAP. Inseriscilo manualmente.'
+      );
+    } else {
+      setCapWarning('');
+    }
 
     setData({
       indirizzo: selectedAddress,
@@ -167,9 +197,7 @@ const StepAddress = ({ onNext }: { onNext: () => void }) => {
       longitude,
       latitude,
     });
-
     setMarker(longitude, latitude);
-
     setSelectedAddress(selectedAddress);
     setSuggestions([]);
   };
@@ -301,6 +329,11 @@ const StepAddress = ({ onNext }: { onNext: () => void }) => {
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
                   )}
+                  {provinceWarning && (
+                    <p className="text-sm text-yellow-700 mt-1">
+                      {provinceWarning}
+                    </p>
+                  )}
                 </Field>
               )}
             />
@@ -324,6 +357,9 @@ const StepAddress = ({ onNext }: { onNext: () => void }) => {
                       errors={[fieldState.error]}
                     />
                   )}
+                  {capWarning && (
+                    <p className="text-sm text-yellow-700 mt-1">{capWarning}</p>
+                  )}
                 </Field>
               )}
             />
@@ -343,14 +379,8 @@ const StepAddress = ({ onNext }: { onNext: () => void }) => {
       <CardFooter>
         <Field
           orientation="horizontal"
-          className="flex justify-between"
+          className="flex justify-end"
         >
-          <Button
-            type="button"
-            variant="outline"
-          >
-            Indietro
-          </Button>
           <Button
             type="submit"
             form="address-form"

@@ -10,7 +10,7 @@ import clsx from 'clsx';
 /**
  * Context
  */
-import { useFormContext } from '@/hooks/useFormContext ';
+import { useFormContext } from '@/hooks/useFormContext';
 
 /**
  * Componets
@@ -124,10 +124,10 @@ const StepProperty = ({
   const propertyTypes = [
     { label: 'Appartamento', value: 'appartamento', icon: <Building /> },
     { label: 'Villa', value: 'villa', icon: <House /> },
-    { label: 'Monolocale', value: 'monolocale', icon: <Building2 /> },
+    { label: 'Attico', value: 'attico', icon: <Building2 /> },
     {
-      label: 'Casa indipendente',
-      value: 'casa_indipendente',
+      label: 'Loft',
+      value: 'loft',
       icon: <School />,
     },
   ];
@@ -167,31 +167,6 @@ const StepProperty = ({
 
             {selectedType && (
               <>
-                {/* <Controller
-                  name="area"
-                  control={control}
-                  render={({ field, fieldState }) => (
-                    <Field>
-                      <FieldLabel>Superficie (m²)</FieldLabel>
-                      <Input
-                        type="number"
-                        step={10}
-                        placeholder="Es. 120"
-                        {...field}
-                        value={field.value ?? ''}
-                        onChange={(e) => {
-                          const raw = e.target.value;
-                          if (raw === '') return field.onChange(undefined);
-                          const num = Number(raw);
-                          if (!isNaN(num)) field.onChange(num);
-                        }}
-                      />
-                      {fieldState.error && (
-                        <FieldError>{fieldState.error.message}</FieldError>
-                      )}
-                    </Field>
-                  )}
-                /> */}
                 <Controller
                   name="superficie"
                   control={control}
@@ -230,7 +205,6 @@ const StepProperty = ({
                 />
 
                 <div className="grid grid-cols-2 gap-3">
-      
                   <Controller
                     name="nStanze"
                     control={control}
@@ -267,30 +241,7 @@ const StepProperty = ({
                       );
                     }}
                   />
-                  {/* <Controller
-                    name="bathrooms"
-                    control={control}
-                    render={({ field, fieldState }) => (
-                      <Field>
-                        <FieldLabel>Numero di bagni</FieldLabel>
-                        <Input
-                          type="number"
-                          placeholder="Es. 2"
-                          {...field}
-                          value={field.value ?? ''}
-                          onChange={(e) => {
-                            const raw = e.target.value;
-                            if (raw === '') return field.onChange(undefined);
-                            const num = Number(raw);
-                            if (!isNaN(num)) field.onChange(num);
-                          }}
-                        />
-                        {fieldState.error && (
-                          <FieldError>{fieldState.error.message}</FieldError>
-                        )}
-                      </Field>
-                    )}
-                  /> */}
+                 
                   <Controller
                     name="nBagni"
                     control={control}
