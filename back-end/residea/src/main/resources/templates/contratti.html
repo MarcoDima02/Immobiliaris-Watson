@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<title>Gestione Contratti</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body { font-family: Arial, sans-serif; background:#f4f4f4; margin:0; padding:20px;}
+.card { background:white; padding:20px; margin-bottom:25px; border-radius:10px; box-shadow:0 3px 10px rgba(0,0,0,0.1);}
+input, select, button { padding:10px; margin:6px 0 12px 0; border-radius:6px; width:100%;}
+button { cursor:pointer; font-weight:bold;}
+.btn-primary{background:#007bff; color:white;}
+.btn-danger{background:#dc3545; color:white;}
+.btn-warning{background:#ffc107;}
+.btn-info{background:#17a2b8; color:white;}
+table { width:100%; border-collapse:collapse; background:white; }
+th,td{padding:12px; border-bottom:1px solid #eee;}
+th{background:#007bff; color:white; text-align:left;}
+tr:hover{background:#f1f8ff;}
+#tabContratti tbody tr._highlight{background:#fffbcc;}
+</style>
+</head>
+<body>
+
+<h1>Gestione Contratti</h1>
+
+<!-- CREA / MODIFICA -->
+<section class="card">
+<h3>➕ Crea / Modifica contratto</h3>
+<input id="idContratto" placeholder="ID Contratto (vuoto per nuovo)">
+<input id="idImmobile" placeholder="ID Immobile">
+<input id="dataInizio" type="date">
+<input id="dataFine" type="date">
+
+<select id="tipoContratto">
+  <option value="ESCLUSIVO">ESCLUSIVO</option>
+  <option value="AFFITTO">AFFITTO</option>
+    <option value="VENDITA">VENDITA</option>
+
+<option value="COMODATO">COMODATO</option>
+  <option value="ALTRO">ALTRO</option>
+
+</select>
+
+<input id="pathPdf" placeholder="Path PDF">
+
+<button onclick="salvaContratto()">Salva Contratto</button>
+<button onclick="aggiornaPDF()">Aggiorna PDF</button>
+<button onclick="eliminaContratto()">Elimina Contratto</button>
+</section>
+
+<!-- FILTRI -->
+<section class="card">
+<h3>🔎 Filtri</h3>
+<select id="filtroTipo">
+  <option value="ESCLUSIVO">ESCLUSIVO</option>
+  <option value="AFFITTO">AFFITTO</option>
+    <option value="VENDITA">VENDITA</option>
+
+<option value="COMODATO">COMODATO</option>
+  <option value="ALTRO">ALTRO</option>
+</select>
+<input id="filtroImmobile" placeholder="ID immobile">
+<button onclick="applicaFiltri()">Applica filtri</button>
+<button onclick="mostraTutti()">Mostra tutti</button>
+</section>
+
+<!-- LISTA -->
+<section class="card">
+<h3>📋 Elenco Contratti</h3>
+<table id="tabContratti">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>ID Immobile</th>
+      <th>Tipo</th>
+      <th>Inizio</th>
+      <th>Fine</th>
+      <th>PDF</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+</section>
+
+<!-- RICERCA -->
+<section class="card">
+<h3>🔍 Cerca contratto per ID</h3>
+<input id="idSearch" placeholder="Inserisci ID contratto">
+<button onclick="cercaContratto()">Cerca</button>
+<button onclick="mostraTutti()">Mostra tutti</button>
+<div id="dettaglioContratto" style="margin-top:8px"></div>
+</section>
+
+<script>
+const api = "http://localhost:8080/api/contratti";
+
+/* ================== CREAZIONE / MODIFICA ================== */
+async function salvaContratto() {
+  const id = document.getElementById("idContratto").value.trim();
+  const body = {
+    idImmobile:{idImmobile: Number(document.getElementById("idImmobile").value)},
+    dataContratto: document.getElementById("dataInizio").value,
+    dataScadenzaContratto: document.getElementById("dataFine").value,
+    tipoContratto: document.getElementById("tipoContratto").value.toUpperCase(),
+    pathContrattoPDF: document.getElementById("pathPdf").value
+  };
+  try {
+    let res;
+    if(id){
+      res = await fetch(`${api}/${id}`, {
+        method:"PUT", headers:{"Content-Type":"application/json"}, body:JSON.stringify({...body, idContratto:Number(id)})
+      });
+    } else {
+      res = await fetch(api, {
+        method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(body)
+      });
+    }
+    if(!res.ok){
+      const err = await res.json().catch(()=>({message:res.statusText}));
+      alert("Errore: "+err.message); return;
+    }
+    alert(id?"Contratto aggiornato!":"Contratto creato!");
+    getAllContratti();
+  } catch(e){ alert("Errore rete: "+e.message);}
+}
+
+/* ================== AGGIORNA PDF ================== */
+async function aggiornaPDF(){
+  const id = document.getElementById("idContratto").value.trim();
+  const nuovoPath = document.getElementById("pathPdf").value;
+  if(!id){ alert("Inserisci ID contratto per aggiornare PDF"); return;}
+  try{
+    const res = await fetch(`${api}/${id}/pdf`, {
+      method:"PUT", headers:{"Content-Type":"application/json"}, body:JSON.stringify(nuovoPath)
+    });
+    if(!res.ok){ alert("Errore aggiornamento PDF"); return;}
+    alert("PDF aggiornato!");
+    getAllContratti();
+  }catch(e){ alert("Errore rete: "+e.message);}
+}
+
+/* ================== ELIMINA ================== */
+async function eliminaContratto(){
+  const id = document.getElementById("idContratto").value.trim();
+  if(!id){ alert("Inserisci ID contratto per eliminare"); return;}
+  if(!confirm("Sei sicuro di voler eliminare il contratto?")) return;
+  try{
+    const res = await fetch(`${api}/${id}`,{method:"DELETE"});
+    if(!res.ok){ alert("Errore eliminazione"); return;}
+    alert("Contratto eliminato!");
+    getAllContratti();
+  }catch(e){ alert("Errore rete: "+e.message);}
+}
+
+/* ================== GET ALL ================== */
+async function getAllContratti(){
+  try{
+    const res = await fetch(api);
+    if(!res.ok){ const err=await res.json().catch(()=>({message:res.statusText})); alert("Impossibile caricare contratti: "+err.message); return;}
+    const lista = await res.json();
+    renderTabella(lista);
+  }catch(e){ alert("Errore rete: "+e.message);}
+}
+
+/* ================== RENDER ================== */
+function renderTabella(lista){
+  const tbody = document.querySelector("#tabContratti tbody");
+  tbody.innerHTML = "";
+  if(!Array.isArray(lista)) lista = lista && lista.content ? lista.content : lista?[lista]:[];
+  lista.forEach(c=>{
+    const tr=document.createElement("tr");
+    tr.innerHTML=`
+      <td>${c.idContratto}</td>
+      <td>${c.idImmobile?c.idImmobile.idImmobile:""}</td>
+      <td>${c.tipoContratto}</td>
+      <td>${c.dataContratto}</td>
+      <td>${c.dataScadenzaContratto}</td>
+      <td>${c.pathContrattoPDF}</td>
+    `;
+    tr.onclick=()=>{selezionaContratto(c)};
+    tbody.appendChild(tr);
+  });
+}
+
+/* ================== SELEZIONA CONTRATTO ================== */
+function selezionaContratto(c){
+  document.getElementById("idContratto").value=c.idContratto;
+  document.getElementById("idImmobile").value=c.idImmobile?c.idImmobile.idImmobile:"";
+  document.getElementById("dataInizio").value=c.dataContratto;
+  document.getElementById("dataFine").value=c.dataScadenzaContratto;
+  document.getElementById("tipoContratto").value=c.tipoContratto;
+  document.getElementById("pathPdf").value=c.pathContrattoPDF;
+  highlightRow(c.idContratto);
+}
+
+/* ================== CERCA ================== */
+async function cercaContratto(){
+  const id = document.getElementById("idSearch").value.trim();
+  if(!id){ alert("Inserisci ID"); return;}
+  try{
+    const res = await fetch(`${api}/${id}`);
+    if(!res.ok){ document.getElementById("dettaglioContratto").innerHTML="<em>Nessun contratto trovato.</em>"; return;}
+    const c = await res.json();
+    renderDettaglio(c);
+  }catch(e){ alert("Errore rete: "+e.message);}
+}
+
+function renderDettaglio(c){
+  const div=document.getElementById("dettaglioContratto");
+  if(!c){ div.innerHTML="<em>Nessun contratto trovato.</em>"; return;}
+  div.innerHTML=`
+    <strong>Contratto trovato:</strong>
+    <div>ID: ${c.idContratto}</div>
+    <div>ID immobile: ${c.idImmobile?c.idImmobile.idImmobile:""}</div>
+    <div>Tipo: ${c.tipoContratto}</div>
+    <div>Inizio: ${c.dataContratto}</div>
+    <div>Fine: ${c.dataScadenzaContratto}</div>
+    <div>PDF: ${c.pathContrattoPDF}</div>
+  `;
+}
+
+/* ================== FILTRI ================== */
+async function applicaFiltri(){
+  let tipo=document.getElementById("filtroTipo").value;
+  let immobile=document.getElementById("filtroImmobile").value;
+
+  if(tipo){
+    const res=await fetch(`${api}/tipo/${tipo.toUpperCase()}`);
+    renderTabella(await res.json());
+    return;
+  }
+  if(immobile){
+    const res=await fetch(`${api}/immobile/${immobile}`);
+    renderTabella(await res.json());
+    return;
+  }
+  alert("Inserisci un filtro oppure Mostra tutti");
+}
+
+/* ================== UTILS ================== */
+function mostraTutti(){
+  document.getElementById("idSearch").value="";
+  document.getElementById("dettaglioContratto").innerHTML="";
+  getAllContratti();
+}
+
+function highlightRow(id){
+  document.querySelectorAll("#tabContratti tbody tr").forEach(r=>r.classList.remove("_highlight"));
+  const rows=Array.from(document.querySelectorAll("#tabContratti tbody tr"));
+  const match=rows.find(r=>r.children[0].textContent==id);
+  if(match) match.classList.add("_highlight");
+}
+
+/* ================== START ================== */
+getAllContratti();
+</script>
+
+</body>
+</html>
