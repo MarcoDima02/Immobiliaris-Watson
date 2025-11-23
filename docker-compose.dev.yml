@@ -29,16 +29,19 @@ services:
     working_dir: /app
     volumes:
       - ./back-end/residea:/app
-      - ~/.m2:/root/.m2 # Cache delle dipendenze Maven
-    # Esegue l'applicazione direttamente con Maven
+      - ~/.m2:/root/.m2 # Maven dependencies cache
+
+      
+    # Run the application directly with Maven
     command: mvn spring-boot:run -Dspring-boot.run.jvmArguments="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
     ports:
       - "8080:8080"
-      - "5005:5005" # Porta di debug remoto
+      - "5005:5005" # Remote debug port
     environment:
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/residea_db
       - SPRING_DATASOURCE_USERNAME=residea_user
       - SPRING_DATASOURCE_PASSWORD=ResideaP@ss
+
       # Mail configuration will be taken from the project .env so dev compose uses same SMTP settings
       - MAIL_HOST=${MAIL_HOST}
       - MAIL_PORT=${MAIL_PORT}
@@ -63,8 +66,9 @@ services:
     working_dir: /app
     volumes:
       - ./frontend:/app
-      - /app/node_modules # Evita di sovrascrivere node_modules del container
-    # MODIFICA QUI: Installa le dipendenze prima di avviare
+      - /app/node_modules # Avoid overwriting container's node_modules
+      
+    # MODIFY HERE: Install dependencies before starting
     command: sh -c "npm install && npm run dev -- --host"
     ports:
       - "5173:5173"

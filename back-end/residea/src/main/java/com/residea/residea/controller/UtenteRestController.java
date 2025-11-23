@@ -59,7 +59,24 @@ public Utente creaUtente(@RequestBody Utente utente) {
             }
             // hide passwordHash before returning
             u.setPasswordHash(null);
-            return ResponseEntity.ok(u);
+
+            // decide redirect based on role
+            String redirectTo = "/";
+            if (u.getRuolo() != null) {
+                switch (u.getRuolo()) {
+                    case AGENTE:
+                        redirectTo = "/agente/dashboard";
+                        break;
+                    case AMMINISTRATORE:
+                        redirectTo = "/admin/dashboard";
+                        break;
+                    default:
+                        redirectTo = "/";
+                }
+            }
+
+            com.residea.residea.dto.LoginResponse resp = new com.residea.residea.dto.LoginResponse(u, redirectTo);
+            return ResponseEntity.ok(resp);
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }

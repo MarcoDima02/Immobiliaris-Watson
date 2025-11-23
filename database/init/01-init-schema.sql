@@ -279,8 +279,82 @@ VALUES
   ('28922', 7, 2300.00, 'seed_piemonte_agg_v1', '2025-11-01', 0.75), -- Verbania
   ('13100', 8, 1250.00, 'seed_piemonte_agg_v1', '2025-11-01', 0.63); -- Vercelli
 -- Utente di test
-INSERT IGNORE INTO Utente (idUtente, nome, cognome, telefono, email, ruolo, verifica_email, consenso_privacy)
-VALUES (1, 'Mario', 'Rossi', '3331234567', 'mario.rossi@example.com', 'proprietario', TRUE, TRUE);
+INSERT IGNORE INTO Utente (idUtente, nome, cognome, telefono, email, passwordHash, ruolo, verifica_email, consenso_privacy)
+VALUES (1, 'Mario', 'Rossi', '3331234567', 'mario.rossi@example.com', NULL, 'proprietario', TRUE, TRUE),
+       (2, 'Luca', 'Bianchi', '3332345678', 'luca.bianchi@example.com', '$2a$10$z8nV/pxKZg8HVv2u5U7Juu1d8yqV1T1ZsGzV8cQpGQh7yK6d5n6e2', 'agente', TRUE, TRUE),
+       (3, 'Anna', 'Verdi', '3333456789', 'anna.verdi@example.com', '$2a$10$k3MH0a9qW7jZl4Ey3P1bXe9u6V6pQ2F9xYg6cR8sH4jJ1uE0q9s8a', 'amministratore', TRUE, TRUE);
+
+-- ========================
+-- SAMPLE: Immobili di esempio
+-- ========================
+INSERT IGNORE INTO Immobile (idImmobile, idProprietario, tipologia, indirizzo, citta, provincia, cap, latitudine, longitudine, stato)
+VALUES
+    (1, 1, 'Appartamento', 'Via Garibaldi 10', 'Torino', 'TO', '10121', 45.070300, 7.686900, 'Disponibile'),
+    (2, 1, 'Appartamento', 'Corso Francia 200', 'Torino', 'TO', '10135', 45.057500, 7.639700, 'Disponibile'),
+    (3, 2, 'Villa', 'Via delle Rose 5', 'Novara', 'NO', '28100', 45.448000, 8.621000, 'Disponibile'),
+    (4, NULL, 'Monolocale', 'Piazza Vittorio 1', 'Torino', 'TO', '10123', 45.062000, 7.680600, 'Disponibile');
+
+-- ========================
+-- SAMPLE: Dettagli immobili
+-- ========================
+INSERT IGNORE INTO DettagliImmobile (idImmobile, nStanze, nBagni, nPiano, nPianiImmobile, balconeTerrazzo, giardino, garage, ascensore, cantina, tipoRiscaldamento, annoCostruzione, condizioneImmobile, classeEnergetica, esposizione, prezzo)
+VALUES
+    (1, 3, 1, 2, 5, TRUE, FALSE, FALSE, TRUE, FALSE, 'Autonomo', 1998, 'Ristrutturato', 'B', 'Sud-Est', 250000.00),
+    (2, 2, 1, 4, 6, TRUE, FALSE, TRUE, TRUE, TRUE, 'Autonomo', 2005, 'Parzialmente ristrutturato', 'C', 'Nord', 180000.00),
+    (3, 5, 3, NULL, NULL, TRUE, TRUE, TRUE, FALSE, TRUE, 'Pavimento', 1990, 'Nuovo', 'A', 'Ovest', 890000.00),
+    (4, 1, 1, 1, 5, FALSE, FALSE, FALSE, FALSE, FALSE, 'No', 2010, 'Non ristrutturato', 'G', 'Est', 95000.00);
+
+-- ========================
+-- SAMPLE: Superfici
+-- ========================
+INSERT IGNORE INTO Superfici (idImmobile, superficieMq, superficieBalconeTerrazzo, superficieGiardino, superficieGarage, superficieCantina)
+VALUES
+    (1, 85, 5, 0, 0, 0),
+    (2, 60, 8, 0, 0, 12),
+    (3, 220, 30, 400, 40, 20),
+    (4, 28, 0, 0, 0, 0);
+
+-- ========================
+-- SAMPLE: Immagini
+-- ========================
+INSERT IGNORE INTO Immagine (idImmagine, idImmobile, url, nomeFile, descrizione, copertina, ordinamento, dimensioneKb)
+VALUES
+    (1, 1, 'https://example.com/images/immobile1-1.jpg', 'immobile1-1.jpg', 'Soggiorno luminoso', TRUE, 1, 250),
+    (2, 1, 'https://example.com/images/immobile1-2.jpg', 'immobile1-2.jpg', 'Cucina arredata', FALSE, 2, 180),
+    (3, 2, 'https://example.com/images/immobile2-1.jpg', 'immobile2-1.jpg', 'Vista esterna', TRUE, 1, 320),
+    (4, 3, 'https://example.com/images/immobile3-1.jpg', 'immobile3-1.jpg', 'Giardino e piscina', TRUE, 1, 980),
+    (5, 4, 'https://example.com/images/immobile4-1.jpg', 'immobile4-1.jpg', 'Monolocale centrale', TRUE, 1, 120);
+
+-- ========================
+-- SAMPLE: Valutazioni pre-esistenti
+-- ========================
+INSERT IGNORE INTO ValutazioneImmobile (idValutazione, idImmobile, valoreBase, fattoreAggiustamento, valoreMedio, valoreMin, valoreMax, confidence)
+VALUES
+    (1, 1, 127500, 1.96, 250000, 225000, 275000, 0.85),
+    (2, 2, 108000, 1.67, 180000, 160000, 200000, 0.75);
+
+-- ========================
+-- SAMPLE: Contratti
+-- ========================
+INSERT IGNORE INTO Contratti (idContratto, idImmobile, tipoContratto, dataContratto, dataScadenzaContratto, pathContrattoPDF)
+VALUES
+    (1, 3, 'Esclusivo', '2025-06-01', '2026-06-01', '/contracts/contratto-3.pdf');
+
+-- ========================
+-- SAMPLE: Vendite
+-- ========================
+INSERT IGNORE INTO Vendite (idVendita, idContratto, idImmobile, idUtente, commissionePercentuale)
+VALUES
+    (1, 1, 3, 2, 3.50);
+
+-- ========================
+-- SAMPLE: Leads
+-- ========================
+INSERT IGNORE INTO Leads (idLead, idUtente, nome, email, telefono, citta, fonte, convertitoInRichiesta, idRichiesta, assegnatoA, note, createdAt)
+VALUES
+    (1, NULL, 'Giulia Neri', 'giulia.neri@example.com', '3451234567', 'Torino', 'Sito', FALSE, NULL, 2, 'Interessata a 2 locali', NOW()),
+    (2, NULL, 'Marco L.', 'marco.l@example.com', '3462345678', 'Novara', 'Landing', TRUE, NULL, 2, 'Chiede sopralluogo', NOW()),
+    (3, 1, 'Paolo R', 'paolo.r@example.com', '3473456789', 'Torino', 'Referral', FALSE, NULL, 2, 'Lead da agente Luca', NOW());
 
 -- Log di completamento
 SELECT 'Database inizializzato con successo!' AS Status;
