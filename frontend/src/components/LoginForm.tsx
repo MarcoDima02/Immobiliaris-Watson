@@ -1,11 +1,9 @@
 /**
  * Node modules
  */
-// import { useNavigate  } from 'react-router';
-// import { z } from 'zod';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useCallback } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router';
 
 /**
@@ -19,12 +17,9 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import {
-  Field,
-  FieldGroup,
-  FieldLabel,
-} from '@/components/ui/field';
+import { Field, FieldGroup, FieldLabel } from '@/components/ui/field';
 import InputPassword from '@/components/InputPassword';
+import { loginRequest } from '@/services/auth.service';
 
 /**
  * Assets
@@ -35,7 +30,7 @@ import { logo } from '@/assets';
 /**
  * Icons
  */
-// import { LoaderCircleIcon } from 'lucide-react';
+import { LoaderCircleIcon } from 'lucide-react';
 
 /**
  * Schemas
@@ -47,19 +42,25 @@ import { loginSchema } from '@/schemas/loginSchema';
  */
 import type { LoginSchemaType } from '@/schemas/loginSchema';
 
+/**
+ * Store
+ */
+import { useAuthStore } from '@/store/auth.store';
+
 // type LoginFieldName = 'email' | 'password';
 
 /**
  * Constants
  */
 const LOGIN_FORM = {
-  title: 'Bentornati',
-  description: 'Accedi al tuo account personale',
+  title: 'Accesso al backoffice',
   footerText: 'Hai dimenticato la tua password?',
 } as const;
 
 const LoginForm = ({ className, ...props }: React.ComponentProps<'div'>) => {
-  // const navigate = useNavigate();
+  const { login, isLoading, setLoading } = useAuthStore();
+  const navigate = useNavigate();
+  const [error, setError] = useState<string | null>(null);
 
   const { control, handleSubmit } = useForm<LoginSchemaType>({
     resolver: zodResolver(loginSchema),
@@ -69,35 +70,28 @@ const LoginForm = ({ className, ...props }: React.ComponentProps<'div'>) => {
     },
   });
 
-  const navigate = useNavigate();
+  const onSubmit = async (values: LoginSchemaType) => {
+    setError(null);
+    setLoading(true);
 
-  const onSubmit = useCallback(async (values: LoginSchemaType) => {
     try {
-      const res = await fetch('/api/utenti/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: values.email, password: values.password }),
-      });
+      const user = await loginRequest(values.email, values.password);
 
-      if (!res.ok) {
-        const text = await res.text();
-        alert('Login fallito: ' + text);
-        return;
-      }
+      login(user);
 
-      const payload = await res.json();
-      // payload is { user: {...}, redirectTo: '/admin/dashboard' }
-      if (payload?.redirectTo) {
-        navigate(payload.redirectTo);
-      } else {
-        // default - go to home
-        navigate('/');
+      switch (user.ruolo) {
+        case 'AMMINISTRATORE':
+          navigate('/backoffice/admin/dashboard');
+          break;
+        case 'AGENTE':
+          navigate('/backoffice/agent/dashboard');
       }
-    } catch (e) {
-      console.error(e);
-      alert('Errore durante il login');
+    } catch (err: any) {
+      setError(err.message || 'Credenziali non valide');
+    } finally {
+      setLoading(false);
     }
-  }, []);
+  };
 
   return (
     <div
@@ -120,8 +114,13 @@ const LoginForm = ({ className, ...props }: React.ComponentProps<'div'>) => {
                   />
                 </figure>
 
-                <p className="text-balance">{LOGIN_FORM.description}</p>
+                <p className="text-balance">{LOGIN_FORM.title}</p>
               </div>
+
+              {error && (
+                <p className="text-red-500 text-center text-sm">{error}</p>
+              )}
+
               <FieldGroup>
                 <Controller
                   name="email"
@@ -149,7 +148,7 @@ const LoginForm = ({ className, ...props }: React.ComponentProps<'div'>) => {
                   control={control}
                   render={({ field, fieldState }) => (
                     <Field className="grid gap-3">
-                      <FieldLabel>Email</FieldLabel>
+                      <FieldLabel>Password</FieldLabel>
 
                       <InputPassword
                         {...field}
@@ -170,9 +169,9 @@ const LoginForm = ({ className, ...props }: React.ComponentProps<'div'>) => {
                 className="w-full"
                 // disabled={isLoading}
               >
-                {/* {isLoading && <LoaderCircleIcon className='animate-spin'/>} */}
+                {isLoading && <LoaderCircleIcon className="animate-spin" />}
 
-                <span>Login</span>
+                <span>Accedi</span>
               </Button>
             </div>
 
