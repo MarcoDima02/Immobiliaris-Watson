@@ -4,13 +4,12 @@ import com.residea.residea.entities.Utente;
 
 public class LoginResponse {
     private Utente user;
-    private String redirectTo;
+    // no redirectTo: backend only returns the authenticated user, frontend decides navigation
 
     public LoginResponse() {}
 
-    public LoginResponse(Utente user, String redirectTo) {
+    public LoginResponse(Utente user) {
         this.user = user;
-        this.redirectTo = redirectTo;
     }
 
     public Utente getUser() {
@@ -21,11 +20,5 @@ public class LoginResponse {
         this.user = user;
     }
 
-    public String getRedirectTo() {
-        return redirectTo;
-    }
-
-    public void setRedirectTo(String redirectTo) {
-        this.redirectTo = redirectTo;
-    }
+    // redirectTo removed
 }
