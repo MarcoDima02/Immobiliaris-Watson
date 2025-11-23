@@ -162,7 +162,7 @@ CREATE TABLE ValutazioneImmobile (
 CREATE TABLE Contratti (
     idContratto INT AUTO_INCREMENT PRIMARY KEY,
     idImmobile INT NOT NULL,
-    tipoContratto ENUM ('Esclusivo', 'altro'),
+    tipoContratto ENUM ('AFFITTO', 'VENDITA', 'COMODATO', 'ESCLUSIVO', 'altro'),
     dataContratto DATE,
     dataScadenzaContratto DATE,
     pathContrattoPDF VARCHAR(255),

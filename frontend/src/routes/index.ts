@@ -14,6 +14,7 @@ import RootLayout from '@/components/layout/RootLayout';
  */
 import Home from '@/pages/Home';
 import Backoffice from '@/pages/Backoffice';
+import AgentDashboard from '@/pages/AgentDashboard';
 import Login from '@/pages/auth/Login';
 
 // Lazy import for bundle optimization
@@ -43,6 +44,15 @@ const router = createBrowserRouter([
       {
         path: 'dashboard',
         Component: Backoffice,
+      },
+    ],
+  },
+  {
+    path: '/agent',
+    children: [
+      {
+        path: 'dashboard',
+        Component: AgentDashboard,
       },
     ],
   },

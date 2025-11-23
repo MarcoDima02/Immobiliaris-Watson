@@ -20,4 +20,9 @@ public class ViewController {
     public String leads() {
         return "lead"; // renderizza src/main/resources/templates/lead.html
     }
+
+    @GetMapping("/contratti")
+    public String contratti() {
+        return "contratti"; // Thymeleaf cerca templates/contratti.html
+    }
 }
