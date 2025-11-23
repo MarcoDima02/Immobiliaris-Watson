@@ -10,12 +10,37 @@ import { lazy } from 'react';
 import RootLayout from '@/components/layout/RootLayout';
 
 /**
+ * Middleware
+ */
+import ProtectedRoute from '@/components/auth/ProtectedRoute';
+
+/**
  * Pages
  */
 import Home from '@/pages/Home';
-import Backoffice from '@/pages/Backoffice';
+import AdminDashboard from '@/pages/AdminDashboard';
+import AgentDashboard from '@/pages/AgentDashboard';
 
 import Login from '@/pages/auth/Login';
+
+/**
+ * Helpers
+ */
+function AdminProtected() {
+  return (
+    <ProtectedRoute roles={["AMMINISTRATORE"]}>
+      <AdminDashboard />
+    </ProtectedRoute>
+  );
+}
+
+function AgentProtected() {
+  return (
+    <ProtectedRoute roles={["AGENTE"]}>
+      <AgentDashboard />
+    </ProtectedRoute>
+  );
+}
 
 // Lazy import for bundle optimization
 
@@ -42,8 +67,12 @@ const router = createBrowserRouter([
     path: '/backoffice',
     children: [
       {
-        path: 'dashboard',
-        Component: Backoffice,
+        path: 'admin/dashboard',
+        Component: AdminProtected
+      },
+      {
+        path: 'agent/dashboard',
+        Component: AgentProtected,
       },
     ],
   },
