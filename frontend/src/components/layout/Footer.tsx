@@ -76,7 +76,7 @@ const Footer = () => {
               </li>
               <li>
                 <Link
-                  to="/backoffice"
+                  to="/login"
                   className="hover:text-primary hover:bg-white hover:font-semibold rounded-md transition-colors font-medium border px-3 py-2"
                   viewTransition
                 >
