@@ -38,7 +38,7 @@ const router = createBrowserRouter([
     Component: Login,
   },
   {
-    path: '/admin',
+    path: '/backoffice',
     children: [
       {
         path: 'dashboard',
