@@ -87,14 +87,14 @@ services:
       start_period: 10s
 
 # ============================================
-# Volumi persistenti
+# Persistent Volumes
 # ============================================
 volumes:
   mysql_data:
     driver: local
 
 # ============================================
-# Network isolata
+# Network isolation
 # ============================================
 networks:
   residea-network:

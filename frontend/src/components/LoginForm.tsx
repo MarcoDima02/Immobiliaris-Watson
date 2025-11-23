@@ -5,7 +5,8 @@
 // import { z } from 'zod';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useCallback,  } from 'react';
+import { useCallback } from 'react';
+import { useNavigate } from 'react-router';
 
 /**
  * Helpers
@@ -68,8 +69,34 @@ const LoginForm = ({ className, ...props }: React.ComponentProps<'div'>) => {
     },
   });
 
+  const navigate = useNavigate();
+
   const onSubmit = useCallback(async (values: LoginSchemaType) => {
-    console.log(values);
+    try {
+      const res = await fetch('/api/utenti/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: values.email, password: values.password }),
+      });
+
+      if (!res.ok) {
+        const text = await res.text();
+        alert('Login fallito: ' + text);
+        return;
+      }
+
+      const payload = await res.json();
+      // payload is { user: {...}, redirectTo: '/admin/dashboard' }
+      if (payload?.redirectTo) {
+        navigate(payload.redirectTo);
+      } else {
+        // default - go to home
+        navigate('/');
+      }
+    } catch (e) {
+      console.error(e);
+      alert('Errore durante il login');
+    }
   }, []);
 
   return (
