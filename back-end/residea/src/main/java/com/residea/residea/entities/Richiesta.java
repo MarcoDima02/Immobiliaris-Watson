@@ -3,6 +3,7 @@ package com.residea.residea.entities;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -36,7 +37,7 @@ public class Richiesta {
     @Column(name = "dataAppuntamento")
     private LocalDateTime dataAppuntamento;
 
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = com.residea.residea.entities.converters.RichiestaStatoConverter.class) // opzionale se autoApply=true
     @Column(length = 50)
     private Stato stato;
 
