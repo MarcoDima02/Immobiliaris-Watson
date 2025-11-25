@@ -19,9 +19,10 @@ import ProtectedRoute from '@/components/auth/ProtectedRoute';
  */
 import Home from '@/pages/Home';
 import AdminDashboard from '@/pages/AdminDashboard';
-import AgentDashboard from '@/pages/AgentDashboard';
 
 import Login from '@/pages/auth/Login';
+import AgentHome from '@/components/dashboard/pages/AgentHome';
+
 
 /**
  * Helpers
@@ -37,7 +38,7 @@ function AdminProtected() {
 function AgentProtected() {
   return (
     <ProtectedRoute roles={["AGENTE"]}>
-      <AgentDashboard />
+      <AgentHome />
     </ProtectedRoute>
   );
 }
