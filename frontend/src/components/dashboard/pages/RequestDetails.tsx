@@ -66,7 +66,7 @@ function RequestDetails() {
                     </div>
                 </div>
                 <div className="w-full lg:w-[40%] h-full mt-4">
-                    <div className="flex flex-wrap justify-start items-center px-4 gap-4  w-full">
+                    <div className="flex flex-wrap justify-start items-center px-4 gap-4 h-full w-full">
                         <Button className="w-auto min-w-50">Modifica stato</Button>
                         <div className="flex flex-col">
                             <p className="text-black font-bold">Stato attuale:</p>
@@ -76,7 +76,7 @@ function RequestDetails() {
                             <Button className="w-auto min-w-50">Allega contratto</Button>
                             <Button variant={"outline"} className="w-auto min-w-50">Visualizza contratti</Button>
                         </div>
-                        <div className="flex flex-col bg-white rounded-xl shadow-md w-full h-101 p-4">
+                        <div className="flex flex-col bg-white rounded-xl shadow-md w-full h-full p-4">
                             <p className="font-bold text-black">Posizione dell'immobile</p>
                             <div className="w-full h-100 bg-green-200 mt-5"></div>
                         </div>
