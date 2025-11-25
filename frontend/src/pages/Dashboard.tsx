@@ -1,4 +1,4 @@
-import AgentNavbar from "@/components/dashboard/components/AgentNavbar";
+import AgentNavbar from "@/components/dashboard/components/agentNavbar";
 import AgentHome from "@/components/dashboard/pages/AgentHome";
 import RequestDetails from "@/components/dashboard/pages/RequestDetails";
 import WaitingRequestPage from "@/components/dashboard/pages/WaitingRequestPage";

@@ -65,8 +65,8 @@ function RequestDetails() {
                         </div>
                     </div>
                 </div>
-                <div className="w-full lg:w-[40%] border mt-4">
-                    <div className="flex flex-wrap justify-start items-center p-4 gap-4 border w-full">
+                <div className="w-full lg:w-[40%] h-full mt-4">
+                    <div className="flex flex-wrap justify-start items-center px-4 gap-4  w-full">
                         <Button className="w-auto min-w-50">Modifica stato</Button>
                         <div className="flex flex-col">
                             <p className="text-black font-bold">Stato attuale:</p>
@@ -78,7 +78,7 @@ function RequestDetails() {
                         </div>
                         <div className="flex flex-col bg-white rounded-xl shadow-md w-full h-101 p-4">
                             <p className="font-bold text-black">Posizione dell'immobile</p>
-                            <div className="w-full h-full bg-green-200 mt-5"></div>
+                            <div className="w-full h-100 bg-green-200 mt-5"></div>
                         </div>
                     </div>
                 </div>
@@ -93,6 +93,19 @@ function RequestDetails() {
                         <div className="flex justify-between">
                             <p className="w-1/2 text-zinc-400 text-sm"><i>Valore minimo</i></p>
                             <p className="w-1/2 text-zinc-400 text-sm text-end"><i>Valore massimo</i></p>
+                        </div>
+                    </div>
+                </div>
+                <div className="w-full lg:w-[40%] px-4 wrap">
+                    <div className="bg-white rounded-xl h-48 shadow-md mt-5 p-4 flex flex-wrap">
+                        <div className="flex flex-col w-full xl:w-1/2 py-3 gap-3 justify-center h-full">
+                            <Button className="h-1/2">Aggiungi immagini</Button>
+                            <Button className="h-1/2" variant={"outline"}>Visualizza immagini</Button>
+                        </div>
+                        <div className="none xl:block w-1/2 h-full px-3 py-1">
+                            <div className="bg-black/20 w-full h-full rounded-2xl flex justify-center items-center">
+                                <p className="text-4xl font-bold">12+</p>
+                            </div>
                         </div>
                     </div>
                 </div>
