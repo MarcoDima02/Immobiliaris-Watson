@@ -197,6 +197,18 @@ public class AgenteService {
             dto.setSuperficieCantina(superficie.getSuperficieCantina());
         }
 
+        // Dati ValutazioneImmobile
+        ValutazioneImmobile valutazione = valutatzioneRepo.findByIdImmobile(idImmobile).orElse(null);
+        if (valutazione != null) {
+            dto.setIdValutazione(valutazione.getIdValutazione());
+            dto.setValoreBase(valutazione.getValoreBase() != null ? valutazione.getValoreBase().longValue() : null);
+            dto.setFattoreAggiustamento(valutazione.getFattoreAggiustamento());
+            dto.setValoreMedio(valutazione.getValoreMedio() != null ? valutazione.getValoreMedio().longValue() : null);
+            dto.setValoreMin(valutazione.getValoreMin() != null ? valutazione.getValoreMin().longValue() : null);
+            dto.setValoreMax(valutazione.getValoreMax() != null ? valutazione.getValoreMax().longValue() : null);
+            dto.setConfidence(valutazione.getConfidence());
+        }
+
         return dto;
     }
 }
