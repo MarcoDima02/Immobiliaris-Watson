@@ -33,7 +33,7 @@ public class ValutazioneServiceImpl implements ValutazioneImmobileService {
     private final CittaRepo cittaRepo;
     private final ImmobileRepo immobileRepo;
     private final DettagliImmobileRepo dettagliRepo;
-    private final SuperficiRepo superficiRepo;
+    private final SuperficiRepo superficieRepo;
     private final ValutazioneImmobileRepo valutazioneRepo;
     private final ApplicationEventPublisher publisher;
 
@@ -44,7 +44,7 @@ public class ValutazioneServiceImpl implements ValutazioneImmobileService {
         this.cittaRepo = cittaRepo;
         this.immobileRepo = immobileRepo;
         this.dettagliRepo = dettagliRepo;
-        this.superficiRepo = superficiRepo;
+        this.superficieRepo = superficiRepo;
         this.valutazioneRepo = valutazioneRepo;
         this.publisher = publisher;
     }
@@ -398,7 +398,7 @@ public class ValutazioneServiceImpl implements ValutazioneImmobileService {
     public ValutazioneResultResponse calculateFromImmobileId(Integer idImmobile) {
         Immobile imm = immobileRepo.findById(idImmobile).orElseThrow(() -> new IllegalArgumentException("Immobile non trovato"));
         DettagliImmobile det = dettagliRepo.findById(idImmobile).orElse(null);
-        Superficie sup = superficiRepo.findById(idImmobile).orElse(null);
+        Superficie sup = superficieRepo.findById(idImmobile).orElse(null);
 
         FormValutazioneRequest req = new FormValutazioneRequest();
         req.setCap(imm.getCap());

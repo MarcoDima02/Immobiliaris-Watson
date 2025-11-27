@@ -7,14 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.residea.residea.entities.Superficie;
-import com.residea.residea.repos.SuperficieRepo;
+import com.residea.residea.repos.SuperficiRepo;
 import com.residea.residea.services.SuperficieService;
 
 @Service
 public class SuperficieServiceImpl implements SuperficieService {
 
     @Autowired
-    private SuperficieRepo superficieRepo;
+    private SuperficiRepo superficieRepo;
 
     // --- CREATE ---
     @Override

@@ -15,4 +15,5 @@ public interface ContrattoRepo extends JpaRepository<Contratto, Integer> {
     List<Contratto> findByIdImmobile_IdImmobile(Integer idImmobile);
     List<Contratto> findByDataScadenzaContrattoBefore(LocalDate data);
     List<Contratto> findByDataScadenzaContrattoBetween(LocalDate inizio, LocalDate fine);
+    List<Contratto> findByAgente_IdUtente(Integer idAgente);
 }
