@@ -17,6 +17,8 @@ public interface RichiestaRepo extends JpaRepository<Richiesta, Integer> {
 
     List<Richiesta> findByImmobile(Immobile immobile);
 
+    List<Richiesta> findByImmobile_IdImmobile(Integer idImmobile);
+
     List<Richiesta> findByStato(Stato stato);
 
 }

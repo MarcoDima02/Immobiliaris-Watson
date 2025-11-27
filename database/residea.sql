@@ -161,6 +161,7 @@ CREATE TABLE ValutazioneImmobile (
 -- ========================
 CREATE TABLE Contratti (
     idContratto INT AUTO_INCREMENT PRIMARY KEY,
+        idAgente INT,
     idImmobile INT NOT NULL,
     tipoContratto ENUM ('AFFITTO', 'VENDITA', 'COMODATO', 'ESCLUSIVO', 'altro'),
     dataContratto DATE,
@@ -202,6 +203,7 @@ CREATE TABLE Vendite (
     commissionePercentuale DECIMAL(5, 2),
     FOREIGN KEY (idContratto) REFERENCES Contratti(idContratto) ON DELETE CASCADE,
     FOREIGN KEY (idImmobile) REFERENCES Immobile(idImmobile) ON DELETE CASCADE,
+        FOREIGN KEY (idAgente) REFERENCES Utente(idUtente) ON DELETE SET NULL
     FOREIGN KEY (idUtente) REFERENCES Utente(idUtente) ON DELETE CASCADE
 );
 

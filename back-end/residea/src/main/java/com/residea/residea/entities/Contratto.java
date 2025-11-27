@@ -47,6 +47,11 @@ private Integer idContratto;
 @JsonIgnoreProperties("contratti")
 private Immobile idImmobile;
 
+@ManyToOne
+@JoinColumn(name = "idAgente")
+@JsonIgnoreProperties("contratti")
+private Utente agente;
+
 @Convert(converter = TipoContrattoConverter.class)
 @Column(length = 50)
 private TipoContratto tipoContratto;
