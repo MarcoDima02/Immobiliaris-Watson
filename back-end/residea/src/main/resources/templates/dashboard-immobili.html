@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestione Immobili</title>
+
+    <style>
+        body {font-family: Arial, Helvetica, sans-serif; padding: 16px; background: #f6f6f9;}
+        h1 {margin-bottom: 20px;}
+
+        input, select {padding: 6px; margin: 6px 0; width: 100%;}
+        button {padding: 8px 16px; margin-right: 6px; cursor: pointer;}
+
+        table {width: 100%; border-collapse: collapse; margin-top: 12px; background: white;}
+        th, td {padding: 10px; border-bottom: 1px solid #ddd;}
+        th {background: #222; color: white;}
+        tr:hover {background: #f0f0f0;}
+
+        .container {background: #fff; padding: 16px; border-radius: 12px; box-shadow: 0 3px 8px rgba(0,0,0,0.1);}
+        .form-row {display: flex; gap: 10px; flex-wrap: wrap;}
+        .form-row > div {flex: 1;}
+
+        tr._highlight {background: #d1e7dd !important;}
+
+    </style>
+</head>
+<body>
+
+<h1>Gestione Immobili</h1>
+
+<div class="container">
+    <h3>🏠 Crea / Aggiorna Immobile</h3>
+
+    <div class="form-row">
+        <div><input id="idImmobile" placeholder="ID (solo per aggiornare)" readonly></div>
+        <div>
+            <select id="proprietario">
+                <option value="">Proprietario (ID)</option>
+            </select>
+        </div>
+        <div>
+            <select id="tipologia">
+                <option value="">Tipologia</option>
+                <option value="APPARTAMENTO">APPARTAMENTO</option>
+                <option value="VILLA">VILLA</option>
+                <option value="ATTICO">ATTICO</option>
+                <option value="LOCALE_COMMERCIALE">LOCALE COMMERCIALE</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div><input id="indirizzo" placeholder="Indirizzo"></div>
+        <div><input id="citta" placeholder="Città"></div>
+        <div><input id="provincia" placeholder="Provincia (es: MI)"></div>
+        <div><input id="cap" placeholder="CAP"></div>
+    </div>
+
+    <div class="form-row">
+        <div><input id="latitudine" placeholder="Latitudine"></div>
+        <div><input id="longitudine" placeholder="Longitudine"></div>
+        <div>
+            <select id="stato">
+                <option value="">Stato</option>
+                <option value="DISPONIBILE">DISPONIBILE</option>
+                <option value="AFFITTATO">AFFITTATO</option>
+                <option value="MANUTENZIONE">MANUTENZIONE</option>
+            </select>
+        </div>
+    </div>
+
+    <button onclick="creaImmobile()">Crea</button>
+    <button onclick="aggiornaImmobile()">Aggiorna</button>
+    <button onclick="resetForm()">Pulisci</button>
+</div>
+
+
+
+<div class="container" style="margin-top: 20px;">
+    <h3>📋 Lista Immobili</h3>
+
+    <table id="tabImmobili">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Proprietario</th>
+                <th>Tipologia</th>
+                <th>Indirizzo</th>
+                <th>Città</th>
+                <th>Provincia</th>
+                <th>Stato</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+
+<div style="margin-top: 20px;">
+    <input id="immobileSearchId" placeholder="Cerca immobile per ID" style="padding:6px; width:200px;">
+    <button onclick="cercaImmobilePerId()">Cerca</button>
+    <button onclick="mostraTuttiImmobili()">Mostra tutti</button>
+</div>
+
+
+<script>
+const api = "http://localhost:8080/api/immobili";
+const apiUtenti = "http://localhost:8080/api/utenti";
+
+
+// =========================
+//     CARICA PROPRIETARI
+// =========================
+async function loadProprietari() {
+    const res = await fetch(apiUtenti);
+    const utenti = await res.json();
+
+    const select = document.getElementById("proprietario");
+    utenti.forEach(u => {
+        const opt = document.createElement("option");
+        opt.value = u.idUtente;
+        opt.textContent = u.idUtente + " - " + u.nome + " " + u.cognome;
+        select.appendChild(opt);
+    });
+}
+
+
+
+// =========================
+//         CRUD
+// =========================
+
+async function creaImmobile() {
+    const payload = buildPayload();
+
+    delete payload.idImmobile;
+
+    const res = await fetch(api, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(payload)
+    });
+
+    if (!res.ok) {
+        alert("Errore nella creazione.");
+        return;
+    }
+
+    alert("Immobile creato!");
+    getAllImmobili();
+    resetForm();
+}
+
+
+async function aggiornaImmobile() {
+    const payload = buildPayload();
+
+    if (!payload.idImmobile) {
+        alert("Inserisci ID immobile per aggiornare.");
+        return;
+    }
+
+    const res = await fetch(api, {
+        method: "PUT",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(payload)
+    });
+
+    if (!res.ok) {
+        alert("Errore nell'aggiornamento.");
+        return;
+    }
+
+    alert("Immobile aggiornato!");
+    getAllImmobili();
+    resetForm();
+}
+
+
+function buildPayload() {
+    return {
+        idImmobile: document.getElementById("idImmobile").value || null,
+        proprietario: document.getElementById("proprietario").value ? { idUtente: Number(document.getElementById("proprietario").value) } : null,
+        tipologia: document.getElementById("tipologia").value,
+        indirizzo: document.getElementById("indirizzo").value,
+        citta: document.getElementById("citta").value,
+        provincia: document.getElementById("provincia").value,
+        cap: document.getElementById("cap").value,
+        latitudine: document.getElementById("latitudine").value,
+        longitudine: document.getElementById("longitudine").value,
+        stato: document.getElementById("stato").value
+    };
+}
+
+
+
+// =========================
+//     CARICA TUTTI
+// =========================
+
+async function getAllImmobili() {
+    const res = await fetch(api);
+    const immobili = await res.json();
+
+    renderTable(immobili);
+}
+
+
+function renderTable(immobili) {
+    const tbody = document.querySelector("#tabImmobili tbody");
+    tbody.innerHTML = "";
+
+    immobili.forEach(i => {
+        const tr = document.createElement("tr");
+
+        tr.innerHTML = `
+            <td>${i.idImmobile}</td>
+            <td>${i.proprietario ? i.proprietario.nome + " " + i.proprietario.cognome : "-"}</td>
+            <td>${i.tipologia}</td>
+            <td>${i.indirizzo}</td>
+            <td>${i.citta}</td>
+            <td>${i.provincia}</td>
+            <td>${i.stato}</td>
+        `;
+
+        tr.addEventListener("click", () => {
+            loadIntoForm(i);
+            highlightRow(i.idImmobile);
+        });
+
+        tbody.appendChild(tr);
+    });
+}
+
+
+
+// =========================
+//     FUNZIONI FORM
+// =========================
+
+function loadIntoForm(i) {
+    document.getElementById("idImmobile").value = i.idImmobile || "";
+    document.getElementById("proprietario").value = i.proprietario?.idUtente || "";
+    document.getElementById("tipologia").value = i.tipologia || "";
+    document.getElementById("indirizzo").value = i.indirizzo || "";
+    document.getElementById("citta").value = i.citta || "";
+    document.getElementById("provincia").value = i.provincia || "";
+    document.getElementById("cap").value = i.cap || "";
+    document.getElementById("latitudine").value = i.latitudine || "";
+    document.getElementById("longitudine").value = i.longitudine || "";
+    document.getElementById("stato").value = i.stato || "";
+}
+
+function resetForm() {
+    ["idImmobile","indirizzo","citta","provincia","cap","latitudine","longitudine"]
+        .forEach(id => document.getElementById(id).value = "");
+
+    document.getElementById("tipologia").value = "";
+    document.getElementById("stato").value = "";
+    document.getElementById("proprietario").value = "";
+
+    document.querySelectorAll("#tabImmobili tbody tr").forEach(r => r.classList.remove("_highlight"));
+}
+
+
+// =========================
+//     CERCA PER ID
+// =========================
+
+async function cercaImmobilePerId() {
+    const id = document.getElementById("immobileSearchId").value.trim();
+    if (!id) { alert("Inserisci un ID."); return; }
+
+    const res = await fetch(api);
+    const immobili = await res.json();
+
+    const imm = immobili.find(i => String(i.idImmobile) === id);
+
+    if (!imm) {
+        alert("Immobile non trovato.");
+        return;
+    }
+
+    loadIntoForm(imm);
+    highlightRow(imm.idImmobile);
+}
+
+
+function mostraTuttiImmobili() {
+    document.getElementById("immobileSearchId").value = "";
+    resetForm();
+    getAllImmobili();
+}
+
+
+// =========================
+//     HIGHLIGHT RIGA
+// =========================
+
+function highlightRow(id) {
+    const rows = document.querySelectorAll("#tabImmobili tbody tr");
+
+    rows.forEach(r => r.classList.remove("_highlight"));
+
+    rows.forEach(r => {
+        if (r.querySelector("td").textContent.trim() === String(id)) {
+            r.classList.add("_highlight");
+            r.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+    });
+}
+
+
+
+// =========================
+//     INIT PAGE
+// =========================
+
+loadProprietari();
+getAllImmobili();
+
+</script>
+
+</body>
+</html>

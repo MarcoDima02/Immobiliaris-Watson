@@ -159,15 +159,16 @@ CREATE TABLE ValutazioneImmobile (
 -- ========================
 -- TABELLA: Contratti
 -- ========================
-CREATE TABLE Contratti (
-    idContratto INT AUTO_INCREMENT PRIMARY KEY,
-        idAgente INT,
-    idImmobile INT NOT NULL,
-    tipoContratto ENUM ('AFFITTO', 'VENDITA', 'COMODATO', 'ESCLUSIVO', 'altro'),
-    dataContratto DATE,
-    dataScadenzaContratto DATE,
-    pathContrattoPDF VARCHAR(255),
-    FOREIGN KEY (idImmobile) REFERENCES Immobile(idImmobile) ON DELETE CASCADE
+    CREATE TABLE Contratti (
+        idContratto INT AUTO_INCREMENT PRIMARY KEY,
+        idAgente INT AUTO_INCREMENT,
+        idImmobile INT NOT NULL,
+        tipoContratto ENUM ('AFFITTO', 'VENDITA', 'COMODATO', 'ESCLUSIVO', 'altro'),
+        dataContratto DATE,
+        dataScadenzaContratto DATE,
+        pathContrattoPDF VARCHAR(255),
+        FOREIGN KEY (idImmobile) REFERENCES Immobile(idImmobile) ON DELETE CASCADE,
+        FOREIGN KEY (idAgente) REFERENCES Utente(idUtente) ON DELETE CASCADE
 );
 
 -- ========================
