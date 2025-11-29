@@ -1,18 +1,9 @@
 package com.residea.residea.controller;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.chrono.ChronoLocalDateTime;
-import java.util.Collections;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,11 +11,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RestController;
-import java.util.Objects;
 
+import com.residea.residea.dto.ContrattoDto;
 import com.residea.residea.dto.ImmagineDto;
 import com.residea.residea.dto.ImmobileDto;
 import com.residea.residea.dto.RichiestaDto;
@@ -37,19 +26,14 @@ import com.residea.residea.entities.Immobile.Stato;
 import com.residea.residea.entities.Immobile.Tipologia;
 import com.residea.residea.entities.Richiesta;
 import com.residea.residea.entities.Utente;
-import com.residea.residea.entities.Vendita;
-import com.residea.residea.entities.Lead;
-
 import com.residea.residea.entities.Utente.Ruolo;
-
+import com.residea.residea.entities.Vendita;
 import com.residea.residea.services.ContrattoService;
 import com.residea.residea.services.ImmagineService;
 import com.residea.residea.services.ImmobileService;
-import com.residea.residea.services.LeadService;
 import com.residea.residea.services.RichiestaService;
 import com.residea.residea.services.UtentiService;
 import com.residea.residea.services.VenditaService;
-import com.residea.residea.services.LeadService;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -75,90 +59,16 @@ public class AmministratoreDashboard {
         @Autowired
         private ImmagineService immagineService;
 
-        @Autowired
-        private LeadService leadService;
-
-        private static final Logger log = LoggerFactory.getLogger(AmministratoreDashboard.class);
-
-
         // Controllo amministratore
     private boolean isAmministratore(HttpSession session) {
         Object ruolo = session.getAttribute("userRuolo");
         return ruolo != null && ruolo.toString().equalsIgnoreCase("AMMINISTRATORE");
     }
 
-    // Pagina Dashboard
-    @GetMapping
-    public String dashboard(Model model, HttpSession session) {
-        if (!isAmministratore(session)) {
-            return "redirect:/";
-        }
-
-        LocalDate oggi = LocalDate.now();
-
-        // Statistiche principali
-        int numeroUtenti = utentiService.getAllUtenti().size();
-
-        int numeroImmobili = immobiliService.getAllImmobili().size();
-        long immobiliDisponibili = immobiliService.getAllImmobili().stream()
-                .filter(i -> i.getStato() == Immobile.Stato.DISPONIBILE)
-                .count();
-
-        int numeroContratti = contrattiService.getAllContratti().size();
-        int nuoviContratti = (int) contrattiService.getAllContratti().stream()
-                .filter(c -> c.getDataContratto() != null 
-                        && c.getDataContratto().getMonthValue() == oggi.getMonthValue())
-                .count();
-
-        int numeroLead = leadService.getAllLeads().size();
-        int nuoviLead = (int) leadService.getAllLeads().stream()
-                .filter(c -> c.getCreatedAt() != null &&
-                c.getCreatedAt().toLocalDate().isEqual(oggi))
-
-                .count();
-
-        int numeroRichieste = richiestaService.getAllRichieste().size();
-int nuoveRichieste = (int) richiestaService.getAllRichieste().stream()
-        .filter(r -> r.getDataRichiesta() != null 
-                && r.getDataRichiesta().toLocalDate().isEqual(oggi))
-        .count();
-
-
-        BigDecimal totaleVendite = venditaService.getAllVendite().stream()
-                .map(Vendita::getCommissionePercentuale)
-                .filter(Objects::nonNull)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        long nuoveVendite = venditaService.getAllVendite().stream()
-                .filter(v -> v.getContratto() != null && v.getContratto().getDataContratto() != null
-                        && v.getContratto().getDataContratto().getMonthValue() == oggi.getMonthValue())
-                .count();
-
-        // Popolo il modello con tutte le variabili usate nelle card e statistiche dettagliate
-        model.addAttribute("numeroUtenti", numeroUtenti);
-        model.addAttribute("numeroImmobili", numeroImmobili);
-        model.addAttribute("immobiliDisponibili", immobiliDisponibili);
-        model.addAttribute("numeroContratti", numeroContratti);
-        model.addAttribute("nuoviContratti", nuoviContratti);
-        model.addAttribute("numeroLead", numeroLead);
-        model.addAttribute("nuoviLead", nuoviLead);
-        model.addAttribute("numeroRichieste", numeroRichieste);
-        model.addAttribute("nuoveRichieste", nuoveRichieste);
-        model.addAttribute("totaleVendite", totaleVendite);
-        model.addAttribute("nuoveVendite", nuoveVendite);
-
-        return "AmministratoreDashboard"; // Thymeleaf template
-    }
-
-
-
-
-    // // Security is performed with @PreAuthorize on the class; keep session check as fallback
-    // private boolean isAmministratore(HttpSession session) {
-    //     Object ruolo = session.getAttribute("userRuolo");
-    //     log.info("Session ID: {}, userRuolo: {}", session.getId(), ruolo);
-    //     return ruolo != null && ruolo.toString().equalsIgnoreCase("AMMINISTRATORE");
-    // }
+    // Removed old dashboard() method - use REST endpoints instead (getUtenti, getImmobili, etc.)
+    
+    // Note: Frontend handles navigation, backend only returns data/status codes
+    // Dashboard data accessed via: /api/admin/dashboard/utenti, /immobili, /contratti, etc.
 
     // Pagina utenti
     @GetMapping("/utenti")
@@ -244,84 +154,69 @@ int nuoveRichieste = (int) richiestaService.getAllRichieste().stream()
         return ResponseEntity.ok(dtos);
     }
 
-
-
-        @GetMapping("/contratti")
-        public String getContratti(Model model,
-                                   HttpSession session,
+    // --- Endpoints per Contratti ---
+    @GetMapping("/contratti")
+    public ResponseEntity<List<ContrattoDto>> getContratti(HttpSession session,
                                    @RequestParam(value = "tipo", required = false) Contratto.TipoContratto tipo,
                                    @RequestParam(value = "immobile", required = false) Integer idImmobile,
                                    @RequestParam(value = "agente", required = false) Integer idAgente) {
+        // TODO: Riattivare dopo login
+        // if (!isAmministratore(session)) {
+        //     return ResponseEntity.status(403).build();
+        // }
 
-            // --- Controllo accesso ---
-            if (!isAmministratore(session)) {
-                return "redirect:/";
-            }
+        List<Contratto> contratti = contrattiService.getAllContratti();
+        System.out.println("Contratti trovati: " + contratti.size());
 
-            // --- Carica contratti ---
-            List<Contratto> contratti = contrattiService.getAllContratti();
-            System.out.println("Contratti trovati: " + contratti.size());
-
-            // --- Filtri opzionali ---
-            if (tipo != null) {
-                contratti.removeIf(c -> c.getTipoContratto() != tipo);
-            }
-
-            if (idImmobile != null) {
-                contratti.removeIf(c -> c.getIdImmobile() == null ||
-                        !c.getIdImmobile().getIdImmobile().equals(idImmobile));
-            }
-
-            if (idAgente != null) {
-                contratti.removeIf(c -> c.getAgente() == null ||
-                        !c.getAgente().getIdUtente().equals(idAgente));
-            }
-
-            // --- Aggiungo dati al model ---
-            model.addAttribute("listaContratti", contratti);
-
-            // Per i filtri nel form
-            model.addAttribute("tipiContratto", Contratto.TipoContratto.values());
-            model.addAttribute("immobili", immobiliService.getAllImmobili());
-            model.addAttribute("agenti", utentiService.getAllUtenti());
-
-            return "dashboard-contratti"; 
+        // Filtri opzionali
+        if (tipo != null) {
+            contratti.removeIf(c -> c.getTipoContratto() != tipo);
+        }
+        if (idImmobile != null) {
+            contratti.removeIf(c -> c.getIdImmobile() == null ||
+                    !c.getIdImmobile().getIdImmobile().equals(idImmobile));
+        }
+        if (idAgente != null) {
+            contratti.removeIf(c -> c.getAgente() == null ||
+                    !c.getAgente().getIdUtente().equals(idAgente));
         }
 
-        @GetMapping("/api/contratti")
-        @ResponseBody
-        public List<Contratto> apiContratti(HttpSession session) {
+        List<ContrattoDto> dtos = contratti.stream().map(this::toContrattoDto).toList();
+        return ResponseEntity.ok(dtos);
+    }
 
-            if (!isAmministratore(session)) {
-                return Collections.emptyList(); // blocco sicurezza
-            }
+    @PostMapping("/contratti")
+    public ResponseEntity<Contratto> createContratto(@RequestBody Contratto c, HttpSession session) {
+        // TODO: Riattivare dopo login
+        // if (!isAmministratore(session)) return ResponseEntity.status(403).build();
+        Contratto saved = contrattiService.salvaContratto(c);
+        return ResponseEntity.ok(saved);
+    }
 
-            return contrattiService.getAllContratti();
-        }
-    @PostMapping("/api/contratti")
-@ResponseBody
-public Contratto creaContratto(@RequestBody Contratto c, HttpSession session) {
-    if (!isAmministratore(session)) throw new RuntimeException("Accesso negato");
-    return contrattiService.salvaContratto(c);
-}
+    @PutMapping("/contratti/{id}")
+    public ResponseEntity<Contratto> updateContratto(@PathVariable Integer id, @RequestBody Contratto c, HttpSession session) {
+        // TODO: Riattivare dopo login
+        // if (!isAmministratore(session)) return ResponseEntity.status(403).build();
+        c.setIdContratto(id);
+        Contratto updated = contrattiService.salvaContratto(c);
+        return ResponseEntity.ok(updated);
+    }
 
-// --- Pagina dashboard Richieste ---
+    // --- Endpoints per Richieste ---
 @GetMapping("/richieste")
-public String getRichieste(Model model,
-                           HttpSession session,
+public ResponseEntity<List<RichiestaDto>> getRichieste(HttpSession session,
                            @RequestParam(value = "stato", required = false) Richiesta.Stato stato,
                            @RequestParam(value = "utente", required = false) Integer idUtente,
                            @RequestParam(value = "immobile", required = false) Integer idImmobile) {
+    // TODO: Riattivare dopo login
+    // if (!isAmministratore(session)) {
+    //     return ResponseEntity.status(403).build();
+    // }
 
-    if (!isAmministratore(session)) {
-        return "redirect:/";
-    }
-
-    // --- Carica tutte le richieste ---
     List<Richiesta> richieste = richiestaService.getAllRichieste();
     System.out.println("Richieste trovate: " + richieste.size());
 
-    // --- Filtri opzionali ---
+    // Filtri opzionali
     if (stato != null) {
         richieste.removeIf(r -> r.getStato() != stato);
     }
@@ -332,81 +227,57 @@ public String getRichieste(Model model,
         richieste.removeIf(r -> r.getImmobile() == null || !r.getImmobile().getIdImmobile().equals(idImmobile));
     }
 
-    // --- Aggiungo dati al model ---
-    model.addAttribute("listaRichieste", richieste);
-    model.addAttribute("statiRichieste", Richiesta.Stato.values());
-    model.addAttribute("utenti", utentiService.getAllUtenti());
-    model.addAttribute("immobili", immobiliService.getAllImmobili());
-
-    return "dashboard-richieste"; // Thymeleaf template
+    List<RichiestaDto> dtos = richieste.stream().map(this::toRichiestaDto).toList();
+    return ResponseEntity.ok(dtos);
 }
 
-// --- API per richieste (JSON) ---
-@GetMapping("/api/richieste")
-@ResponseBody
-public List<Richiesta> apiRichieste(HttpSession session) {
-    if (!isAmministratore(session)) return Collections.emptyList();
-    return richiestaService.getAllRichieste();
-}
-
-// --- Crea nuova richiesta ---
-@PostMapping("/api/richieste")
-@ResponseBody
-public Richiesta creaRichiesta(@RequestBody Richiesta r, HttpSession session) {
-    if (!isAmministratore(session)) throw new RuntimeException("Accesso negato");
-
+@PostMapping("/richieste")
+public ResponseEntity<Richiesta> createRichiesta(@RequestBody Richiesta r, HttpSession session) {
+    // TODO: Riattivare dopo login
+    // if (!isAmministratore(session)) return ResponseEntity.status(403).build();
+    
     if (r.getUtente() != null && r.getUtente().getIdUtente() != null) {
         r.setUtente(utentiService.getUtenteById(r.getUtente().getIdUtente()));
     }
     if (r.getImmobile() != null && r.getImmobile().getIdImmobile() != null) {
         r.setImmobile(immobiliService.getImmobileById(r.getImmobile().getIdImmobile()));
     }
-
-    return richiestaService.createRichiesta(r);
+    
+    Richiesta saved = richiestaService.createRichiesta(r);
+    return ResponseEntity.ok(saved);
 }
 
-// --- Aggiorna richiesta ---
-@PutMapping("/api/richieste/{id}")
-@ResponseBody
-public Richiesta aggiornaRichiesta(@PathVariable Integer id, @RequestBody Richiesta r, HttpSession session) {
-    if (!isAmministratore(session)) throw new RuntimeException("Accesso negato");
-
+@PutMapping("/richieste/{id}")
+public ResponseEntity<Richiesta> updateRichiesta(@PathVariable Integer id, @RequestBody Richiesta r, HttpSession session) {
+    // TODO: Riattivare dopo login
+    // if (!isAmministratore(session)) return ResponseEntity.status(403).build();
+    
     if (r.getUtente() != null && r.getUtente().getIdUtente() != null) {
         r.setUtente(utentiService.getUtenteById(r.getUtente().getIdUtente()));
     }
     if (r.getImmobile() != null && r.getImmobile().getIdImmobile() != null) {
         r.setImmobile(immobiliService.getImmobileById(r.getImmobile().getIdImmobile()));
     }
-
-    return richiestaService.updateRichiesta(id, r);
+    
+    Richiesta updated = richiestaService.updateRichiesta(id, r);
+    return ResponseEntity.ok(updated);
 }
 
-// --- Elimina richiesta ---
-@DeleteMapping("/api/richieste/{id}")
-@ResponseBody
-public void eliminaRichiesta(@PathVariable Integer id, HttpSession session) {
-    if (!isAmministratore(session)) throw new RuntimeException("Accesso negato");
-    richiestaService.deleteRichiesta(id);
-}
-
-
-// --- Pagina dashboard Vendite ---
+// --- Endpoints per Vendite ---
 @GetMapping("/vendite")
-public String getVendite(Model model,
-                         HttpSession session,
+public ResponseEntity<List<VenditaDto>> getVendite(HttpSession session,
                          @RequestParam(value = "contratto", required = false) Integer idContratto,
                          @RequestParam(value = "immobile", required = false) Integer idImmobile,
                          @RequestParam(value = "utente", required = false) Integer idUtente) {
+    // TODO: Riattivare dopo login
+    // if (!isAmministratore(session)) {
+    //     return ResponseEntity.status(403).build();
+    // }
 
-    if (!isAmministratore(session)) {
-        return "redirect:/";
-    }
-
-    // --- Carica tutte le vendite ---
     List<Vendita> vendite = venditaService.getAllVendite();
     System.out.println("Vendite trovate: " + vendite.size());
 
-    // --- Filtri opzionali ---
+    // Filtri opzionali
     if (idContratto != null) {
         vendite.removeIf(v -> v.getContratto() == null || !v.getContratto().getIdContratto().equals(idContratto));
     }
@@ -417,110 +288,41 @@ public String getVendite(Model model,
         vendite.removeIf(v -> v.getUtente() == null || !v.getUtente().getIdUtente().equals(idUtente));
     }
 
-    // --- Aggiungo dati al model ---
-    model.addAttribute("listaVendite", vendite);
-    model.addAttribute("utenti", utentiService.getAllUtenti());
-    model.addAttribute("immobili", immobiliService.getAllImmobili());
-    model.addAttribute("contratti", contrattiService.getAllContratti());
-
-    return "dashboard-vendite"; // Thymeleaf template
+    List<VenditaDto> dtos = vendite.stream().map(this::toVenditaDto).toList();
+    return ResponseEntity.ok(dtos);
 }
 
-// --- API per vendite (JSON) ---
-@GetMapping("/api/vendite")
-@ResponseBody
-public List<VenditaDto> apiVendite(HttpSession session) {
-    if (!isAmministratore(session)) return Collections.emptyList();
-
-    List<Vendita> vendite = venditaService.getAllVendite();
-    return vendite.stream().map(this::toVenditaDto).toList();
-}
-
-// --- Crea nuova vendita ---
-@PostMapping("/api/vendite")
-@ResponseBody
-public Vendita creaVendita(@RequestBody Vendita v, HttpSession session) {
-    if (!isAmministratore(session)) throw new RuntimeException("Accesso negato");
-
+@PostMapping("/vendite")
+public ResponseEntity<Vendita> createVendita(@RequestBody Vendita v, HttpSession session) {
+    // TODO: Riattivare dopo login
+    // if (!isAmministratore(session)) return ResponseEntity.status(403).build();
+    
     if (v.getContratto() != null && v.getContratto().getIdContratto() != null)
         v.setContratto(contrattiService.getContrattoById(v.getContratto().getIdContratto()));
     if (v.getUtente() != null && v.getUtente().getIdUtente() != null)
         v.setUtente(utentiService.getUtenteById(v.getUtente().getIdUtente()));
     if (v.getImmobile() != null && v.getImmobile().getIdImmobile() != null)
         v.setImmobile(immobiliService.getImmobileById(v.getImmobile().getIdImmobile()));
-
-    return venditaService.createVendita(v);
+    
+    Vendita saved = venditaService.createVendita(v);
+    return ResponseEntity.ok(saved);
 }
 
-// --- Aggiorna vendita ---
-@PutMapping("/api/vendite/{id}")
-@ResponseBody
-public Vendita aggiornaVendita(@PathVariable Integer id, @RequestBody Vendita v, HttpSession session) {
-    if (!isAmministratore(session)) throw new RuntimeException("Accesso negato");
-
+@PutMapping("/vendite/{id}")
+public ResponseEntity<Vendita> updateVendita(@PathVariable Integer id, @RequestBody Vendita v, HttpSession session) {
+    // TODO: Riattivare dopo login
+    // if (!isAmministratore(session)) return ResponseEntity.status(403).build();
+    
     if (v.getContratto() != null && v.getContratto().getIdContratto() != null)
         v.setContratto(contrattiService.getContrattoById(v.getContratto().getIdContratto()));
     if (v.getUtente() != null && v.getUtente().getIdUtente() != null)
         v.setUtente(utentiService.getUtenteById(v.getUtente().getIdUtente()));
     if (v.getImmobile() != null && v.getImmobile().getIdImmobile() != null)
         v.setImmobile(immobiliService.getImmobileById(v.getImmobile().getIdImmobile()));
-
-    return venditaService.updateVendita(id, v);
+    
+    Vendita updated = venditaService.updateVendita(id, v);
+    return ResponseEntity.ok(updated);
 }
-
-// --- Delete vendita (facoltativo) ---
-@DeleteMapping("/api/vendite/{id}")
-@ResponseBody
-public void eliminaVendita(@PathVariable Integer id, HttpSession session) {
-    if (!isAmministratore(session)) throw new RuntimeException("Accesso negato");
-    venditaService.deleteVendita(id);
-}
-
-// --- Pagina dashboard Leads ---
-// Pagina HTML
-@GetMapping("/leads")
-public String leadsPage(Model model, HttpSession session) {
-    if (!isAmministratore(session)) return "redirect:/";
-    model.addAttribute("utenti", utentiService.getAllUtenti());
-    return "dashboard-leads"; // Thymeleaf
-}
-
-// API JSON
-@GetMapping("/api/leads")
-@ResponseBody
-public List<Lead> apiLeads(HttpSession session) {
-    if (!isAmministratore(session)) return Collections.emptyList();
-    return leadService.getAllLeads();
-}
-
-@PostMapping("/api/leads")
-@ResponseBody
-public Lead creaLead(@RequestBody Lead l, HttpSession session) {
-    if (!isAmministratore(session)) throw new RuntimeException("Accesso negato");
-    if (l.getUtente() != null && l.getUtente().getIdUtente() != null) {
-        l.setUtente(utentiService.getUtenteById(l.getUtente().getIdUtente()));
-    }
-    return leadService.createLead(l);
-}
-
-@PutMapping("/api/leads/{id}")
-@ResponseBody
-public Lead aggiornaLead(@PathVariable Integer id, @RequestBody Lead l, HttpSession session) {
-    if (!isAmministratore(session)) throw new RuntimeException("Accesso negato");
-    if (l.getUtente() != null && l.getUtente().getIdUtente() != null) {
-        l.setUtente(utentiService.getUtenteById(l.getUtente().getIdUtente()));
-    }
-    return leadService.updateLead(id, l);
-}
-
-@DeleteMapping("/api/leads/{id}")
-@ResponseBody
-public void eliminaLead(@PathVariable Integer id, HttpSession session) {
-    if (!isAmministratore(session)) throw new RuntimeException("Accesso negato");
-    leadService.deleteLead(id);
-}
-
-
 
     // --- Mappers ---
     private UtenteDto toUtenteDto(Utente u) {
@@ -553,18 +355,18 @@ public void eliminaLead(@PathVariable Integer id, HttpSession session) {
         return d;
     }
 
-    // private ContrattoDTO toContrattoDTO(Contratto c) {
-    //     if (c == null) return null;
-    //     ContrattoDTO d = new ContrattoDTO();
-    //     d.setIdContratto(c.getIdContratto());
-    //     d.setIdImmobile(c.getIdImmobile() == null ? null : c.getIdImmobile().getIdImmobile());
-    //     d.setIdAgente(c.getAgente() == null ? null : c.getAgente().getIdUtente());
-    //     d.setTipoContratto(c.getTipoContratto() == null ? null : c.getTipoContratto().name());
-    //     d.setDataContratto(c.getDataContratto());
-    //     d.setDataScadenzaContratto(c.getDataScadenzaContratto());
-    //     d.setPathContrattoPDF(c.getPathContrattoPDF());
-    //     return d;
-    // }
+    private ContrattoDto toContrattoDto(Contratto c) {
+        if (c == null) return null;
+        ContrattoDto d = new ContrattoDto();
+        d.setIdContratto(c.getIdContratto());
+        d.setIdImmobile(c.getIdImmobile() == null ? null : c.getIdImmobile().getIdImmobile());
+        d.setIdAgente(c.getAgente() == null ? null : c.getAgente().getIdUtente());
+        d.setTipoContratto(c.getTipoContratto() == null ? null : c.getTipoContratto().name());
+        d.setDataContratto(c.getDataContratto());
+        d.setDataScadenzaContratto(c.getDataScadenzaContratto());
+        d.setPathContrattoPDF(c.getPathContrattoPDF());
+        return d;
+    }
 
     private VenditaDto toVenditaDto(Vendita v) {
         if (v == null) return null;
@@ -604,11 +406,6 @@ public void eliminaLead(@PathVariable Integer id, HttpSession session) {
         d.setDimensioneKb(img.getDimensioneKb());
         return d;
     }
-
-    // --- Endpoints per Vendite ---
-    
-
-    
 
     // --- Endpoints per Immagini ---
     @GetMapping("/immagini")
