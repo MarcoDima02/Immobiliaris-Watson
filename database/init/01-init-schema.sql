@@ -168,7 +168,7 @@ CREATE TABLE IF NOT EXISTS Contratti (
 CREATE TABLE IF NOT EXISTS Leads (
     idLead INT AUTO_INCREMENT PRIMARY KEY,
     idUtente INT,
-    nome VARCHAR(100),
+    nome_completo VARCHAR(100),
     email VARCHAR(150),
     telefono VARCHAR(20),
     citta VARCHAR(100),

@@ -395,6 +395,50 @@ public void eliminaVendita(@PathVariable Integer id, HttpSession session) {
     venditaService.deleteVendita(id);
 }
 
+// --- Pagina dashboard Leads ---
+// Pagina HTML
+@GetMapping("/leads")
+public String leadsPage(Model model, HttpSession session) {
+    if (!isAmministratore(session)) return "redirect:/";
+    model.addAttribute("utenti", utentiService.getAllUtenti());
+    return "dashboard-leads"; // Thymeleaf
+}
+
+// API JSON
+@GetMapping("/api/leads")
+@ResponseBody
+public List<Lead> apiLeads(HttpSession session) {
+    if (!isAmministratore(session)) return Collections.emptyList();
+    return leadService.getAllLeads();
+}
+
+@PostMapping("/api/leads")
+@ResponseBody
+public Lead creaLead(@RequestBody Lead l, HttpSession session) {
+    if (!isAmministratore(session)) throw new RuntimeException("Accesso negato");
+    if (l.getUtente() != null && l.getUtente().getIdUtente() != null) {
+        l.setUtente(utentiService.getUtenteById(l.getUtente().getIdUtente()));
+    }
+    return leadService.createLead(l);
+}
+
+@PutMapping("/api/leads/{id}")
+@ResponseBody
+public Lead aggiornaLead(@PathVariable Integer id, @RequestBody Lead l, HttpSession session) {
+    if (!isAmministratore(session)) throw new RuntimeException("Accesso negato");
+    if (l.getUtente() != null && l.getUtente().getIdUtente() != null) {
+        l.setUtente(utentiService.getUtenteById(l.getUtente().getIdUtente()));
+    }
+    return leadService.updateLead(id, l);
+}
+
+@DeleteMapping("/api/leads/{id}")
+@ResponseBody
+public void eliminaLead(@PathVariable Integer id, HttpSession session) {
+    if (!isAmministratore(session)) throw new RuntimeException("Accesso negato");
+    leadService.deleteLead(id);
+}
+
 
 
     // --- Mappers ---

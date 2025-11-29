@@ -60,4 +60,6 @@ public class ViewController {
     public String dashboardVendite() {
         return "dashboard-vendite"; // Thymeleaf cerca templates/AmministratoreDashboard.html
     }
+
+
 }
