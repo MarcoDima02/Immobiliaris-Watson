@@ -197,6 +197,122 @@ public class AgenteService {
             dto.setSuperficieCantina(superficie.getSuperficieCantina());
         }
 
+        // Dati ValutazioneImmobile
+        ValutazioneImmobile valutazione = valutatzioneRepo.findByIdImmobile(idImmobile).orElse(null);
+        if (valutazione != null) {
+            dto.setIdValutazione(valutazione.getIdValutazione());
+            dto.setValoreBase(valutazione.getValoreBase() != null ? valutazione.getValoreBase().longValue() : null);
+            dto.setFattoreAggiustamento(valutazione.getFattoreAggiustamento());
+            dto.setValoreMedio(valutazione.getValoreMedio() != null ? valutazione.getValoreMedio().longValue() : null);
+            dto.setValoreMin(valutazione.getValoreMin() != null ? valutazione.getValoreMin().longValue() : null);
+            dto.setValoreMax(valutazione.getValoreMax() != null ? valutazione.getValoreMax().longValue() : null);
+            dto.setConfidence(valutazione.getConfidence());
+        }
+
+        return dto;
+    }
+
+    /**
+     * Restituisce i dettagli completi di una singola richiesta/contratto per ID contratto.
+     * 
+     * @param idContratto ID del contratto
+     * @return AgenteRichiestaDTO con tutti i dettagli della richiesta
+     */
+    public AgenteRichiestaDTO getRichiestaDettagli(Integer idContratto) {
+        // Trovare il contratto
+        Contratto contratto = contrattoRepo.findById(idContratto).orElse(null);
+        if (contratto == null) {
+            return null;
+        }
+
+        Integer idImmobile = contratto.getIdImmobile().getIdImmobile();
+
+        // Trovare le richieste per questo immobile
+        List<Richiesta> richieste = richiestaRepo.findByImmobile_IdImmobile(idImmobile);
+
+        // Se non ci sono richieste, restituire il contratto con dettagli
+        if (richieste.isEmpty()) {
+            return mapContratoToDTO(contratto);
+        }
+
+        // Se ci sono richieste, restituire la prima (o implementare logica diversa)
+        Richiesta richiesta = richieste.get(0);
+
+        AgenteRichiestaDTO dto = new AgenteRichiestaDTO();
+
+        // Dati Contratto
+        dto.setIdContratto(contratto.getIdContratto());
+        dto.setTipoContratto(contratto.getTipoContratto() != null ? contratto.getTipoContratto().name() : null);
+        dto.setDataContratto(contratto.getDataContratto());
+        dto.setDataScadenzaContratto(contratto.getDataScadenzaContratto());
+        dto.setPathContrattoPDF(contratto.getPathContrattoPDF());
+
+        // Dati Immobile
+        dto.setIdImmobile(idImmobile);
+        dto.setTipologia(contratto.getIdImmobile().getTipologia() != null ? contratto.getIdImmobile().getTipologia().name() : null);
+        dto.setIndirizzo(contratto.getIdImmobile().getIndirizzo());
+        dto.setCitta(contratto.getIdImmobile().getCitta());
+        dto.setProvincia(contratto.getIdImmobile().getProvincia());
+        dto.setCap(contratto.getIdImmobile().getCap());
+        dto.setStato(contratto.getIdImmobile().getStato() != null ? contratto.getIdImmobile().getStato().name() : null);
+
+        // Dati DettagliImmobile
+        DettagliImmobile dettagli = dettagliRepo.findById(idImmobile).orElse(null);
+        if (dettagli != null) {
+            dto.setNStanze(dettagli.getNStanze());
+            dto.setNBagni(dettagli.getNBagni());
+            dto.setNPiano(dettagli.getNPiano());
+            dto.setNPianiImmobile(dettagli.getNPianiImmobile());
+            dto.setBalconeTerrazzo(dettagli.isBalconeTerrazzo());
+            dto.setGiardino(dettagli.isGiardino());
+            dto.setGarage(dettagli.isGarage());
+            dto.setAscensore(dettagli.isAscensore());
+            dto.setCantina(dettagli.isCantina());
+            dto.setTipoRiscaldamento(dettagli.getTipoRiscaldamento() != null ? dettagli.getTipoRiscaldamento().name() : null);
+            dto.setAnnoCostruzione(dettagli.getAnnoCostruzione());
+            dto.setCondizioneImmobile(dettagli.getCondizioneImmobile() != null ? dettagli.getCondizioneImmobile().name() : null);
+            dto.setClasseEnergetica(dettagli.getClasseEnergetica() != null ? dettagli.getClasseEnergetica().name() : null);
+        }
+
+        // Dati Superfici
+        Superficie superficie = superficieRepo.findById(idImmobile).orElse(null);
+        if (superficie != null) {
+            dto.setSuperficieMq(superficie.getSuperficieMq());
+            dto.setSuperficieBalconeTerrazzo(superficie.getSuperficieBalconeTerrazzo());
+            dto.setSuperficieGiardino(superficie.getSuperficieGiardino());
+            dto.setSuperficieGarage(superficie.getSuperficieGarage());
+            dto.setSuperficieCantina(superficie.getSuperficieCantina());
+        }
+
+        // Dati Richiesta
+        dto.setIdRichiesta(richiesta.getIdRichiesta());
+        dto.setDataRichiesta(richiesta.getDataRichiesta());
+        dto.setDataAppuntamento(richiesta.getDataAppuntamento());
+        dto.setStatoRichiesta(richiesta.getStato() != null ? richiesta.getStato().name() : null);
+        dto.setNoteUtente(richiesta.getNoteUtente());
+        dto.setMotivoAnnullamento(richiesta.getMotivoAnnullamento());
+
+        // Dati Utente (chi ha fatto richiesta)
+        if (richiesta.getUtente() != null) {
+            dto.setIdUtente(richiesta.getUtente().getIdUtente());
+            dto.setNomeUtente(richiesta.getUtente().getNome());
+            dto.setCognomeUtente(richiesta.getUtente().getCognome());
+            dto.setTelefonoUtente(richiesta.getUtente().getTelefono());
+            dto.setEmailUtente(richiesta.getUtente().getEmail());
+        }
+
+        // Dati ValutazioneImmobile
+        ValutazioneImmobile valutazione = valutatzioneRepo.findByIdImmobile(idImmobile).orElse(null);
+        if (valutazione != null) {
+            dto.setIdValutazione(valutazione.getIdValutazione());
+            dto.setValoreBase(valutazione.getValoreBase() != null ? valutazione.getValoreBase().longValue() : null);
+            dto.setFattoreAggiustamento(valutazione.getFattoreAggiustamento());
+            dto.setValoreMedio(valutazione.getValoreMedio() != null ? valutazione.getValoreMedio().longValue() : null);
+            dto.setValoreMin(valutazione.getValoreMin() != null ? valutazione.getValoreMin().longValue() : null);
+            dto.setValoreMax(valutazione.getValoreMax() != null ? valutazione.getValoreMax().longValue() : null);
+            dto.setConfidence(valutazione.getConfidence());
+        }
+
         return dto;
     }
 }
