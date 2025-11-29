@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.residea.residea.entities.Utente;
 import com.residea.residea.services.UtentiService;
 
+import jakarta.servlet.http.HttpSession;
+
 @RestController
 @RequestMapping("/api/utenti")
 public class UtenteRestController {
@@ -45,7 +47,7 @@ public Utente creaUtente(@RequestBody Utente utente) {
 
     // POST /api/utenti/login → login by email + password
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody java.util.Map<String, String> body) {
+    public ResponseEntity<?> login(@RequestBody java.util.Map<String, String> body, HttpSession session) {
         String email = body.get("email");
         String password = body.get("password");
         if (email == null || password == null) {
@@ -57,6 +59,12 @@ public Utente creaUtente(@RequestBody Utente utente) {
             if (!ok) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
             }
+            
+            // Salva dati utente nella sessione
+            session.setAttribute("userId", u.getIdUtente());
+            session.setAttribute("userRuolo", u.getRuolo().name());
+            session.setAttribute("userEmail", u.getEmail());
+            
             // hide passwordHash before returning
             u.setPasswordHash(null);
 

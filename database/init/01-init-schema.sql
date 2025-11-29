@@ -151,13 +151,13 @@ CREATE TABLE IF NOT EXISTS ValutazioneImmobile (
 -- ========================
 CREATE TABLE IF NOT EXISTS Contratti (
     idContratto INT AUTO_INCREMENT PRIMARY KEY,
-    idAgente INT NOT NULL,
+    idAgente INT AUTO_INCREMENT,
     idImmobile INT NOT NULL,
     tipoContratto ENUM ('AFFITTO', 'VENDITA', 'COMODATO', 'ESCLUSIVO', 'altro'),
     dataContratto DATE,
     dataScadenzaContratto DATE,
     pathContrattoPDF VARCHAR(255),
-    FOREIGN KEY (idImmobile) REFERENCES Immobile(idImmobile) ON DELETE CASCADE,
+    FOREIGN KEY (idImmobile) REFERENCES Immobile(idImmobile) ON DELETE CASCADE
     FOREIGN KEY (idAgente) REFERENCES Utente(idUtente) ON DELETE CASCADE
 
 );
@@ -286,12 +286,7 @@ INSERT IGNORE INTO Utente (idUtente, nome, cognome, telefono, email, passwordHas
 VALUES (1, 'Mario', 'Rossi', '3331234567', 'mario.rossi@example.com', NULL, 'proprietario', TRUE, TRUE),
        (2, 'Luca', 'Bianchi', '3332345678', 'luca.bianchi@example.com', '$2a$10$z8nV/pxKZg8HVv2u5U7Juu1d8yqV1T1ZsGzV8cQpGQh7yK6d5n6e2', 'agente', TRUE, TRUE),
        (3, 'Anna', 'Verdi', '3333456789', 'anna.verdi@example.com', '$2a$10$k3MH0a9qW7jZl4Ey3P1bXe9u6V6pQ2F9xYg6cR8sH4jJ1uE0q9s8a', 'amministratore', TRUE, TRUE),
-       (4, 'Sofia','Costa','3337778888','sofia.costa@example.com','$2b$12$4D0qFUtKe/AAq3YFojSSMOvbp8CB5P3VvN8YADAgTHNeSv/bCkGTy','agente',TRUE,TRUE),
-       (5, 'Marco', 'Ferrari', '3334567890', 'marco.ferrari@example.com', '$2b$10$AbcDefGhIjKlMnOpQrStUvWxYz1234567890abcde', 'proprietario', TRUE, TRUE),
-        (6, 'Elena', 'Gallo', '3335678901', 'elena.gallo@example.com', '$2b$10$FghIjKlMnOpQrStUvWxYz1234567890abcdeABC', 'agente', TRUE, TRUE),
-        (7, 'Paolo', 'Russo', '3336789012', 'paolo.russo@example.com', '$2b$10$XyZ1234567890AbcDefGhIjKlMnOpQrStUvWxYz', 'amministratore', TRUE, TRUE),
-        (8, 'Giulia', 'Romano', '3337890123', 'giulia.romano@example.com', NULL, 'proprietario', TRUE, TRUE);
-
+       (4, 'Sofia','Costa','3337778888','sofia.costa@example.com','$2b$12$4D0qFUtKe/AAq3YFojSSMOvbp8CB5P3VvN8YADAgTHNeSv/bCkGTy','agente',TRUE,TRUE);
 -- ========================
 -- SAMPLE: Immobili di esempio
 -- ========================
