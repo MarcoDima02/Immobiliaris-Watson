@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<title>Gestione Vendite</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+    body { font-family: "Inter", sans-serif; background: #f4f6f9; margin:0; padding:0; color:#333; }
+    header { background: #2563eb; padding:18px 32px; color:white; font-size:24px; font-weight:600; box-shadow:0 2px 8px rgba(0,0,0,0.15);}
+    .container { padding:24px 40px; }
+    .card { background:white; border-radius:12px; padding:24px; margin-bottom:28px; box-shadow:0 4px 15px rgba(0,0,0,0.06);}
+    .card h3 { margin-top:0; font-size:20px; color:#1f2937;}
+    input, select { padding:10px 14px; border-radius:8px; border:1px solid #d1d5db; width:100%; font-size:15px; transition:border 0.2s;}
+    input:focus, select:focus { border-color:#2563eb; outline:none;}
+    .form-row { display:flex; gap:16px; flex-wrap:wrap; margin-bottom:16px;}
+    .form-row > * { flex:1 1 240px; }
+    button { background:#2563eb; color:white; padding:10px 18px; border:none; border-radius:8px; cursor:pointer; font-size:15px; transition:0.2s;}
+    button:hover { background:#1e4fc3;}
+    button.secondary { background:#6b7280;}
+    button.secondary:hover { background:#4b5563;}
+    table { width:100%; border-collapse:collapse; border-radius:12px; overflow:hidden; }
+    thead { background:#2563eb; color:white;}
+    th, td { padding:12px 14px; text-align:left; font-size:15px; }
+    tr:nth-child(even) { background:#f9fafb;}
+    tr:hover { background:#e8f0fe; cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header>Gestione Vendite</header>
+<div class="container">
+
+    <!-- FORM VENDITA -->
+    <div class="card">
+        <h3>➕ Crea / Aggiorna Vendita</h3>
+
+        <div class="form-row">
+            <input id="idVendita" placeholder="ID Vendita (auto)" readonly>
+            <input id="commissionePercentuale" placeholder="Commissione %" type="number" step="0.01">
+        </div>
+
+        <div class="form-row">
+            <select id="idContrattoSelect"></select>
+            <select id="idUtenteSelect"></select>
+            <select id="idImmobileSelect"></select>
+        </div>
+
+        <div class="form-row">
+            <button onclick="creaVendita()"><i class="fa fa-plus"></i> Crea</button>
+            <button onclick="aggiornaVendita()"><i class="fa fa-save"></i> Aggiorna</button>
+            <button class="secondary" onclick="resetForm()"><i class="fa fa-eraser"></i> Pulisci</button>
+        </div>
+    </div>
+
+    <!-- TABELLA VENDITE -->
+    <div class="card">
+        <h3>📋 Elenco Vendite</h3>
+        <table id="tabVendite">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Contratto</th>
+                    <th>Utente</th>
+                    <th>Immobile</th>
+                    <th>Commissione %</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+</div>
+<!-- RICERCA FILTRATA -->
+<div class="card">
+    <h3>🔍 Filtra Vendite</h3>
+    <div class="form-row">
+        <input id="venditaSearchId" placeholder="ID Vendita">
+        <select id="venditaSearchTipoContratto">
+            <option value="">Tutti i Tipi Contratto</option>
+            <option value="VENDITA">Vendita</option>
+            <option value="AFFITTO">Affitto</option>
+        </select>
+        <select id="venditaSearchTipoVendita">
+            <option value="">Tutte le Vendite</option>
+            <option value="CON_COMMISSIONE">Con Commissione</option>
+            <option value="SENZA_COMMISSIONE">Senza Commissione</option>
+        </select>
+        <button onclick="filtraVendite()"><i class="fa fa-search"></i> Filtra</button>
+        <button onclick="mostraTutteVendite()" class="secondary"><i class="fa fa-list"></i> Mostra tutte</button>
+    </div>
+</div>
+
+
+<script>
+const API = "/api/vendite";
+const API_UTENTE = "/api/utenti";
+const API_IMMOBILE = "/api/immobili";
+const API_CONTRATTO = "/api/contratti";
+
+async function caricaDropdown() {
+    const utenti = await fetch(API_UTENTE).then(r=>r.json());
+    const selUt = document.getElementById("idUtenteSelect");
+    selUt.innerHTML = '<option value="">Seleziona Utente</option>';
+    utenti.forEach(u => selUt.innerHTML += `<option value="${u.idUtente}">${u.idUtente} - ${u.nome} ${u.cognome}</option>`);
+
+    const immobili = await fetch(API_IMMOBILE).then(r=>r.json());
+    const selIm = document.getElementById("idImmobileSelect");
+    selIm.innerHTML = '<option value="">Seleziona Immobile</option>';
+    immobili.forEach(i => selIm.innerHTML += `<option value="${i.idImmobile}">${i.idImmobile} - ${i.tipologia} - ${i.indirizzo}</option>`);
+
+    const contratti = await fetch(API_CONTRATTO).then(r=>r.json());
+    const selCo = document.getElementById("idContrattoSelect");
+    selCo.innerHTML = '<option value="">Seleziona Contratto</option>';
+    contratti.forEach(c => selCo.innerHTML += `<option value="${c.idContratto}">${c.idContratto} - ${c.tipoContratto}</option>`);
+}
+
+async function creaVendita() {
+    const payload = buildPayload(); delete payload.idVendita;
+    const res = await fetch(API, { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(payload)});
+    if(!res.ok){ alert("Errore creazione vendita"); return; }
+    alert("Vendita creata!"); mostraTutteVendite(); resetForm();
+}
+
+async function aggiornaVendita() {
+    const payload = buildPayload();
+    if(!payload.idVendita){ alert("Inserisci ID"); return; }
+    const res = await fetch(`${API}/${payload.idVendita}`, { method:"PUT", headers:{"Content-Type":"application/json"}, body: JSON.stringify(payload)});
+    if(!res.ok){ alert("Errore aggiornamento vendita"); return; }
+    alert("Vendita aggiornata!"); mostraTutteVendite(); resetForm();
+}
+
+function buildPayload(){
+    return {
+        idVendita: document.getElementById("idVendita").value.trim() || undefined,
+        commissionePercentuale: parseFloat(document.getElementById("commissionePercentuale").value) || null,
+        contratto: document.getElementById("idContrattoSelect").value ? {idContratto:Number(document.getElementById("idContrattoSelect").value)} : null,
+        utente: document.getElementById("idUtenteSelect").value ? {idUtente:Number(document.getElementById("idUtenteSelect").value)} : null,
+        immobile: document.getElementById("idImmobileSelect").value ? {idImmobile:Number(document.getElementById("idImmobileSelect").value)} : null
+    };
+}
+
+async function getVendite(){ return await fetch(API).then(r=>r.ok?r.json():[]); }
+async function mostraTutteVendite(){ renderTable(await getVendite()); }
+
+function renderTable(lista){
+    const tbody = document.querySelector("#tabVendite tbody"); tbody.innerHTML="";
+    lista.forEach(v=>{
+        const tr = document.createElement("tr");
+        const utenteText = v.utente ? `${v.utente.idUtente} (${v.utente.nome} ${v.utente.cognome})` : "-";
+        const immobileText = v.immobile ? `${v.immobile.idImmobile} (${v.immobile.tipologia} - ${v.immobile.indirizzo})` : "-";
+        const contrattoText = v.contratto ? `${v.contratto.idContratto} (${v.contratto.tipoContratto})` : "-";
+        tr.innerHTML = `<td>${v.idVendita}</td><td>${contrattoText}</td><td>${utenteText}</td><td>${immobileText}</td><td>${v.commissionePercentuale ?? "-"}</td>`;
+        tr.addEventListener("click", ()=>loadIntoForm(v));
+        tbody.appendChild(tr);
+    });
+}
+
+function loadIntoForm(v){
+    document.getElementById("idVendita").value = v.idVendita ?? "";
+    document.getElementById("commissionePercentuale").value = v.commissionePercentuale ?? "";
+    document.getElementById("idContrattoSelect").value = v.contratto?.idContratto ?? "";
+    document.getElementById("idUtenteSelect").value = v.utente?.idUtente ?? "";
+    document.getElementById("idImmobileSelect").value = v.immobile?.idImmobile ?? "";
+}
+
+function resetForm(){
+    ["idVendita","commissionePercentuale","idContrattoSelect","idUtenteSelect","idImmobileSelect"].forEach(id=>document.getElementById(id).value="");
+}
+// Popola dropdown filtri
+async function caricaDropdownFiltri() {
+    const contratti = await fetch(API_CONTRATTO).then(r=>r.json());
+    const selCo = document.getElementById("venditaSearchContratto");
+    contratti.forEach(c => selCo.innerHTML += `<option value="${c.idContratto}">${c.idContratto} - ${c.tipoContratto}</option>`);
+
+    const utenti = await fetch(API_UTENTE).then(r=>r.json());
+    const selUt = document.getElementById("venditaSearchUtente");
+    utenti.forEach(u => selUt.innerHTML += `<option value="${u.idUtente}">${u.idUtente} - ${u.nome} ${u.cognome}</option>`);
+
+    const immobili = await fetch(API_IMMOBILE).then(r=>r.json());
+    const selIm = document.getElementById("venditaSearchImmobile");
+    immobili.forEach(i => selIm.innerHTML += `<option value="${i.idImmobile}">${i.idImmobile} - ${i.tipologia} - ${i.indirizzo}</option>`);
+}
+
+// Filtra vendite lato client
+async function filtraVendite() {
+    const lista = await getVendite();
+    const id = document.getElementById("venditaSearchId").value.trim();
+    const tipoContratto = document.getElementById("venditaSearchTipoContratto").value;
+    const tipoVendita = document.getElementById("venditaSearchTipoVendita").value;
+
+    const filtrata = lista.filter(v => {
+        if (id && String(v.idVendita) !== id) return false;
+        if (tipoContratto && (!v.contratto || v.contratto.tipoContratto !== tipoContratto)) return false;
+        if (tipoVendita) {
+            if (tipoVendita === "CON_COMMISSIONE" && (!v.commissionePercentuale || v.commissionePercentuale <= 0)) return false;
+            if (tipoVendita === "SENZA_COMMISSIONE" && v.commissionePercentuale > 0) return false;
+        }
+        return true;
+    });
+
+    renderTable(filtrata);
+}
+
+
+// Inizializzazione
+caricaDropdown(); 
+caricaDropdownFiltri(); 
+mostraTutteVendite();
+
+caricaDropdown(); mostraTutteVendite();
+</script>
+</body>
+</html>

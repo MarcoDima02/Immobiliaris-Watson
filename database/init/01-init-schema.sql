@@ -151,12 +151,15 @@ CREATE TABLE IF NOT EXISTS ValutazioneImmobile (
 -- ========================
 CREATE TABLE IF NOT EXISTS Contratti (
     idContratto INT AUTO_INCREMENT PRIMARY KEY,
+    idAgente INT AUTO_INCREMENT,
     idImmobile INT NOT NULL,
-    tipoContratto ENUM ('Esclusivo', 'altro'),
+    tipoContratto ENUM ('AFFITTO', 'VENDITA', 'COMODATO', 'ESCLUSIVO', 'altro'),
     dataContratto DATE,
     dataScadenzaContratto DATE,
     pathContrattoPDF VARCHAR(255),
     FOREIGN KEY (idImmobile) REFERENCES Immobile(idImmobile) ON DELETE CASCADE
+    FOREIGN KEY (idAgente) REFERENCES Utente(idUtente) ON DELETE CASCADE
+
 );
 
 -- ========================
@@ -165,7 +168,7 @@ CREATE TABLE IF NOT EXISTS Contratti (
 CREATE TABLE IF NOT EXISTS Leads (
     idLead INT AUTO_INCREMENT PRIMARY KEY,
     idUtente INT,
-    nome VARCHAR(100),
+    nome_completo VARCHAR(100),
     email VARCHAR(150),
     telefono VARCHAR(20),
     citta VARCHAR(100),
@@ -292,7 +295,13 @@ VALUES
     (1, 1, 'Appartamento', 'Via Garibaldi 10', 'Torino', 'TO', '10121', 45.070300, 7.686900, 'Disponibile'),
     (2, 1, 'Appartamento', 'Corso Francia 200', 'Torino', 'TO', '10135', 45.057500, 7.639700, 'Disponibile'),
     (3, 2, 'Villa', 'Via delle Rose 5', 'Novara', 'NO', '28100', 45.448000, 8.621000, 'Disponibile'),
-    (4, NULL, 'Monolocale', 'Piazza Vittorio 1', 'Torino', 'TO', '10123', 45.062000, 7.680600, 'Disponibile');
+    (4, NULL, 'Monolocale', 'Piazza Vittorio 1', 'Torino', 'TO', '10123', 45.062000, 7.680600, 'Disponibile'),
+    (5, 5, 'Appartamento', 'Via Milano 12', 'Milano', 'MI', '20121', 45.4642, 9.1900, 'Disponibile'),
+    (6, 5, 'Attico', 'Piazza Duomo 3', 'Milano', 'MI', '20122', 45.4654, 9.1866, 'Disponibile'),
+    (7, 6, 'Villa', 'Via Roma 8', 'Torino', 'TO', '10122', 45.0650, 7.6820, 'Disponibile'),
+    (8, 7, 'Monolocale', 'Corso Vittorio Emanuele 15', 'Novara', 'NO', '28100', 45.4475, 8.6230, 'Disponibile'),
+    (9, 8, 'Appartamento', 'Via Nazionale 20', 'Roma', 'RM', '00184', 41.9028, 12.4964, 'Disponibile'),
+    (10, 8, 'Attico', 'Piazza Navona 5', 'Roma', 'RM', '00186', 41.8989, 12.4731, 'Disponibile');
 
 -- ========================
 -- SAMPLE: Dettagli immobili
@@ -336,9 +345,9 @@ VALUES
 -- ========================
 -- SAMPLE: Contratti
 -- ========================
-INSERT IGNORE INTO Contratti (idContratto, idImmobile, tipoContratto, dataContratto, dataScadenzaContratto, pathContrattoPDF)
+INSERT IGNORE INTO Contratti (idContratto, idImmobile, idAgente, tipoContratto, dataContratto, dataScadenzaContratto, pathContrattoPDF)
 VALUES
-    (1, 3, 'Esclusivo', '2025-06-01', '2026-06-01', '/contracts/contratto-3.pdf');
+    (1, 3, 1, 'Esclusivo', '2025-06-01', '2026-06-01', '/contracts/contratto-3.pdf');
 
 -- ========================
 -- SAMPLE: Vendite

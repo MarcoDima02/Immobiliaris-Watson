@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard Amministratore</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5">
+    <h1 class="mb-4">Dashboard Amministratore</h1>
+
+    <!-- Box con statistiche principali -->
+    <div class="row mb-4">
+        <div class="col-md-2">
+            <a th:href="@{/dashboard-utenti}" style="text-decoration: none;">
+                <div class="card text-center bg-primary text-white">
+                    <div class="card-body">
+                        <h5 class="card-title">Utenti</h5>
+                        <p class="card-text" th:text="${numeroUtenti}">0</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-2">
+            <a th:href="@{/dashboard-immobili}" style="text-decoration: none;">
+                <div class="card text-center bg-success text-white">
+                    <div class="card-body">
+                        <h5 class="card-title">Immobili</h5>
+                        <p class="card-text" th:text="${numeroImmobili}">0</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-2">
+            <a th:href="@{/dashboard-contratti}" style="text-decoration: none;">
+                <div class="card text-center bg-warning text-white">
+                    <div class="card-body">
+                        <h5 class="card-title">Contratti</h5>
+                        <p class="card-text" th:text="${numeroContratti}">0</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-2">
+            <a th:href="@{/dashboard-leads}" style="text-decoration: none;">
+                <div class="card text-center bg-info text-white">
+                    <div class="card-body">
+                        <h5 class="card-title">Lead</h5>
+                        <p class="card-text" th:text="${numeroLead}">0</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-2">
+            <a th:href="@{/dashboard-richieste}" style="text-decoration: none;">
+                <div class="card text-center bg-secondary text-white">
+                    <div class="card-body">
+                        <h5 class="card-title">Richieste</h5>
+                        <p class="card-text" th:text="${numeroRichieste}">0</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-2">
+            <a th:href="@{/dashboard-vendite}" style="text-decoration: none;">
+                <div class="card text-center bg-dark text-white">
+                    <div class="card-body">
+                        <h5 class="card-title">Vendite</h5>
+                        <p class="card-text" th:text="${totaleVendite}">0</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Statistiche dettagliate -->
+    <div class="row mt-4">
+        <div class="col-md-3">
+            <div class="card border-primary">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Totale Utenti</h5>
+                    <p class="card-text fs-4" th:text="${numeroUtenti}">0</p>
+                    <small class="text-muted" th:text="'+' + ${nuoviUtenti} + ' nuovi questa settimana'">+0 nuovi questa settimana</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card border-success">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Totale Immobili</h5>
+                    <p class="card-text fs-4" th:text="${numeroImmobili}">0</p>
+                    <small class="text-muted" th:text="'+' + ${immobiliDisponibili} + ' disponibili'">+0 disponibili</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card border-warning">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Contratti Attivi</h5>
+                    <p class="card-text fs-4" th:text="${numeroContratti}">0</p>
+                    <small class="text-muted" th:text="'+' + ${nuoviContratti} + ' nuovi questo mese'">+0 nuovi questo mese</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card border-info">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Lead Totali</h5>
+                    <p class="card-text fs-4" th:text="${numeroLead}">0</p>
+                    <small class="text-muted" th:text="'+' + ${nuoviLead} + ' nuovi oggi'">+0 nuovi oggi</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-md-3">
+            <div class="card border-secondary">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Richieste</h5>
+                    <p class="card-text fs-4" th:text="${numeroRichieste}">0</p>
+                    <small class="text-muted" th:text="'+' + ${nuoveRichieste} + ' nuove oggi'">+0 nuove oggi</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card border-dark">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Vendite Totali</h5>
+                    <p class="card-text fs-4" th:text="${totaleVendite}">0</p>
+                    <small class="text-muted" th:text="'+' + ${nuoveVendite} + ' questo mese'">+0 questo mese</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+
+</html>

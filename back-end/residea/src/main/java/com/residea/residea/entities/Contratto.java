@@ -49,7 +49,6 @@ private Immobile idImmobile;
 
 @ManyToOne
 @JoinColumn(name = "idAgente")
-@JsonIgnoreProperties("contratti")
 private Utente agente;
 
 @Convert(converter = TipoContrattoConverter.class)

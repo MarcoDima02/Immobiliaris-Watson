@@ -20,75 +20,66 @@ import com.residea.residea.services.ContrattoService;
 @RestController
 @RequestMapping("/api/contratti")
 public class ContrattoController {
-@Autowired
-private ContrattoService contrattoService;
 
-// --- READ ---
-@GetMapping
-public List<Contratto> getAll() {
-    return contrattoService.getAllContratti();
-}
+    @Autowired
+    private ContrattoService contrattoService;
 
-@GetMapping("/{id}")
-public Contratto getById(@PathVariable Integer id) {
-    return contrattoService.getContrattoById(id);
-}
-
-@GetMapping("/tipo/{tipo}")
-public List<Contratto> getByTipo(@PathVariable String tipo) {
-    Contratto.TipoContratto tipoEnum = Contratto.TipoContratto.fromString(tipo);
-    if (tipoEnum == null) return List.of();
-    return contrattoService.getContrattiByTipo(tipoEnum);
-}
-
-
-@GetMapping("/immobile/{idImmobile}")
-public List<Contratto> getByImmobile(@PathVariable Integer idImmobile) {
-    return contrattoService.getContrattiByImmobileId(idImmobile);
-}
-
-@GetMapping("/scaduti/{data}")
-public List<Contratto> getScaduti(@PathVariable String data) {
-    LocalDate d = LocalDate.parse(data);
-    return contrattoService.getContrattiScaduti(d);
-}
-
-@GetMapping("/in-scadenza/{data}")
-public List<Contratto> getInScadenza(@PathVariable String data) {
-    LocalDate d = LocalDate.parse(data);
-    return contrattoService.getContrattiInScadenza(d);
-}
-
-// --- CREATE ---
-@PostMapping
-public Contratto creaContratto(@RequestBody Contratto contratto) {
-    if (contratto.getTipoContratto() != null) {
-        // usa il metodo fromString invece di valueOf
-        contratto.setTipoContratto(
-            Contratto.TipoContratto.fromString(contratto.getTipoContratto().name())
-        );
+    // --- READ ---
+    @GetMapping
+    public List<Contratto> getAll() {
+        return contrattoService.getAllContratti();
     }
-    return contrattoService.salvaContratto(contratto);
+
+    @GetMapping("/{id}")
+    public Contratto getById(@PathVariable Integer id) {
+        return contrattoService.getContrattoById(id);
+    }
+
+    @GetMapping("/tipo/{tipo}")
+    public List<Contratto> getByTipo(@PathVariable String tipo) {
+        Contratto.TipoContratto tipoEnum = Contratto.TipoContratto.fromString(tipo);
+        if (tipoEnum == null) return List.of();
+        return contrattoService.getContrattiByTipo(tipoEnum);
+    }
+
+    @GetMapping("/immobile/{idImmobile}")
+    public List<Contratto> getByImmobile(@PathVariable Integer idImmobile) {
+        return contrattoService.getContrattiByImmobileId(idImmobile);
+    }
+
+    @GetMapping("/scaduti/{data}")
+    public List<Contratto> getScaduti(@PathVariable String data) {
+        LocalDate d = LocalDate.parse(data);
+        return contrattoService.getContrattiScaduti(d);
+    }
+
+    @GetMapping("/in-scadenza/{data}")
+    public List<Contratto> getInScadenza(@PathVariable String data) {
+        LocalDate d = LocalDate.parse(data);
+        return contrattoService.getContrattiInScadenza(d);
+    }
+
+    // --- CREATE ---
+    @PostMapping
+    public Contratto creaContratto(@RequestBody Contratto contratto) {
+        if (contratto.getTipoContratto() != null) {
+            contratto.setTipoContratto(
+                Contratto.TipoContratto.fromString(contratto.getTipoContratto().name())
+            );
+        }
+        return contrattoService.salvaContratto(contratto);
+    }
+
+    // --- UPDATE ---
+    @PutMapping("/{id}")
+    public Contratto aggiornaContratto(@PathVariable Integer id, @RequestBody Contratto contratto) {
+        contratto.setIdContratto(id);
+        return contrattoService.aggiornaContratto(contratto);
+    }
+
+    @DeleteMapping("/{id}")
+    public void eliminaContratto(@PathVariable Integer id) {
+        contrattoService.eliminaContratto(id);
+    }
 }
-
-
-// --- UPDATE ---
-@PutMapping("/{id}")
-public Contratto aggiornaContratto(@PathVariable Integer id, @RequestBody Contratto contratto) {
-    contratto.setIdContratto(id);
-    return contrattoService.aggiornaContratto(contratto);
-}
-
-@PutMapping("/{id}/pdf")
-public Contratto aggiornaPDF(@PathVariable Integer id, @RequestBody String nuovoPath) {
-    return contrattoService.aggiornaPathContrattoPDF(id, nuovoPath);
-}
-
-// --- DELETE ---
-@DeleteMapping("/{id}")
-public void eliminaContratto(@PathVariable Integer id) {
-    contrattoService.eliminaContratto(id);
-}
-
-
-}
+    

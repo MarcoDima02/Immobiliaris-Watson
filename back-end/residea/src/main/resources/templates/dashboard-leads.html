@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<title>Gestione Leads</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+body { font-family: "Inter", sans-serif; background:#f4f6f9; margin:0; padding:0; color:#333; }
+header { background:#2563eb; padding:18px 32px; color:white; font-size:24px; font-weight:600; box-shadow:0 2px 8px rgba(0,0,0,0.15);}
+.container { padding:24px 40px; }
+.card { background:white; border-radius:12px; padding:24px; margin-bottom:28px; box-shadow:0 4px 15px rgba(0,0,0,0.06);}
+.card h3 { margin-top:0; font-size:20px; color:#1f2937;}
+input, select { padding:10px 14px; border-radius:8px; border:1px solid #d1d5db; width:100%; font-size:15px; transition:border 0.2s;}
+input:focus, select:focus { border-color:#2563eb; outline:none;}
+.form-row { display:flex; gap:16px; flex-wrap:wrap; margin-bottom:16px;}
+.form-row > * { flex:1 1 240px; }
+button { background:#2563eb; color:white; padding:10px 18px; border:none; border-radius:8px; cursor:pointer; font-size:15px; transition:0.2s;}
+button:hover { background:#1e4fc3;}
+button.secondary { background:#6b7280;}
+button.secondary:hover { background:#4b5563;}
+table { width:100%; border-collapse:collapse; border-radius:12px; overflow:hidden; }
+thead { background:#2563eb; color:white;}
+th, td { padding:12px 14px; text-align:left; font-size:15px; }
+tr:nth-child(even) { background:#f9fafb;}
+tr:hover { background:#e8f0fe; cursor:pointer;}
+</style>
+</head>
+<body>
+<header>Gestione Leads</header>
+<div class="container">
+
+    <!-- FORM LEAD -->
+    <div class="card">
+        <h3>➕ Crea / Aggiorna Lead</h3>
+        <div class="form-row">
+            <input id="idLead" placeholder="ID Lead (auto)" readonly>
+            <input id="nome" placeholder="Nome Completo">
+            <input id="email" placeholder="Email">
+        </div>
+        <div class="form-row">
+            <input id="telefono" placeholder="Telefono">
+            <input id="citta" placeholder="Città">
+            <input id="fonte" placeholder="Fonte">
+        </div>
+        <div class="form-row">
+            <select id="idUtenteSelect"></select>
+        </div>
+        <div class="form-row">
+            <button onclick="creaLead()"><i class="fa fa-plus"></i> Crea</button>
+            <button onclick="aggiornaLead()"><i class="fa fa-save"></i> Aggiorna</button>
+            <button class="secondary" onclick="resetForm()"><i class="fa fa-eraser"></i> Pulisci</button>
+        </div>
+    </div>
+
+    <!-- FILTRO LEAD -->
+    <div class="card">
+        <h3>🔍 Filtra Leads</h3>
+        <div class="form-row">
+            <input id="searchId" placeholder="ID" oninput="filtraLeads()">
+            <input id="searchNome" placeholder="Nome" oninput="filtraLeads()">
+            <input id="searchEmail" placeholder="Email" oninput="filtraLeads()">
+            <input id="searchCitta" placeholder="Città" oninput="filtraLeads()">
+            <select id="searchUtente" onchange="filtraLeads()"><option value="">Tutti gli Utenti</option></select>
+            <button onclick="mostraTuttiLeads()"><i class="fa fa-list"></i> Mostra tutti</button>
+        </div>
+    </div>
+
+    <!-- TABELLA LEAD -->
+    <div class="card">
+        <h3>📋 Elenco Leads</h3>
+        <table id="tabLeads">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Email</th>
+                    <th>Telefono</th>
+                    <th>Città</th>
+                    <th>Fonte</th>
+                    <th>Utente</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+</div>
+
+<script>
+const API = "/api/leads";
+const API_UTENTE = "/api/utenti";
+let leads = [];
+
+async function caricaDropdownUtenti() {
+    const utenti = await fetch(API_UTENTE).then(r=>r.json());
+    const sel = document.getElementById("idUtenteSelect");
+    const selFilter = document.getElementById("searchUtente");
+    sel.innerHTML = '<option value="">Assegna Utente</option>';
+    selFilter.innerHTML = '<option value="">Tutti gli Utenti</option>';
+    utenti.forEach(u => {
+        const text = `${u.idUtente} - ${u.nome} ${u.cognome}`;
+        sel.innerHTML += `<option value="${u.idUtente}">${text}</option>`;
+        selFilter.innerHTML += `<option value="${u.idUtente}">${text}</option>`;
+    });
+}
+
+async function getLeads(){ 
+    leads = await fetch(API).then(r=>r.ok?r.json():[]);
+    return leads;
+}
+
+function renderTable(lista){
+    const tbody = document.querySelector("#tabLeads tbody"); 
+    tbody.innerHTML = "";
+    lista.forEach(l=>{
+        const utenteText = l.utente ? `${l.utente.idUtente} (${l.utente.nome} ${l.utente.cognome})` : "-";
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td>${l.idLead}</td><td>${l.nome}</td><td>${l.email}</td><td>${l.telefono}</td><td>${l.citta}</td><td>${l.fonte}</td><td>${utenteText}</td>`;
+        tr.addEventListener("click", ()=>loadIntoForm(l));
+        tbody.appendChild(tr);
+    });
+}
+
+function buildPayload(){
+    return {
+        idLead: document.getElementById("idLead").value || undefined,
+        nome: document.getElementById("nome").value || null,
+        email: document.getElementById("email").value || null,
+        telefono: document.getElementById("telefono").value || null,
+        citta: document.getElementById("citta").value || null,
+        fonte: document.getElementById("fonte").value || null,
+        utente: document.getElementById("idUtenteSelect").value 
+                ? { idUtente: Number(document.getElementById("idUtenteSelect").value) } 
+                : null
+    };
+}
+
+async function creaLead() {
+    const payload = buildPayload(); delete payload.idLead;
+    const res = await fetch(API, { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(payload)});
+    if(!res.ok){ alert("Errore creazione lead"); return; }
+    alert("Lead creato!"); mostraTuttiLeads(); resetForm();
+}
+
+async function aggiornaLead() {
+    const payload = buildPayload();
+    if(!payload.idLead){ alert("Inserisci ID"); return; }
+    const res = await fetch(`${API}/${payload.idLead}`, { method:"PUT", headers:{"Content-Type":"application/json"}, body: JSON.stringify(payload)});
+    if(!res.ok){ alert("Errore aggiornamento lead"); return; }
+    alert("Lead aggiornato!"); mostraTuttiLeads(); resetForm();
+}
+
+function loadIntoForm(l){
+    document.getElementById("idLead").value = l.idLead ?? "";
+    document.getElementById("nome").value = l.nome ?? "";
+    document.getElementById("email").value = l.email ?? "";
+    document.getElementById("telefono").value = l.telefono ?? "";
+    document.getElementById("citta").value = l.citta ?? "";
+    document.getElementById("fonte").value = l.fonte ?? "";
+    document.getElementById("idUtenteSelect").value = l.utente?.idUtente ?? "";
+}
+
+function resetForm(){
+    ["idLead","nome","email","telefono","citta","fonte","idUtenteSelect"].forEach(id=>document.getElementById(id).value="");
+}
+
+function filtraLeads(){
+    const idInput = document.getElementById("searchId").value.trim();
+    const id = idInput ? Number(idInput) : null;
+    const nome = document.getElementById("searchNome").value.toLowerCase();
+    const email = document.getElementById("searchEmail").value.toLowerCase();
+    const citta = document.getElementById("searchCitta").value.toLowerCase();
+    const idUtente = document.getElementById("searchUtente").value ? Number(document.getElementById("searchUtente").value) : null;
+
+    const filtrata = leads.filter(l=>{
+        if(id !== null && l.idLead !== id) return false;
+        if(nome && (!l.nome || !l.nome.toLowerCase().includes(nome))) return false;
+        if(email && (!l.email || !l.email.toLowerCase().includes(email))) return false;
+        if(citta && (!l.citta || !l.citta.toLowerCase().includes(citta))) return false;
+        if(idUtente && (!l.utente || l.utente.idUtente !== idUtente)) return false;
+        return true;
+    });
+    renderTable(filtrata);
+}
+
+async function mostraTuttiLeads(){ 
+    await getLeads();
+    renderTable(leads); 
+}
+
+// inizializzazione
+caricaDropdownUtenti(); 
+mostraTuttiLeads();
+</script>
+</body>
+</html>
