@@ -1,5 +1,8 @@
 package com.residea.residea.controller;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.chrono.ChronoLocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -7,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RestController;
+import java.util.Objects;
 
 import com.residea.residea.dto.ImmagineDto;
 import com.residea.residea.dto.ImmobileDto;
@@ -33,6 +39,8 @@ import com.residea.residea.entities.Richiesta;
 import com.residea.residea.entities.Utente;
 import com.residea.residea.entities.Vendita;
 import com.residea.residea.entities.Lead;
+
+import com.residea.residea.entities.Utente.Ruolo;
 
 import com.residea.residea.services.ContrattoService;
 import com.residea.residea.services.ImmagineService;
@@ -73,12 +81,84 @@ public class AmministratoreDashboard {
         private static final Logger log = LoggerFactory.getLogger(AmministratoreDashboard.class);
 
 
-    // Security is performed with @PreAuthorize on the class; keep session check as fallback
+        // Controllo amministratore
     private boolean isAmministratore(HttpSession session) {
         Object ruolo = session.getAttribute("userRuolo");
-        log.info("Session ID: {}, userRuolo: {}", session.getId(), ruolo);
         return ruolo != null && ruolo.toString().equalsIgnoreCase("AMMINISTRATORE");
     }
+
+    // Pagina Dashboard
+    @GetMapping
+    public String dashboard(Model model, HttpSession session) {
+        if (!isAmministratore(session)) {
+            return "redirect:/";
+        }
+
+        LocalDate oggi = LocalDate.now();
+
+        // Statistiche principali
+        int numeroUtenti = utentiService.getAllUtenti().size();
+
+        int numeroImmobili = immobiliService.getAllImmobili().size();
+        long immobiliDisponibili = immobiliService.getAllImmobili().stream()
+                .filter(i -> i.getStato() == Immobile.Stato.DISPONIBILE)
+                .count();
+
+        int numeroContratti = contrattiService.getAllContratti().size();
+        int nuoviContratti = (int) contrattiService.getAllContratti().stream()
+                .filter(c -> c.getDataContratto() != null 
+                        && c.getDataContratto().getMonthValue() == oggi.getMonthValue())
+                .count();
+
+        int numeroLead = leadService.getAllLeads().size();
+        int nuoviLead = (int) leadService.getAllLeads().stream()
+                .filter(c -> c.getCreatedAt() != null &&
+                c.getCreatedAt().toLocalDate().isEqual(oggi))
+
+                .count();
+
+        int numeroRichieste = richiestaService.getAllRichieste().size();
+int nuoveRichieste = (int) richiestaService.getAllRichieste().stream()
+        .filter(r -> r.getDataRichiesta() != null 
+                && r.getDataRichiesta().toLocalDate().isEqual(oggi))
+        .count();
+
+
+        BigDecimal totaleVendite = venditaService.getAllVendite().stream()
+                .map(Vendita::getCommissionePercentuale)
+                .filter(Objects::nonNull)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        long nuoveVendite = venditaService.getAllVendite().stream()
+                .filter(v -> v.getContratto() != null && v.getContratto().getDataContratto() != null
+                        && v.getContratto().getDataContratto().getMonthValue() == oggi.getMonthValue())
+                .count();
+
+        // Popolo il modello con tutte le variabili usate nelle card e statistiche dettagliate
+        model.addAttribute("numeroUtenti", numeroUtenti);
+        model.addAttribute("numeroImmobili", numeroImmobili);
+        model.addAttribute("immobiliDisponibili", immobiliDisponibili);
+        model.addAttribute("numeroContratti", numeroContratti);
+        model.addAttribute("nuoviContratti", nuoviContratti);
+        model.addAttribute("numeroLead", numeroLead);
+        model.addAttribute("nuoviLead", nuoviLead);
+        model.addAttribute("numeroRichieste", numeroRichieste);
+        model.addAttribute("nuoveRichieste", nuoveRichieste);
+        model.addAttribute("totaleVendite", totaleVendite);
+        model.addAttribute("nuoveVendite", nuoveVendite);
+
+        return "AmministratoreDashboard"; // Thymeleaf template
+    }
+
+
+
+
+    // // Security is performed with @PreAuthorize on the class; keep session check as fallback
+    // private boolean isAmministratore(HttpSession session) {
+    //     Object ruolo = session.getAttribute("userRuolo");
+    //     log.info("Session ID: {}, userRuolo: {}", session.getId(), ruolo);
+    //     return ruolo != null && ruolo.toString().equalsIgnoreCase("AMMINISTRATORE");
+    // }
 
     // Pagina utenti
     @GetMapping("/utenti")
@@ -86,7 +166,8 @@ public class AmministratoreDashboard {
                             @RequestParam(value = "nome", required = false) String nome,
                             @RequestParam(value = "cognome", required = false) String cognome,
                             @RequestParam(value = "email", required = false) String email,
-                            @RequestParam(value = "telefono", required = false) String telefono) {
+                            @RequestParam(value = "ruolo", required = false) Ruolo ruolo,
+                            @RequestParam(value = "telefono", required = false) String telefono){
         // TODO: Riattivare dopo che tutti hanno rifatto login
         // if (!isAmministratore(session)) {
         //     log.warn("Accesso negato: utente non amministratore");
