@@ -55,4 +55,9 @@ public class ViewController {
     public String dashboardRichieste() {
         return "dashboard-richieste"; // Thymeleaf cerca templates/AmministratoreDashboard.html
     }
+
+    @GetMapping("/dashboard-vendite")
+    public String dashboardVendite() {
+        return "dashboard-vendite"; // Thymeleaf cerca templates/AmministratoreDashboard.html
+    }
 }

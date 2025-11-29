@@ -309,7 +309,91 @@ public void eliminaRichiesta(@PathVariable Integer id, HttpSession session) {
 }
 
 
+// --- Pagina dashboard Vendite ---
+@GetMapping("/vendite")
+public String getVendite(Model model,
+                         HttpSession session,
+                         @RequestParam(value = "contratto", required = false) Integer idContratto,
+                         @RequestParam(value = "immobile", required = false) Integer idImmobile,
+                         @RequestParam(value = "utente", required = false) Integer idUtente) {
 
+    if (!isAmministratore(session)) {
+        return "redirect:/";
+    }
+
+    // --- Carica tutte le vendite ---
+    List<Vendita> vendite = venditaService.getAllVendite();
+    System.out.println("Vendite trovate: " + vendite.size());
+
+    // --- Filtri opzionali ---
+    if (idContratto != null) {
+        vendite.removeIf(v -> v.getContratto() == null || !v.getContratto().getIdContratto().equals(idContratto));
+    }
+    if (idImmobile != null) {
+        vendite.removeIf(v -> v.getImmobile() == null || !v.getImmobile().getIdImmobile().equals(idImmobile));
+    }
+    if (idUtente != null) {
+        vendite.removeIf(v -> v.getUtente() == null || !v.getUtente().getIdUtente().equals(idUtente));
+    }
+
+    // --- Aggiungo dati al model ---
+    model.addAttribute("listaVendite", vendite);
+    model.addAttribute("utenti", utentiService.getAllUtenti());
+    model.addAttribute("immobili", immobiliService.getAllImmobili());
+    model.addAttribute("contratti", contrattiService.getAllContratti());
+
+    return "dashboard-vendite"; // Thymeleaf template
+}
+
+// --- API per vendite (JSON) ---
+@GetMapping("/api/vendite")
+@ResponseBody
+public List<VenditaDto> apiVendite(HttpSession session) {
+    if (!isAmministratore(session)) return Collections.emptyList();
+
+    List<Vendita> vendite = venditaService.getAllVendite();
+    return vendite.stream().map(this::toVenditaDto).toList();
+}
+
+// --- Crea nuova vendita ---
+@PostMapping("/api/vendite")
+@ResponseBody
+public Vendita creaVendita(@RequestBody Vendita v, HttpSession session) {
+    if (!isAmministratore(session)) throw new RuntimeException("Accesso negato");
+
+    if (v.getContratto() != null && v.getContratto().getIdContratto() != null)
+        v.setContratto(contrattiService.getContrattoById(v.getContratto().getIdContratto()));
+    if (v.getUtente() != null && v.getUtente().getIdUtente() != null)
+        v.setUtente(utentiService.getUtenteById(v.getUtente().getIdUtente()));
+    if (v.getImmobile() != null && v.getImmobile().getIdImmobile() != null)
+        v.setImmobile(immobiliService.getImmobileById(v.getImmobile().getIdImmobile()));
+
+    return venditaService.createVendita(v);
+}
+
+// --- Aggiorna vendita ---
+@PutMapping("/api/vendite/{id}")
+@ResponseBody
+public Vendita aggiornaVendita(@PathVariable Integer id, @RequestBody Vendita v, HttpSession session) {
+    if (!isAmministratore(session)) throw new RuntimeException("Accesso negato");
+
+    if (v.getContratto() != null && v.getContratto().getIdContratto() != null)
+        v.setContratto(contrattiService.getContrattoById(v.getContratto().getIdContratto()));
+    if (v.getUtente() != null && v.getUtente().getIdUtente() != null)
+        v.setUtente(utentiService.getUtenteById(v.getUtente().getIdUtente()));
+    if (v.getImmobile() != null && v.getImmobile().getIdImmobile() != null)
+        v.setImmobile(immobiliService.getImmobileById(v.getImmobile().getIdImmobile()));
+
+    return venditaService.updateVendita(id, v);
+}
+
+// --- Delete vendita (facoltativo) ---
+@DeleteMapping("/api/vendite/{id}")
+@ResponseBody
+public void eliminaVendita(@PathVariable Integer id, HttpSession session) {
+    if (!isAmministratore(session)) throw new RuntimeException("Accesso negato");
+    venditaService.deleteVendita(id);
+}
 
 
 
@@ -397,33 +481,7 @@ public void eliminaRichiesta(@PathVariable Integer id, HttpSession session) {
     }
 
     // --- Endpoints per Vendite ---
-    @GetMapping("/vendite")
-    public ResponseEntity<List<VenditaDto>> getVendite(HttpSession session,
-                                @RequestParam(value = "contratto", required = false) Integer idContratto,
-                                @RequestParam(value = "immobile", required = false) Integer idImmobile,
-                                @RequestParam(value = "utente", required = false) Integer idUtente) {
-        // TODO: Riattivare dopo login
-        // if (!isAmministratore(session)) {
-        //     return ResponseEntity.status(403).build();
-        // }
-
-        List<Vendita> vendite = venditaService.getAllVendite();
-        System.out.println("Vendite trovate: " + vendite.size());
-
-        // Filtri opzionali
-        if (idContratto != null) {
-            vendite.removeIf(v -> v.getContratto() == null || !v.getContratto().getIdContratto().equals(idContratto));
-        }
-        if (idImmobile != null) {
-            vendite.removeIf(v -> v.getImmobile() == null || !v.getImmobile().getIdImmobile().equals(idImmobile));
-        }
-        if (idUtente != null) {
-            vendite.removeIf(v -> v.getUtente() == null || !v.getUtente().getIdUtente().equals(idUtente));
-        }
-
-        List<VenditaDto> dtos = vendite.stream().map(this::toVenditaDto).toList();
-        return ResponseEntity.ok(dtos);
-    }
+    
 
     
 

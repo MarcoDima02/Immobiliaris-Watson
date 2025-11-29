@@ -64,13 +64,17 @@
 </div>
 
             <div class="col-md-2">
-                <div class="card text-center bg-dark text-white">
-                    <div class="card-body">
-                        <h5 class="card-title">Vendite</h5>
-                        <p class="card-text" th:text="${totaleVendite}">0</p>
+                <a th:href="@{/dashboard-vendite}" style="text-decoration: none;">
+                        
+                    <div class="card text-center bg-dark text-white">
+                        <div class="card-body">
+                            <h5 class="card-title">Vendite</h5>
+                            <p class="card-text" th:text="${totaleVendite}">0</p>
+                        </div>
                     </div>
-                </div>
+                
             </div>
+            </a>
         </div>
 
         <!-- Tabella utenti -->
