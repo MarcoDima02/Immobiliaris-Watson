@@ -45,4 +45,14 @@ public class ViewController {
     public String dashboardContratti() {
         return "dashboard-contratti"; // Thymeleaf cerca templates/AmministratoreDashboard.html
     }
+
+        @GetMapping("/dashboard-leads")
+    public String dashboardLeads() {
+        return "dashboard-leads"; // Thymeleaf cerca templates/AmministratoreDashboard.html
+    }
+
+    @GetMapping("/dashboard-richieste")
+    public String dashboardRichieste() {
+        return "dashboard-richieste"; // Thymeleaf cerca templates/AmministratoreDashboard.html
+    }
 }

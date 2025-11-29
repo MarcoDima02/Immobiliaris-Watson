@@ -52,15 +52,17 @@
                 </div>
                 </a>
             </div>
-            <div class="col-md-2">
-                <a th:href="@{/dashboard-contratti}" style="text-decoration: none;"></a>
-                <div class="card text-center bg-info text-white">
-                    <div class="card-body">
-                        <h5 class="card-title">Richieste</h5>
-                        <p class="card-text" th:text="${numeroRichieste}">0</p>
-                    </div>
-                </div>
+<div class="col-md-2">
+    <a th:href="@{/dashboard-richieste}" style="text-decoration: none;">
+        <div class="card text-center bg-info text-white">
+            <div class="card-body">
+                <h5 class="card-title">Richieste</h5>
+                <p class="card-text" th:text="${numeroRichieste}">0</p>
             </div>
+        </div>
+    </a>
+</div>
+
             <div class="col-md-2">
                 <div class="card text-center bg-dark text-white">
                     <div class="card-body">

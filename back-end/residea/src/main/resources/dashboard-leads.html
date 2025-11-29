@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard Leads</title>
+    <link rel="stylesheet" href="/css/styles.css"> <!-- eventuale CSS globale -->
+    <style>
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        th { background-color: #f4f4f4; }
+        input, select { padding: 5px; margin-right: 10px; }
+        button { padding: 5px 10px; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Dashboard Leads</h1>
+
+    <!-- Form filtri -->
+    <div>
+        <label>Nome: <input type="text" id="filterNome"></label>
+        <label>Email: <input type="text" id="filterEmail"></label>
+        <label>Città: <input type="text" id="filterCitta"></label>
+        <button onclick="loadLeads()">Filtra</button>
+    </div>
+
+    <!-- Tabella leads -->
+    <table id="leadsTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>Telefono</th>
+                <th>Città</th>
+                <th>Fonte</th>
+                <th>Azioni</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <!-- Form creazione lead -->
+    <h2>Nuovo Lead</h2>
+    <div>
+        <label>Nome: <input type="text" id="newNome"></label>
+        <label>Email: <input type="email" id="newEmail"></label>
+        <label>Telefono: <input type="text" id="newTelefono"></label>
+        <label>Città: <input type="text" id="newCitta"></label>
+        <label>Fonte: <input type="text" id="newFonte"></label>
+        <button onclick="createLead()">Crea Lead</button>
+    </div>
+
+    <script>
+        const apiBase = "/api/admin/dashboard/leads"; // o /api/leads
+
+        async function loadLeads() {
+            const nome = document.getElementById("filterNome").value;
+            const email = document.getElementById("filterEmail").value;
+            const citta = document.getElementById("filterCitta").value;
+
+            let url = apiBase;
+            const params = [];
+            if(nome) params.push(`nome=${encodeURIComponent(nome)}`);
+            if(email) params.push(`email=${encodeURIComponent(email)}`);
+            if(citta) params.push(`citta=${encodeURIComponent(citta)}`);
+            if(params.length) url += "?" + params.join("&");
+
+            const res = await fetch(url);
+            const leads = await res.json();
+
+            const tbody = document.querySelector("#leadsTable tbody");
+            tbody.innerHTML = "";
+
+            leads.forEach(l => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td>${l.idLead}</td>
+                    <td>${l.nome}</td>
+                    <td>${l.email}</td>
+                    <td>${l.telefono || ""}</td>
+                    <td>${l.citta || ""}</td>
+                    <td>${l.fonte || ""}</td>
+                    <td>
+                        <button onclick="editLead(${l.idLead})">Modifica</button>
+                        <button onclick="deleteLead(${l.idLead})">Elimina</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        async function createLead() {
+            const lead = {
+                nome: document.getElementById("newNome").value,
+                email: document.getElementById("newEmail").value,
+                telefono: document.getElementById("newTelefono").value,
+                citta: document.getElementById("newCitta").value,
+                fonte: document.getElementById("newFonte").value
+            };
+
+            const res = await fetch(apiBase, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(lead)
+            });
+
+            if(res.ok) {
+                alert("Lead creato!");
+                loadLeads();
+            } else {
+                alert("Errore nella creazione del lead");
+            }
+        }
+
+        async function deleteLead(id) {
+            if(!confirm("Vuoi davvero eliminare questo lead?")) return;
+
+            const res = await fetch(`${apiBase}/${id}`, { method: "DELETE" });
+            if(res.ok) {
+                alert("Lead eliminato!");
+                loadLeads();
+            } else {
+                alert("Errore nell'eliminazione");
+            }
+        }
+
+        async function editLead(id) {
+            const nome = prompt("Nuovo nome:");
+            if(!nome) return;
+
+            const lead = { nome };
+
+            const res = await fetch(`${apiBase}/${id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(lead)
+            });
+
+            if(res.ok) {
+                alert("Lead aggiornato!");
+                loadLeads();
+            } else {
+                alert("Errore nell'aggiornamento");
+            }
+        }
+
+        // Carica subito i lead
+        loadLeads();
+    </script>
+</body>
+</html>

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestione Richieste</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        body { font-family: "Inter", sans-serif; background: #f4f6f9; margin:0; padding:0; color:#333; }
+        header { background: #2563eb; padding:18px 32px; color:white; font-size:24px; font-weight:600; box-shadow:0 2px 8px rgba(0,0,0,0.15);}
+        .container { padding:24px 40px; }
+        .card { background:white; border-radius:12px; padding:24px; margin-bottom:28px; box-shadow:0 4px 15px rgba(0,0,0,0.06);}
+        .card h3 { margin-top:0; font-size:20px; color:#1f2937;}
+        input, select { padding:10px 14px; border-radius:8px; border:1px solid #d1d5db; width:100%; font-size:15px; transition:border 0.2s;}
+        input:focus, select:focus { border-color:#2563eb; outline:none;}
+        .form-row { display:flex; gap:16px; flex-wrap:wrap; margin-bottom:16px;}
+        .form-row > * { flex:1 1 240px; }
+        button { background:#2563eb; color:white; padding:10px 18px; border:none; border-radius:8px; cursor:pointer; font-size:15px; transition:0.2s;}
+        button:hover { background:#1e4fc3;}
+        button.secondary { background:#6b7280;}
+        button.secondary:hover { background:#4b5563;}
+        table { width:100%; border-collapse:collapse; border-radius:12px; overflow:hidden; }
+        thead { background:#2563eb; color:white;}
+        th, td { padding:12px 14px; text-align:left; font-size:15px; }
+        tr:nth-child(even) { background:#f9fafb;}
+        tr:hover { background:#e8f0fe; cursor:pointer;}
+        tr._highlight { background-color:#d1fae5 !important;}
+        .search-box { display:flex; gap:16px; margin-top:16px;}
+    </style>
+</head>
+<body>
+
+<header>Gestione Richieste</header>
+<div class="container">
+
+    <!-- FORM RICHIESTE -->
+    <div class="card">
+        <h3>➕ Crea / Aggiorna Richiesta</h3>
+
+        <div class="form-row">
+            <input id="idRichiesta" placeholder="ID Richiesta (auto)" readonly>
+            <select id="statoRichiesta">
+                <option value="IN_ATTESA">In attesa</option>
+                <option value="IN_ELABORAZIONE">In elaborazione</option>
+                <option value="COMPLETATA">Completata</option>
+                <option value="ANNULLATA">Annullata</option>
+            </select>
+        </div>
+
+        <div class="form-row">
+            <select id="idUtenteSelect"></select>
+            <select id="idImmobileSelect"></select>
+        </div>
+
+        <div class="form-row">
+            <input type="datetime-local" id="dataRichiesta">
+            <input type="datetime-local" id="dataAppuntamento">
+        </div>
+
+        <div class="form-row">
+            <input id="noteUtente" placeholder="Note utente">
+            <input id="motivoAnnullamento" placeholder="Motivo annullamento">
+        </div>
+
+        <div class="form-row">
+            <button onclick="creaRichiesta()"><i class="fa fa-plus"></i> Crea</button>
+            <button onclick="aggiornaRichiesta()"><i class="fa fa-save"></i> Aggiorna</button>
+            <button class="secondary" onclick="resetForm()"><i class="fa fa-eraser"></i> Pulisci</button>
+        </div>
+    </div>
+
+    <!-- TABELLA RICHIESTE -->
+    <div class="card">
+        <h3>📋 Elenco Richieste</h3>
+        <table id="tabRichieste">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Stato</th>
+                    <th>Utente</th>
+                    <th>Immobile</th>
+                    <th>Data Richiesta</th>
+                    <th>Data Appuntamento</th>
+                    <th>Note</th>
+                    <th>Motivo Annullamento</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <!-- RICERCA -->
+    <div class="card">
+        <h3>🔍 Cerca Richiesta</h3>
+        <div class="search-box">
+            <input id="richiestaSearchId" placeholder="Cerca per ID richiesta">
+            <button onclick="cercaRichiestaPerId()"><i class="fa fa-search"></i> Cerca</button>
+            <button onclick="mostraTutteRichieste()" class="secondary"><i class="fa fa-list"></i> Mostra tutte</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+const API = "/api/richieste"; // Endpoint JSON puro
+const API_UTENTE = "/api/utenti";
+const API_IMMOBILE = "/api/immobili";
+
+// ---- CARICA DROPDOWN ----
+async function caricaDropdown() {
+    const utenti = await fetch(API_UTENTE).then(r=>r.json());
+    const selUt = document.getElementById("idUtenteSelect");
+    selUt.innerHTML = '<option value="">Seleziona Utente</option>';
+    utenti.forEach(u => selUt.innerHTML += `<option value="${u.idUtente}">${u.idUtente} - ${u.nome} ${u.cognome}</option>`);
+
+    const immobili = await fetch(API_IMMOBILE).then(r=>r.json());
+    const selIm = document.getElementById("idImmobileSelect");
+    selIm.innerHTML = '<option value="">Seleziona Immobile</option>';
+    immobili.forEach(i => selIm.innerHTML += `<option value="${i.idImmobile}">${i.idImmobile} - ${i.tipologia} - ${i.indirizzo}</option>`);
+}
+
+// ---- CREA / AGGIORNA RICHIESTA ----
+async function creaRichiesta() {
+    const payload = buildPayload(); delete payload.idRichiesta;
+    const res = await fetch(API, { method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify(payload) });
+    if(!res.ok){ alert("Errore creazione richiesta"); return; }
+    alert("Richiesta creata!"); mostraTutteRichieste(); resetForm();
+}
+async function aggiornaRichiesta() {
+    const payload = buildPayload();
+    if(!payload.idRichiesta){ alert("Inserisci ID Richiesta"); return; }
+    const res = await fetch(`${API}/${payload.idRichiesta}`, { method:"PUT", headers: {"Content-Type":"application/json"}, body: JSON.stringify(payload) });
+    if(!res.ok){ alert("Errore aggiornamento richiesta"); return; }
+    alert("Richiesta aggiornata!"); mostraTutteRichieste(); resetForm();
+}
+
+// ---- BUILD PAYLOAD ----
+function buildPayload(){
+    return {
+        idRichiesta: document.getElementById("idRichiesta").value.trim() || undefined,
+        stato: document.getElementById("statoRichiesta").value,
+        utente: document.getElementById("idUtenteSelect").value ? {idUtente:Number(document.getElementById("idUtenteSelect").value)} : null,
+        immobile: document.getElementById("idImmobileSelect").value ? {idImmobile:Number(document.getElementById("idImmobileSelect").value)} : null,
+        dataRichiesta: document.getElementById("dataRichiesta").value || null,
+        dataAppuntamento: document.getElementById("dataAppuntamento").value || null,
+        noteUtente: document.getElementById("noteUtente").value || null,
+        motivoAnnullamento: document.getElementById("motivoAnnullamento").value || null
+    };
+}
+
+// ---- MOSTRA TABELLA ----
+async function getRichieste(){ try{ return await fetch(API).then(r=>r.ok?r.json():[]); } catch(e){return [];} }
+async function mostraTutteRichieste(){ renderTable(await getRichieste()); }
+function renderTable(lista){
+    const tbody = document.querySelector("#tabRichieste tbody");
+    tbody.innerHTML = "";
+    lista.forEach(r=>{
+        const utenteText = r.utente ? `${r.utente.idUtente} (${r.utente.nome} ${r.utente.cognome})` : "-";
+        const immobileText = r.immobile ? `${r.immobile.idImmobile} (${r.immobile.tipologia} - ${r.immobile.indirizzo})` : "-";
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td>${r.idRichiesta}</td>
+            <td>${r.stato ?? "-"}</td>
+            <td>${utenteText}</td>
+            <td>${immobileText}</td>
+            <td>${r.dataRichiesta ?? "-"}</td>
+            <td>${r.dataAppuntamento ?? "-"}</td>
+            <td>${r.noteUtente ?? "-"}</td>
+            <td>${r.motivoAnnullamento ?? "-"}</td>
+        `;
+        tr.addEventListener("click", ()=>loadIntoForm(r));
+        tbody.appendChild(tr);
+    });
+}
+
+// ---- LOAD FORM ----
+function loadIntoForm(r){
+    document.getElementById("idRichiesta").value = r.idRichiesta ?? "";
+    document.getElementById("statoRichiesta").value = r.stato ?? "IN_ATTESA";
+    document.getElementById("idUtenteSelect").value = r.utente?.idUtente ?? "";
+    document.getElementById("idImmobileSelect").value = r.immobile?.idImmobile ?? "";
+    document.getElementById("dataRichiesta").value = r.dataRichiesta ?? "";
+    document.getElementById("dataAppuntamento").value = r.dataAppuntamento ?? "";
+    document.getElementById("noteUtente").value = r.noteUtente ?? "";
+    document.getElementById("motivoAnnullamento").value = r.motivoAnnullamento ?? "";
+}
+
+// ---- RESET FORM ----
+function resetForm(){
+    ["idRichiesta","statoRichiesta","idUtenteSelect","idImmobileSelect","dataRichiesta","dataAppuntamento","noteUtente","motivoAnnullamento"].forEach(id=>document.getElementById(id).value="");
+    document.getElementById("statoRichiesta").value = "IN_ATTESA";
+}
+
+// ---- CERCA PER ID ----
+async function cercaRichiestaPerId(){
+    const id = document.getElementById("richiestaSearchId").value.trim();
+    if(!id){ alert("Inserisci ID"); return; }
+    const lista = await getRichieste();
+    const trovato = lista.find(r=>String(r.idRichiesta)===id);
+    if(!trovato){ alert("Richiesta non trovata"); return; }
+    renderTable([trovato]); loadIntoForm(trovato);
+}
+
+// ---- INIT ----
+caricaDropdown(); mostraTutteRichieste();
+</script>
+</body>
+</html>

@@ -1,19 +1,24 @@
 package com.residea.residea.controller;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.residea.residea.dto.ContrattoDTO;
 import com.residea.residea.dto.ImmagineDto;
 import com.residea.residea.dto.ImmobileDto;
 import com.residea.residea.dto.RichiestaDto;
@@ -27,12 +32,16 @@ import com.residea.residea.entities.Immobile.Tipologia;
 import com.residea.residea.entities.Richiesta;
 import com.residea.residea.entities.Utente;
 import com.residea.residea.entities.Vendita;
+import com.residea.residea.entities.Lead;
+
 import com.residea.residea.services.ContrattoService;
 import com.residea.residea.services.ImmagineService;
 import com.residea.residea.services.ImmobileService;
+import com.residea.residea.services.LeadService;
 import com.residea.residea.services.RichiestaService;
 import com.residea.residea.services.UtentiService;
 import com.residea.residea.services.VenditaService;
+import com.residea.residea.services.LeadService;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -57,6 +66,9 @@ public class AmministratoreDashboard {
 
         @Autowired
         private ImmagineService immagineService;
+
+        @Autowired
+        private LeadService leadService;
 
         private static final Logger log = LoggerFactory.getLogger(AmministratoreDashboard.class);
 
@@ -153,17 +165,19 @@ public class AmministratoreDashboard {
 
 
 
-    @GetMapping("/contratti")
-        public ResponseEntity<List<ContrattoDTO>> getContratti(HttpSession session,
+        @GetMapping("/contratti")
+        public String getContratti(Model model,
+                                   HttpSession session,
                                    @RequestParam(value = "tipo", required = false) Contratto.TipoContratto tipo,
                                    @RequestParam(value = "immobile", required = false) Integer idImmobile,
                                    @RequestParam(value = "agente", required = false) Integer idAgente) {
-            // TODO: Riattivare dopo login
-            // if (!isAmministratore(session)) {
-            //     return ResponseEntity.status(403).build();
-            // }
 
-            // --- Carica contratti e mappa in DTO ---
+            // --- Controllo accesso ---
+            if (!isAmministratore(session)) {
+                return "redirect:/";
+            }
+
+            // --- Carica contratti ---
             List<Contratto> contratti = contrattiService.getAllContratti();
             System.out.println("Contratti trovati: " + contratti.size());
 
@@ -183,18 +197,121 @@ public class AmministratoreDashboard {
             }
 
             // --- Aggiungo dati al model ---
-            List<ContrattoDTO> dtos = contratti.stream().map(this::toContrattoDTO).toList();
-            return ResponseEntity.ok(dtos);
+            model.addAttribute("listaContratti", contratti);
+
+            // Per i filtri nel form
+            model.addAttribute("tipiContratto", Contratto.TipoContratto.values());
+            model.addAttribute("immobili", immobiliService.getAllImmobili());
+            model.addAttribute("agenti", utentiService.getAllUtenti());
+
+            return "dashboard-contratti"; 
         }
 
-        // Note: /contratti GET covers the admin contract list; no separate /api/contratti method required
-    @PostMapping("/contratti")
-    public ResponseEntity<ContrattoDTO> creaContratto(@RequestBody Contratto c, HttpSession session) {
-        // TODO: Riattivare dopo login
-        // if (!isAmministratore(session)) return ResponseEntity.status(403).build();
-        Contratto created = contrattiService.salvaContratto(c);
-        return ResponseEntity.status(201).body(toContrattoDTO(created));
+        @GetMapping("/api/contratti")
+        @ResponseBody
+        public List<Contratto> apiContratti(HttpSession session) {
+
+            if (!isAmministratore(session)) {
+                return Collections.emptyList(); // blocco sicurezza
+            }
+
+            return contrattiService.getAllContratti();
+        }
+    @PostMapping("/api/contratti")
+@ResponseBody
+public Contratto creaContratto(@RequestBody Contratto c, HttpSession session) {
+    if (!isAmministratore(session)) throw new RuntimeException("Accesso negato");
+    return contrattiService.salvaContratto(c);
+}
+
+// --- Pagina dashboard Richieste ---
+@GetMapping("/richieste")
+public String getRichieste(Model model,
+                           HttpSession session,
+                           @RequestParam(value = "stato", required = false) Richiesta.Stato stato,
+                           @RequestParam(value = "utente", required = false) Integer idUtente,
+                           @RequestParam(value = "immobile", required = false) Integer idImmobile) {
+
+    if (!isAmministratore(session)) {
+        return "redirect:/";
     }
+
+    // --- Carica tutte le richieste ---
+    List<Richiesta> richieste = richiestaService.getAllRichieste();
+    System.out.println("Richieste trovate: " + richieste.size());
+
+    // --- Filtri opzionali ---
+    if (stato != null) {
+        richieste.removeIf(r -> r.getStato() != stato);
+    }
+    if (idUtente != null) {
+        richieste.removeIf(r -> r.getUtente() == null || !r.getUtente().getIdUtente().equals(idUtente));
+    }
+    if (idImmobile != null) {
+        richieste.removeIf(r -> r.getImmobile() == null || !r.getImmobile().getIdImmobile().equals(idImmobile));
+    }
+
+    // --- Aggiungo dati al model ---
+    model.addAttribute("listaRichieste", richieste);
+    model.addAttribute("statiRichieste", Richiesta.Stato.values());
+    model.addAttribute("utenti", utentiService.getAllUtenti());
+    model.addAttribute("immobili", immobiliService.getAllImmobili());
+
+    return "dashboard-richieste"; // Thymeleaf template
+}
+
+// --- API per richieste (JSON) ---
+@GetMapping("/api/richieste")
+@ResponseBody
+public List<Richiesta> apiRichieste(HttpSession session) {
+    if (!isAmministratore(session)) return Collections.emptyList();
+    return richiestaService.getAllRichieste();
+}
+
+// --- Crea nuova richiesta ---
+@PostMapping("/api/richieste")
+@ResponseBody
+public Richiesta creaRichiesta(@RequestBody Richiesta r, HttpSession session) {
+    if (!isAmministratore(session)) throw new RuntimeException("Accesso negato");
+
+    if (r.getUtente() != null && r.getUtente().getIdUtente() != null) {
+        r.setUtente(utentiService.getUtenteById(r.getUtente().getIdUtente()));
+    }
+    if (r.getImmobile() != null && r.getImmobile().getIdImmobile() != null) {
+        r.setImmobile(immobiliService.getImmobileById(r.getImmobile().getIdImmobile()));
+    }
+
+    return richiestaService.createRichiesta(r);
+}
+
+// --- Aggiorna richiesta ---
+@PutMapping("/api/richieste/{id}")
+@ResponseBody
+public Richiesta aggiornaRichiesta(@PathVariable Integer id, @RequestBody Richiesta r, HttpSession session) {
+    if (!isAmministratore(session)) throw new RuntimeException("Accesso negato");
+
+    if (r.getUtente() != null && r.getUtente().getIdUtente() != null) {
+        r.setUtente(utentiService.getUtenteById(r.getUtente().getIdUtente()));
+    }
+    if (r.getImmobile() != null && r.getImmobile().getIdImmobile() != null) {
+        r.setImmobile(immobiliService.getImmobileById(r.getImmobile().getIdImmobile()));
+    }
+
+    return richiestaService.updateRichiesta(id, r);
+}
+
+// --- Elimina richiesta ---
+@DeleteMapping("/api/richieste/{id}")
+@ResponseBody
+public void eliminaRichiesta(@PathVariable Integer id, HttpSession session) {
+    if (!isAmministratore(session)) throw new RuntimeException("Accesso negato");
+    richiestaService.deleteRichiesta(id);
+}
+
+
+
+
+
 
     // --- Mappers ---
     private UtenteDto toUtenteDto(Utente u) {
@@ -227,18 +344,18 @@ public class AmministratoreDashboard {
         return d;
     }
 
-    private ContrattoDTO toContrattoDTO(Contratto c) {
-        if (c == null) return null;
-        ContrattoDTO d = new ContrattoDTO();
-        d.setIdContratto(c.getIdContratto());
-        d.setIdImmobile(c.getIdImmobile() == null ? null : c.getIdImmobile().getIdImmobile());
-        d.setIdAgente(c.getAgente() == null ? null : c.getAgente().getIdUtente());
-        d.setTipoContratto(c.getTipoContratto() == null ? null : c.getTipoContratto().name());
-        d.setDataContratto(c.getDataContratto());
-        d.setDataScadenzaContratto(c.getDataScadenzaContratto());
-        d.setPathContrattoPDF(c.getPathContrattoPDF());
-        return d;
-    }
+    // private ContrattoDTO toContrattoDTO(Contratto c) {
+    //     if (c == null) return null;
+    //     ContrattoDTO d = new ContrattoDTO();
+    //     d.setIdContratto(c.getIdContratto());
+    //     d.setIdImmobile(c.getIdImmobile() == null ? null : c.getIdImmobile().getIdImmobile());
+    //     d.setIdAgente(c.getAgente() == null ? null : c.getAgente().getIdUtente());
+    //     d.setTipoContratto(c.getTipoContratto() == null ? null : c.getTipoContratto().name());
+    //     d.setDataContratto(c.getDataContratto());
+    //     d.setDataScadenzaContratto(c.getDataScadenzaContratto());
+    //     d.setPathContrattoPDF(c.getPathContrattoPDF());
+    //     return d;
+    // }
 
     private VenditaDto toVenditaDto(Vendita v) {
         if (v == null) return null;
@@ -308,34 +425,7 @@ public class AmministratoreDashboard {
         return ResponseEntity.ok(dtos);
     }
 
-    // --- Endpoints per Richieste ---
-    @GetMapping("/richieste")
-    public ResponseEntity<List<RichiestaDto>> getRichieste(HttpSession session,
-                                @RequestParam(value = "stato", required = false) String stato,
-                                @RequestParam(value = "utente", required = false) Integer idUtente,
-                                @RequestParam(value = "immobile", required = false) Integer idImmobile) {
-        // TODO: Riattivare dopo login
-        // if (!isAmministratore(session)) {
-        //     return ResponseEntity.status(403).build();
-        // }
-
-        List<Richiesta> richieste = richiestaService.getAllRichieste();
-        System.out.println("Richieste trovate: " + richieste.size());
-
-        // Filtri opzionali
-        if (stato != null && !stato.isEmpty()) {
-            richieste.removeIf(r -> r.getStato() == null || !r.getStato().name().equalsIgnoreCase(stato));
-        }
-        if (idUtente != null) {
-            richieste.removeIf(r -> r.getUtente() == null || !r.getUtente().getIdUtente().equals(idUtente));
-        }
-        if (idImmobile != null) {
-            richieste.removeIf(r -> r.getImmobile() == null || !r.getImmobile().getIdImmobile().equals(idImmobile));
-        }
-
-        List<RichiestaDto> dtos = richieste.stream().map(this::toRichiestaDto).toList();
-        return ResponseEntity.ok(dtos);
-    }
+    
 
     // --- Endpoints per Immagini ---
     @GetMapping("/immagini")
