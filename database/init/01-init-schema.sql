@@ -151,13 +151,13 @@ CREATE TABLE IF NOT EXISTS ValutazioneImmobile (
 -- ========================
 CREATE TABLE IF NOT EXISTS Contratti (
     idContratto INT AUTO_INCREMENT PRIMARY KEY,
-    idAgente INT AUTO_INCREMENT,
+    idAgente INT NOT NULL,
     idImmobile INT NOT NULL,
-    tipoContratto ENUM ('Esclusivo', 'altro'),
+    tipoContratto ENUM ('AFFITTO', 'VENDITA', 'COMODATO', 'ESCLUSIVO', 'altro'),
     dataContratto DATE,
     dataScadenzaContratto DATE,
     pathContrattoPDF VARCHAR(255),
-    FOREIGN KEY (idImmobile) REFERENCES Immobile(idImmobile) ON DELETE CASCADE
+    FOREIGN KEY (idImmobile) REFERENCES Immobile(idImmobile) ON DELETE CASCADE,
     FOREIGN KEY (idAgente) REFERENCES Utente(idUtente) ON DELETE CASCADE
 
 );
@@ -286,7 +286,12 @@ INSERT IGNORE INTO Utente (idUtente, nome, cognome, telefono, email, passwordHas
 VALUES (1, 'Mario', 'Rossi', '3331234567', 'mario.rossi@example.com', NULL, 'proprietario', TRUE, TRUE),
        (2, 'Luca', 'Bianchi', '3332345678', 'luca.bianchi@example.com', '$2a$10$z8nV/pxKZg8HVv2u5U7Juu1d8yqV1T1ZsGzV8cQpGQh7yK6d5n6e2', 'agente', TRUE, TRUE),
        (3, 'Anna', 'Verdi', '3333456789', 'anna.verdi@example.com', '$2a$10$k3MH0a9qW7jZl4Ey3P1bXe9u6V6pQ2F9xYg6cR8sH4jJ1uE0q9s8a', 'amministratore', TRUE, TRUE),
-       (4, 'Sofia','Costa','3337778888','sofia.costa@example.com','$2b$12$4D0qFUtKe/AAq3YFojSSMOvbp8CB5P3VvN8YADAgTHNeSv/bCkGTy','agente',TRUE,TRUE);
+       (4, 'Sofia','Costa','3337778888','sofia.costa@example.com','$2b$12$4D0qFUtKe/AAq3YFojSSMOvbp8CB5P3VvN8YADAgTHNeSv/bCkGTy','agente',TRUE,TRUE),
+       (5, 'Marco', 'Ferrari', '3334567890', 'marco.ferrari@example.com', '$2b$10$AbcDefGhIjKlMnOpQrStUvWxYz1234567890abcde', 'proprietario', TRUE, TRUE),
+        (6, 'Elena', 'Gallo', '3335678901', 'elena.gallo@example.com', '$2b$10$FghIjKlMnOpQrStUvWxYz1234567890abcdeABC', 'agente', TRUE, TRUE),
+        (7, 'Paolo', 'Russo', '3336789012', 'paolo.russo@example.com', '$2b$10$XyZ1234567890AbcDefGhIjKlMnOpQrStUvWxYz', 'amministratore', TRUE, TRUE),
+        (8, 'Giulia', 'Romano', '3337890123', 'giulia.romano@example.com', NULL, 'proprietario', TRUE, TRUE);
+
 -- ========================
 -- SAMPLE: Immobili di esempio
 -- ========================
@@ -295,7 +300,13 @@ VALUES
     (1, 1, 'Appartamento', 'Via Garibaldi 10', 'Torino', 'TO', '10121', 45.070300, 7.686900, 'Disponibile'),
     (2, 1, 'Appartamento', 'Corso Francia 200', 'Torino', 'TO', '10135', 45.057500, 7.639700, 'Disponibile'),
     (3, 2, 'Villa', 'Via delle Rose 5', 'Novara', 'NO', '28100', 45.448000, 8.621000, 'Disponibile'),
-    (4, NULL, 'Monolocale', 'Piazza Vittorio 1', 'Torino', 'TO', '10123', 45.062000, 7.680600, 'Disponibile');
+    (4, NULL, 'Monolocale', 'Piazza Vittorio 1', 'Torino', 'TO', '10123', 45.062000, 7.680600, 'Disponibile'),
+    (5, 5, 'Appartamento', 'Via Milano 12', 'Milano', 'MI', '20121', 45.4642, 9.1900, 'Disponibile'),
+    (6, 5, 'Attico', 'Piazza Duomo 3', 'Milano', 'MI', '20122', 45.4654, 9.1866, 'Disponibile'),
+    (7, 6, 'Villa', 'Via Roma 8', 'Torino', 'TO', '10122', 45.0650, 7.6820, 'Disponibile'),
+    (8, 7, 'Monolocale', 'Corso Vittorio Emanuele 15', 'Novara', 'NO', '28100', 45.4475, 8.6230, 'Disponibile'),
+    (9, 8, 'Appartamento', 'Via Nazionale 20', 'Roma', 'RM', '00184', 41.9028, 12.4964, 'Disponibile'),
+    (10, 8, 'Attico', 'Piazza Navona 5', 'Roma', 'RM', '00186', 41.8989, 12.4731, 'Disponibile');
 
 -- ========================
 -- SAMPLE: Dettagli immobili
@@ -339,9 +350,9 @@ VALUES
 -- ========================
 -- SAMPLE: Contratti
 -- ========================
-INSERT IGNORE INTO Contratti (idContratto, idImmobile, tipoContratto, dataContratto, dataScadenzaContratto, pathContrattoPDF)
+INSERT IGNORE INTO Contratti (idContratto, idImmobile, idAgente, tipoContratto, dataContratto, dataScadenzaContratto, pathContrattoPDF)
 VALUES
-    (1, 3, 'Esclusivo', '2025-06-01', '2026-06-01', '/contracts/contratto-3.pdf');
+    (1, 3, 1, 'Esclusivo', '2025-06-01', '2026-06-01', '/contracts/contratto-3.pdf');
 
 -- ========================
 -- SAMPLE: Vendite

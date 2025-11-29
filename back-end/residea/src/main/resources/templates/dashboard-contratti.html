@@ -1,148 +1,36 @@
 <!DOCTYPE html>
-<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<html lang="it">
 <head>
     <meta charset="UTF-8">
     <title>Gestione Contratti</title>
-
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-
-    <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
     <style>
-        body {
-            font-family: "Inter", sans-serif;
-            background: #f4f6f9;
-            margin: 0;
-            padding: 0;
-            color: #333;
-        }
-
-        /* Header */
-        header {
-            background: #2563eb;
-            padding: 18px 32px;
-            color: white;
-            font-size: 24px;
-            font-weight: 600;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-        }
-
-        .container {
-            padding: 24px 40px;
-        }
-
-        /* Card */
-        .card {
-            background: white;
-            border-radius: 12px;
-            padding: 24px;
-            margin-bottom: 28px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
-        }
-
-        .card h3 {
-            margin-top: 0;
-            font-size: 20px;
-            color: #1f2937;
-        }
-
-        /* Inputs */
-        input, select {
-            padding: 10px 14px;
-            border-radius: 8px;
-            border: 1px solid #d1d5db;
-            width: 100%;
-            transition: border 0.2s;
-            font-size: 15px;
-        }
-
-        input:focus, select:focus {
-            border-color: #2563eb;
-            outline: none;
-        }
-
-        .form-row {
-            display: flex;
-            gap: 16px;
-            flex-wrap: wrap;
-            margin-bottom: 16px;
-        }
-
-        .form-row > * {
-            flex: 1 1 240px;
-        }
-
-        /* Buttons */
-        button {
-            background: #2563eb;
-            color: white;
-            padding: 10px 18px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 15px;
-            transition: 0.2s;
-        }
-
-        button:hover {
-            background: #1e4fc3;
-        }
-
-        button.secondary {
-            background: #6b7280;
-        }
-
-        button.secondary:hover {
-            background: #4b5563;
-        }
-
-        /* Table */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            overflow: hidden;
-            border-radius: 12px;
-        }
-
-        thead {
-            background: #2563eb;
-            color: white;
-        }
-
-        th, td {
-            padding: 12px 14px;
-            text-align: left;
-            font-size: 15px;
-        }
-
-        tr:nth-child(even) {
-            background: #f9fafb;
-        }
-
-        tr:hover {
-            background: #e8f0fe;
-            cursor: pointer;
-        }
-
-        tr._highlight {
-            background-color: #d1fae5 !important;
-        }
-
-        /* Search */
-        .search-box {
-            display: flex;
-            gap: 16px;
-            margin-top: 16px;
-        }
-
+        body { font-family: "Inter", sans-serif; background: #f4f6f9; margin:0; padding:0; color:#333; }
+        header { background: #2563eb; padding:18px 32px; color:white; font-size:24px; font-weight:600; box-shadow:0 2px 8px rgba(0,0,0,0.15);}
+        .container { padding:24px 40px; }
+        .card { background:white; border-radius:12px; padding:24px; margin-bottom:28px; box-shadow:0 4px 15px rgba(0,0,0,0.06);}
+        .card h3 { margin-top:0; font-size:20px; color:#1f2937;}
+        input, select { padding:10px 14px; border-radius:8px; border:1px solid #d1d5db; width:100%; font-size:15px; transition:border 0.2s;}
+        input:focus, select:focus { border-color:#2563eb; outline:none;}
+        .form-row { display:flex; gap:16px; flex-wrap:wrap; margin-bottom:16px;}
+        .form-row > * { flex:1 1 240px; }
+        button { background:#2563eb; color:white; padding:10px 18px; border:none; border-radius:8px; cursor:pointer; font-size:15px; transition:0.2s;}
+        button:hover { background:#1e4fc3;}
+        button.secondary { background:#6b7280;}
+        button.secondary:hover { background:#4b5563;}
+        table { width:100%; border-collapse:collapse; border-radius:12px; overflow:hidden; }
+        thead { background:#2563eb; color:white;}
+        th, td { padding:12px 14px; text-align:left; font-size:15px; }
+        tr:nth-child(even) { background:#f9fafb;}
+        tr:hover { background:#e8f0fe; cursor:pointer;}
+        tr._highlight { background-color:#d1fae5 !important;}
+        .search-box { display:flex; gap:16px; margin-top:16px;}
     </style>
 </head>
 <body>
 
 <header>Gestione Contratti</header>
-
 <div class="container">
 
     <!-- FORM CONTRATTI -->
@@ -160,8 +48,8 @@
         </div>
 
         <div class="form-row">
-            <input id="idImmobile" placeholder="ID Immobile">
-            <input id="idAgente" placeholder="ID Agente">
+            <select id="idImmobileSelect"></select>
+            <select id="idAgenteSelect"></select>
         </div>
 
         <div class="form-row">
@@ -170,7 +58,8 @@
         </div>
 
         <div class="form-row">
-            <input id="pathContrattoPDF" placeholder="Path PDF">
+            <input id="pathContrattoPDF" placeholder="Path PDF" readonly>
+            <input type="file" id="filePdf">
         </div>
 
         <button onclick="creaContratto()"><i class="fa fa-plus"></i> Crea</button>
@@ -178,11 +67,9 @@
         <button class="secondary" onclick="resetForm()"><i class="fa fa-eraser"></i> Pulisci</button>
     </div>
 
-
     <!-- TABELLA CONTRATTI -->
     <div class="card">
         <h3>📋 Elenco Contratti</h3>
-
         <table id="tabContratti">
             <thead>
                 <tr>
@@ -199,11 +86,9 @@
         </table>
     </div>
 
-
     <!-- RICERCA -->
     <div class="card">
         <h3>🔍 Cerca Contratto</h3>
-
         <div class="search-box">
             <input id="contrattoSearchId" placeholder="Cerca per ID contratto">
             <button onclick="cercaContrattoPerId()"><i class="fa fa-search"></i> Cerca</button>
@@ -213,174 +98,159 @@
 
 </div>
 
-
-<!-- SCRIPT -->
 <script>
-
 const API = "/api/contratti";
+const API_IMMOBILE = "/api/immobili";
+const API_UTENTE = "/api/utenti";
+const UPLOAD_API = "/api/upload/pdf";
 
-// ---- CRUD ----
-async function creaContratto(){
+// ---- CARICA DROPDOWN ----
+async function caricaDropdown() {
+    const resIm = await fetch(API_IMMOBILE);
+    const immobili = await resIm.json();
+    const selIm = document.getElementById("idImmobileSelect");
+    selIm.innerHTML = '<option value="">Seleziona Immobile</option>';
+    immobili.forEach(i => selIm.innerHTML += `<option value="${i.idImmobile}">${i.idImmobile} - ${i.tipologia} - ${i.indirizzo}</option>`);
+
+    const resAg = await fetch(API_UTENTE);
+    const agenti = await resAg.json();
+    const selAg = document.getElementById("idAgenteSelect");
+    selAg.innerHTML = '<option value="">Seleziona Agente</option>';
+    agenti.forEach(a => selAg.innerHTML += `<option value="${a.idUtente}">${a.idUtente} - ${a.nome} ${a.cognome}</option>`);
+}
+
+// ---- UPLOAD PDF ----
+async function uploadPdf() {
+    const fileInput = document.getElementById("filePdf");
+    if (!fileInput.files.length) return null;
+    const formData = new FormData();
+    formData.append("file", fileInput.files[0]);
+    try {
+        const res = await fetch(UPLOAD_API, { method: "POST", body: formData });
+        if (!res.ok) { alert("Upload PDF fallito"); return null; }
+        const dbPath = await res.text();
+        document.getElementById("pathContrattoPDF").value = dbPath;
+        return dbPath;
+    } catch(err) { console.error(err); alert("Errore rete upload PDF"); return null; }
+}
+
+// ---- CREA CONTRATTO ----
+async function creaContratto() {
+    const pdfPath = await uploadPdf();
+    if (document.getElementById("filePdf").files.length && !pdfPath) return;
     const payload = buildPayload();
     delete payload.idContratto;
-
     try {
-        const res = await fetch(API, {
-            method: "POST",
-            headers: {"Content-Type":"application/json"},
-            body: JSON.stringify(payload)
-        });
-
-        if (!res.ok) {
-            const text = await res.text();
-            console.error("Errore creazione:", res.status, text, "Payload:", payload);
-            alert(`Errore creazione (vedi console)`);
-            return;
-        }
-
-        const data = await res.json();
-        console.log("Contratto creato:", data);
+        const res = await fetch(API, { method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify(payload) });
+        if (!res.ok) { alert("Errore creazione contratto"); return; }
         alert("Contratto creato!");
         mostraTuttiContratti();
         resetForm();
-    } catch(err) {
-        console.error("Errore rete:", err, "Payload:", payload);
-        alert("Errore rete (vedi console)");
-    }
+    } catch(err) { console.error(err); alert("Errore rete creazione"); }
 }
 
-async function aggiornaContratto(){
+// ---- AGGIORNA CONTRATTO ----
+async function aggiornaContratto() {
+    const pdfPath = await uploadPdf();
+    if (document.getElementById("filePdf").files.length && !pdfPath) return;
     const payload = buildPayload();
     if (!payload.idContratto) { alert("Inserisci ID Contratto"); return; }
-
     try {
-        const res = await fetch(`${API}/${payload.idContratto}`, {
-            method: "PUT",
-            headers: {"Content-Type":"application/json"},
-            body: JSON.stringify(payload)
-        });
-
-        if (!res.ok) {
-            const text = await res.text();
-            console.error("Errore aggiornamento:", res.status, text, "Payload:", payload);
-            alert("Errore aggiornamento (vedi console)");
-            return;
-        }
-
-        const data = await res.json();
-        console.log("Contratto aggiornato:", data);
+        const res = await fetch(`${API}/${payload.idContratto}`, { method: "PUT", headers: {"Content-Type":"application/json"}, body: JSON.stringify(payload) });
+        if (!res.ok) { alert("Errore aggiornamento contratto"); return; }
         alert("Contratto aggiornato!");
         mostraTuttiContratti();
         resetForm();
-    } catch(err) {
-        console.error("Errore rete:", err, "Payload:", payload);
-        alert("Errore rete (vedi console)");
-    }
+    } catch(err) { console.error(err); alert("Errore rete aggiornamento"); }
 }
 
-// Build payload
-function buildPayload(){
-    const p={};
-    const id=document.getElementById("idContratto").value.trim();
+// ---- BUILD PAYLOAD ----
+function buildPayload() {
+    const p = {};
+    const id = document.getElementById("idContratto").value.trim();
     if(id) p.idContratto = Number(id);
-
     p.tipoContratto = document.getElementById("tipoContratto").value;
-
-    const immobileVal = document.getElementById("idImmobile").value;
+    const immobileVal = document.getElementById("idImmobileSelect").value;
     p.idImmobile = immobileVal ? { idImmobile: Number(immobileVal) } : null;
-
-    const agenteVal = document.getElementById("idAgente").value;
+    const agenteVal = document.getElementById("idAgenteSelect").value;
     p.agente = agenteVal ? { idUtente: Number(agenteVal) } : null;
-
-    const dataContrattoVal = document.getElementById("dataContratto").value;
-    p.dataContratto = dataContrattoVal || null;
-
-    const dataScadenzaVal = document.getElementById("dataScadenzaContratto").value;
-    p.dataScadenzaContratto = dataScadenzaVal || null;
-
-    const pdfVal = document.getElementById("pathContrattoPDF").value.trim();
-    p.pathContrattoPDF = pdfVal || null;
-
-    console.log("Payload costruito:", p);
+    p.dataContratto = document.getElementById("dataContratto").value || null;
+    p.dataScadenzaContratto = document.getElementById("dataScadenzaContratto").value || null;
+    p.pathContrattoPDF = document.getElementById("pathContrattoPDF").value || null;
     return p;
 }
 
-// --- GET CONTRATTI ---
-async function getContratti(){
+// ---- GET CONTRATTI ----
+async function getContratti() {
     try {
         const res = await fetch(API);
-        if (!res.ok) {
-            const text = await res.text();
-            console.error("Errore GET contratti:", res.status, text);
-            return [];
-        }
-        const data = await res.json();
-        console.log("Lista contratti ricevuta:", data);
-        return data;
-    } catch(err) {
-        console.error("Errore rete GET contratti:", err);
-        return [];
-    }
+        if (!res.ok) return [];
+        return await res.json();
+    } catch(err) { console.error(err); return []; }
 }
 
-async function mostraTuttiContratti(){
-    const contratti = await getContratti();
-    renderTable(contratti);
+// ---- MOSTRA TABELLA ----
+async function mostraTuttiContratti() {
+    const lista = await getContratti();
+    renderTable(lista);
 }
+function renderTable(lista) {
+    const tbody = document.querySelector("#tabContratti tbody");
+    tbody.innerHTML = "";
 
-function renderTable(lista){
-    const tbody=document.querySelector("#tabContratti tbody");
-    tbody.innerHTML="";
+    lista.forEach(c => {
+        const immobileText = c.idImmobile ? `${c.idImmobile.idImmobile} (${c.idImmobile.tipologia} - ${c.idImmobile.indirizzo})` : "-";
+        const agenteText = c.agente ? `${c.agente.idUtente} (${c.agente.nome} ${c.agente.cognome})` : "-";
 
-    lista.forEach(c=>{
-        const tr=document.createElement("tr");
+        const tr = document.createElement("tr");
         tr.innerHTML = `
             <td>${c.idContratto}</td>
-            <td>${c.tipoContratto}</td>
-            <td>${c.idImmobile?.idImmobile ?? "-"}</td>
-            <td>${c.agente ? c.agente.nome + " " + c.agente.cognome : "-"}</td>
+            <td>${c.tipoContratto ?? "-"}</td>
+            <td>${immobileText}</td>
+            <td>${agenteText}</td>
             <td>${c.dataContratto ?? "-"}</td>
             <td>${c.dataScadenzaContratto ?? "-"}</td>
-            <td>${c.pathContrattoPDF ? `<a href="${c.pathContrattoPDF}" target="_blank">Apri</a>` : "-"}</td>
+            <td>${c.pathContrattoPDF ? `<a href="${c.pathContrattoPDF}" target="_blank">Apri PDF</a>` : "-"}</td>
         `;
-        tr.addEventListener("click",()=>loadIntoForm(c));
+        tr.addEventListener("click", () => loadIntoForm(c));
         tbody.appendChild(tr);
     });
 }
 
-function loadIntoForm(c){
-    document.getElementById("idContratto").value = c.idContratto;
-    document.getElementById("tipoContratto").value = c.tipoContratto;
-    document.getElementById("idImmobile").value = c.idImmobile?.idImmobile ?? "";
-    document.getElementById("idAgente").value = c.agente?.idUtente ?? "";
+
+// ---- LOAD FORM ----
+function loadIntoForm(c) {
+    document.getElementById("idContratto").value = c.idContratto ?? "";
+    document.getElementById("tipoContratto").value = c.tipoContratto ?? "AFFITTO";
+    document.getElementById("idImmobileSelect").value = c.idImmobile?.idImmobile ?? "";
+    document.getElementById("idAgenteSelect").value = c.agente?.idUtente ?? "";
     document.getElementById("dataContratto").value = c.dataContratto ?? "";
     document.getElementById("dataScadenzaContratto").value = c.dataScadenzaContratto ?? "";
     document.getElementById("pathContrattoPDF").value = c.pathContrattoPDF ?? "";
+    document.getElementById("filePdf").value = "";
 }
 
-function resetForm(){
-    ["idContratto","idImmobile","idAgente","dataContratto","dataScadenzaContratto","pathContrattoPDF"].forEach(id=>{
-        document.getElementById(id).value="";
-    });
-    document.getElementById("tipoContratto").value="AFFITTO";
+// ---- RESET FORM ----
+function resetForm() {
+    ["idContratto","tipoContratto","idImmobileSelect","idAgenteSelect","dataContratto","dataScadenzaContratto","pathContrattoPDF","filePdf"]
+        .forEach(id => document.getElementById(id).value = "");
+    document.getElementById("tipoContratto").value = "AFFITTO";
 }
 
-async function cercaContrattoPerId(){
-    const id=document.getElementById("contrattoSearchId").value.trim();
-    if (!id){ alert("Inserisci ID"); return; }
-
+// ---- CERCA PER ID ----
+async function cercaContrattoPerId() {
+    const id = document.getElementById("contrattoSearchId").value.trim();
+    if (!id) { alert("Inserisci ID"); return; }
     const lista = await getContratti();
     const trovato = lista.find(c => String(c.idContratto) === id);
-
-    if (!trovato){ alert("Contratto non trovato"); return; }
-
+    if (!trovato) { alert("Contratto non trovato"); return; }
+    renderTable([trovato]);
     loadIntoForm(trovato);
 }
 
+// ---- INIT ----
+caricaDropdown();
 mostraTuttiContratti();
-
-
 </script>
-
 </body>
 </html>
