@@ -1,7 +1,7 @@
 /**
  * Types
  */
-import type { User } from '@/store/auth.store';
+import type { User } from '@/types';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -12,6 +12,7 @@ export async function loginRequest(
   const response = await fetch(`${API_URL}/utenti/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
     body: JSON.stringify({ email, password }),
   });
 

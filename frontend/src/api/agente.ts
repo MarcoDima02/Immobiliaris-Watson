@@ -5,7 +5,11 @@ import type { AgenteRichiestaDTO } from '@/types';
 
 export async function fetchAgentDashboardApi(idAgente: number) {
   const res = await fetch(
-    `${import.meta.env.VITE_API_URL}/agente/dashboard/${idAgente}`
+    `${import.meta.env.VITE_API_URL}/agente/dashboard/${idAgente}`,
+    {
+      method: 'GET',
+      credentials: 'include',
+    }
   );
 
   if (!res.ok) {
