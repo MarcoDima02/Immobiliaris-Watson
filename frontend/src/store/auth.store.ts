@@ -4,38 +4,49 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-export type UserRole = 'PROPRIETARIO' | 'AGENTE' | 'AMMINISTRATORE';
+/**
+ * Types
+ */
+import type { User } from '@/types';
+import type { AgenteRichiestaDTO } from '@/types';
 
-export interface User {
-  idUtente: number;
-  nome: string;
-  cognome: string;
-  telefono?: string;
-  email: string;
-  ruolo: UserRole;
-  verificaEmail: boolean;
-  consensoPrivacy: boolean;
-}
+/**
+ * Fetching functions
+ */
+import { fetchAgentDashboardApi } from '@/api/agente';
 
 interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
+  agentDashboard: AgenteRichiestaDTO[] | null;
   login: (user: User) => void;
   logout: () => void;
   isLoading: boolean;
   setLoading: (value: boolean) => void;
+  loadAgentDashboard: () => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       user: null,
       isAuthenticated: false,
       isLoading: false,
+      agentDashboard: null,
 
       login: (user) => set({ user, isAuthenticated: true }),
       logout: () => set({ user: null, isAuthenticated: false }),
       setLoading: (value) => set({ isLoading: value }),
+
+      loadAgentDashboard: async () => {
+        const user = get().user;
+
+        if (!user || user.ruolo !== 'AGENTE') return;
+
+        const data = await fetchAgentDashboardApi(user.idUtente);
+        console.log('Dashboard fetch result:', data);
+        set({ agentDashboard: data })
+      }
     }),
     {
       name: 'auth-storage',
