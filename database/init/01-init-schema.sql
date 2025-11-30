@@ -281,50 +281,121 @@ VALUES
     ('28100', 6, 1550.00, 'seed_piemonte_agg_v1', '2025-11-01', 0.67), -- Novara
     ('28922', 7, 2300.00, 'seed_piemonte_agg_v1', '2025-11-01', 0.75), -- Verbania
     ('13100', 8, 1250.00, 'seed_piemonte_agg_v1', '2025-11-01', 0.63); -- Vercelli
--- Utente di test
+-- Utenti di test (Proprietari, Agenti, Admin)
 INSERT IGNORE INTO Utente (idUtente, nome, cognome, telefono, email, passwordHash, ruolo, verifica_email, consenso_privacy)
-VALUES (1, 'Mario', 'Rossi', '3331234567', 'mario.rossi@example.com', NULL, 'proprietario', TRUE, TRUE),
-       (2, 'Luca', 'Bianchi', '3332345678', 'luca.bianchi@example.com', '$2a$10$z8nV/pxKZg8HVv2u5U7Juu1d8yqV1T1ZsGzV8cQpGQh7yK6d5n6e2', 'agente', TRUE, TRUE),
-       (3, 'Anna', 'Verdi', '3333456789', 'anna.verdi@example.com', '$2a$10$k3MH0a9qW7jZl4Ey3P1bXe9u6V6pQ2F9xYg6cR8sH4jJ1uE0q9s8a', 'amministratore', TRUE, TRUE),
-       (4, 'Sofia','Costa','3337778888','sofia.costa@example.com','$2b$12$4D0qFUtKe/AAq3YFojSSMOvbp8CB5P3VvN8YADAgTHNeSv/bCkGTy','agente',TRUE,TRUE);
+VALUES 
+    -- Proprietari
+    (1, 'Mario', 'Rossi', '3331234567', 'mario.rossi@example.com', NULL, 'proprietario', TRUE, TRUE),
+    (2, 'Luca', 'Bianchi', '3332345678', 'luca.bianchi@example.com', '$2a$10$z8nV/pxKZg8HVv2u5U7Juu1d8yqV1T1ZsGzV8cQpGQh7yK6d5n6e2', 'proprietario', TRUE, TRUE),
+    (5, 'Giulia', 'Ferrari', '3334567890', 'giulia.ferrari@example.com', NULL, 'proprietario', TRUE, TRUE),
+    (6, 'Marco', 'Colombo', '3335678901', 'marco.colombo@example.com', NULL, 'proprietario', TRUE, TRUE),
+    (7, 'Elena', 'Conti', '3336789012', 'elena.conti@example.com', NULL, 'proprietario', TRUE, TRUE),
+    (8, 'Paolo', 'Romano', '3337890123', 'paolo.romano@example.com', NULL, 'proprietario', TRUE, TRUE),
+    (9, 'Francesca', 'Galli', '3338901234', 'francesca.galli@example.com', NULL, 'proprietario', TRUE, TRUE),
+    (10, 'Roberto', 'Martini', '3339012345', 'roberto.martini@example.com', NULL, 'proprietario', TRUE, TRUE),
+    (11, 'Chiara', 'Ricci', '3330123456', 'chiara.ricci@example.com', NULL, 'proprietario', TRUE, TRUE),
+    (12, 'Alessandro', 'Moretti', '3331234560', 'alessandro.moretti@example.com', NULL, 'proprietario', TRUE, TRUE),
+    
+    -- Agenti
+    (4, 'Sofia','Costa','3337778888','sofia.costa@example.com','$2b$12$4D0qFUtKe/AAq3YFojSSMOvbp8CB5P3VvN8YADAgTHNeSv/bCkGTy','agente',TRUE,TRUE),
+    (13, 'Davide', 'Esposito', '3332345670', 'davide.esposito@example.com', '$2a$10$k3MH0a9qW7jZl4Ey3P1bXe9u6V6pQ2F9xYg6cR8sH4jJ1uE0q9s8a', 'agente', TRUE, TRUE),
+    (14, 'Valentina', 'Greco', '3333456701', 'valentina.greco@example.com', '$2a$10$k3MH0a9qW7jZl4Ey3P1bXe9u6V6pQ2F9xYg6cR8sH4jJ1uE0q9s8a', 'agente', TRUE, TRUE),
+    
+    -- Amministratore
+    (3, 'Anna', 'Verdi', '3333456789', 'anna.verdi@example.com', '$2a$10$k3MH0a9qW7jZl4Ey3P1bXe9u6V6pQ2F9xYg6cR8sH4jJ1uE0q9s8a', 'amministratore', TRUE, TRUE);
 -- ========================
--- SAMPLE: Immobili di esempio
+-- SAMPLE: Immobili di esempio (20 immobili)
 -- ========================
 INSERT IGNORE INTO Immobile (idImmobile, idProprietario, tipologia, indirizzo, citta, provincia, cap, latitudine, longitudine, stato)
 VALUES
+    -- Torino - Centro e Crocetta
     (1, 1, 'Appartamento', 'Via Garibaldi 10', 'Torino', 'TO', '10121', 45.070300, 7.686900, 'Disponibile'),
     (2, 1, 'Appartamento', 'Corso Francia 200', 'Torino', 'TO', '10135', 45.057500, 7.639700, 'Disponibile'),
     (3, 2, 'Villa', 'Via delle Rose 5', 'Novara', 'NO', '28100', 45.448000, 8.621000, 'Disponibile'),
-    (4, NULL, 'Monolocale', 'Piazza Vittorio 1', 'Torino', 'TO', '10123', 45.062000, 7.680600, 'Disponibile'),
-    (5, 5, 'Appartamento', 'Via Milano 12', 'Milano', 'MI', '20121', 45.4642, 9.1900, 'Disponibile'),
-    (6, 5, 'Attico', 'Piazza Duomo 3', 'Milano', 'MI', '20122', 45.4654, 9.1866, 'Disponibile'),
+    (4, 5, 'Monolocale', 'Piazza Vittorio 1', 'Torino', 'TO', '10123', 45.062000, 7.680600, 'Disponibile'),
+    (5, 5, 'Appartamento', 'Via Nizza 45', 'Torino', 'TO', '10126', 45.055000, 7.673000, 'Disponibile'),
+    (6, 6, 'Appartamento', 'Corso Vittorio Emanuele 80', 'Torino', 'TO', '10128', 45.058000, 7.671000, 'Disponibile'),
     (7, 6, 'Villa', 'Via Roma 8', 'Torino', 'TO', '10122', 45.0650, 7.6820, 'Disponibile'),
-    (8, 7, 'Monolocale', 'Corso Vittorio Emanuele 15', 'Novara', 'NO', '28100', 45.4475, 8.6230, 'Disponibile'),
-    (9, 8, 'Appartamento', 'Via Nazionale 20', 'Roma', 'RM', '00184', 41.9028, 12.4964, 'Disponibile'),
-    (10, 8, 'Attico', 'Piazza Navona 5', 'Roma', 'RM', '00186', 41.8989, 12.4731, 'Disponibile');
+    (8, 7, 'Monolocale', 'Corso Stati Uniti 15', 'Torino', 'TO', '10128', 45.0575, 7.6695, 'Disponibile'),
+    (9, 7, 'Appartamento', 'Via San Secondo 22', 'Torino', 'TO', '10128', 45.0560, 7.6720, 'Disponibile'),
+    (10, 8, 'Appartamento', 'Via Sacchi 30', 'Torino', 'TO', '10128', 45.0630, 7.6750, 'Disponibile'),
+    
+    -- Torino - Altre zone
+    (11, 9, 'Casa indipendente', 'Via Po 125', 'Torino', 'TO', '10124', 45.0665, 7.6945, 'Disponibile'),
+    (12, 9, 'Appartamento', 'Corso Giulio Cesare 88', 'Torino', 'TO', '10152', 45.0885, 7.6800, 'Disponibile'),
+    (13, 10, 'Appartamento', 'Via Cibrario 50', 'Torino', 'TO', '10144', 45.0825, 7.6540, 'Disponibile'),
+    (14, 10, 'Villa', 'Strada del Cartman 12', 'Torino', 'TO', '10131', 45.0450, 7.7100, 'Disponibile'),
+    (15, 11, 'Monolocale', 'Corso Regina Margherita 200', 'Torino', 'TO', '10152', 45.0890, 7.6790, 'Disponibile'),
+    
+    -- Novara e altre città
+    (16, 11, 'Appartamento', 'Corso Cavour 18', 'Novara', 'NO', '28100', 45.4460, 8.6210, 'Disponibile'),
+    (17, 12, 'Casa indipendente', 'Via Biglieri 5', 'Novara', 'NO', '28100', 45.4490, 8.6240, 'Disponibile'),
+    (18, 12, 'Appartamento', 'Via San Francesco 30', 'Asti', 'AT', '14100', 44.9010, 8.2065, 'Disponibile'),
+    (19, 2, 'Villa', 'Corso Alba 22', 'Cuneo', 'CN', '12100', 44.3840, 7.5420, 'Disponibile'),
+    (20, 5, 'Appartamento', 'Via Dante 14', 'Alessandria', 'AL', '15121', 44.9130, 8.6150, 'Disponibile');
 
 -- ========================
--- SAMPLE: Dettagli immobili
+-- SAMPLE: Dettagli immobili (20 immobili)
 -- ========================
 INSERT IGNORE INTO DettagliImmobile (idImmobile, nStanze, nBagni, nPiano, nPianiImmobile, balconeTerrazzo, giardino, garage, ascensore, cantina, tipoRiscaldamento, annoCostruzione, condizioneImmobile, classeEnergetica, esposizione, prezzo)
 VALUES
     (1, 3, 1, 2, 5, TRUE, FALSE, FALSE, TRUE, FALSE, 'Autonomo', 1998, 'Ristrutturato', 'B', 'Sud-Est', 250000.00),
     (2, 2, 1, 4, 6, TRUE, FALSE, TRUE, TRUE, TRUE, 'Autonomo', 2005, 'Parzialmente ristrutturato', 'C', 'Nord', 180000.00),
-    (3, 5, 3, NULL, NULL, TRUE, TRUE, TRUE, FALSE, TRUE, 'Pavimento', 1990, 'Nuovo', 'A', 'Ovest', 890000.00),
-    (4, 1, 1, 1, 5, FALSE, FALSE, FALSE, FALSE, FALSE, 'No', 2010, 'Non ristrutturato', 'G', 'Est', 95000.00);
+    (3, 5, 3, 0, 2, TRUE, TRUE, TRUE, FALSE, TRUE, 'Pavimento', 1995, 'Ristrutturato', 'A', 'Sud', 890000.00),
+    (4, 1, 1, 3, 5, FALSE, FALSE, FALSE, TRUE, FALSE, 'Condominiale', 2010, 'Nuovo', 'A', 'Est', 95000.00),
+    (5, 3, 2, 1, 4, TRUE, FALSE, FALSE, TRUE, TRUE, 'Autonomo', 2000, 'Parzialmente ristrutturato', 'C', 'Ovest', 220000.00),
+    (6, 4, 2, 3, 6, TRUE, FALSE, TRUE, TRUE, FALSE, 'Autonomo', 1985, 'Ristrutturato', 'B', 'Sud-Est', 320000.00),
+    (7, 6, 4, 0, 3, TRUE, TRUE, TRUE, FALSE, TRUE, 'Pompe di calore', 2015, 'Nuovo', 'A+', 'Sud', 750000.00),
+    (8, 1, 1, 2, 5, TRUE, FALSE, FALSE, TRUE, FALSE, 'Condominiale', 2018, 'Nuovo', 'A', 'Nord', 125000.00),
+    (9, 3, 2, 5, 7, TRUE, FALSE, FALSE, TRUE, TRUE, 'Autonomo', 1992, 'Parzialmente ristrutturato', 'C', 'Est', 265000.00),
+    (10, 4, 2, 2, 5, TRUE, FALSE, TRUE, TRUE, FALSE, 'Autonomo', 1997, 'Ristrutturato', 'B', 'Ovest', 310000.00),
+    (11, 5, 3, 0, 2, FALSE, TRUE, TRUE, FALSE, FALSE, 'Autonomo', 1970, 'Non ristrutturato', 'F', 'Sud', 380000.00),
+    (12, 2, 1, 1, 4, TRUE, FALSE, FALSE, FALSE, FALSE, 'Condominiale', 2012, 'Nuovo', 'B', 'Nord-Est', 165000.00),
+    (13, 3, 1, 6, 8, TRUE, FALSE, FALSE, TRUE, TRUE, 'Autonomo', 1988, 'Parzialmente ristrutturato', 'D', 'Sud', 175000.00),
+    (14, 7, 4, 0, 2, TRUE, TRUE, TRUE, FALSE, TRUE, 'Pavimento', 2008, 'Ristrutturato', 'A', 'Sud-Ovest', 920000.00),
+    (15, 1, 1, 4, 6, FALSE, FALSE, FALSE, TRUE, FALSE, 'Condominiale', 2016, 'Nuovo', 'A', 'Est', 115000.00),
+    (16, 3, 2, 2, 5, TRUE, FALSE, FALSE, TRUE, TRUE, 'Autonomo', 2001, 'Parzialmente ristrutturato', 'C', 'Ovest', 185000.00),
+    (17, 4, 3, 0, 2, FALSE, TRUE, TRUE, FALSE, FALSE, 'Autonomo', 1975, 'Non ristrutturato', 'E', 'Sud', 290000.00),
+    (18, 2, 1, 3, 5, TRUE, FALSE, FALSE, TRUE, FALSE, 'Condominiale', 2010, 'Nuovo', 'B', 'Nord', 140000.00),
+    (19, 6, 3, 0, 2, TRUE, TRUE, TRUE, FALSE, TRUE, 'Pompe di calore', 2012, 'Ristrutturato', 'A', 'Sud-Est', 680000.00),
+    (20, 3, 1, 1, 4, TRUE, FALSE, FALSE, FALSE, FALSE, 'Autonomo', 2005, 'Parzialmente ristrutturato', 'C', 'Ovest', 160000.00);
 
 -- ========================
--- SAMPLE: Superfici
+-- SAMPLE: Superfici (20 immobili)
 -- ========================
 INSERT IGNORE INTO Superfici (idImmobile, superficieMq, superficieBalconeTerrazzo, superficieGiardino, superficieGarage, superficieCantina)
 VALUES
     (1, 85, 5, 0, 0, 0),
     (2, 60, 8, 0, 0, 12),
     (3, 220, 30, 400, 40, 20),
-    (4, 28, 0, 0, 0, 0);
-
+    (4, 28, 0, 0, 0, 0),
+    (5, 95, 10, 0, 0, 8),
+    (6, 120, 12, 0, 18, 0),
+    (7, 280, 25, 600, 45, 30),
+    (8, 35, 6, 0, 0, 0),
+    (9, 105, 8, 0, 0, 10),
+    (10, 115, 15, 0, 20, 0),
+    (11, 180, 0, 300, 35, 0),
+    (12, 70, 7, 0, 0, 0),
+    (13, 90, 5, 0, 0, 12),
+    (14, 350, 40, 800, 50, 25),
+    (15, 32, 0, 0, 0, 0),
+    (16, 100, 10, 0, 0, 15),
 -- ========================
--- SAMPLE: Immagini
+-- SAMPLE: Valutazioni (per immobili con richieste)
+-- ========================
+INSERT IGNORE INTO ValutazioneImmobile (idValutazione, idImmobile, valoreBase, fattoreAggiustamento, valoreMedio, valoreMin, valoreMax, confidence)
+VALUES
+    (1, 1, 127500, 1.96, 250000, 225000, 275000, 0.85),
+    (2, 2, 108000, 1.67, 180000, 160000, 200000, 0.75),
+    (3, 3, 450000, 1.98, 890000, 820000, 960000, 0.92),
+    (4, 5, 115000, 1.91, 220000, 200000, 240000, 0.88),
+    (5, 6, 160000, 2.00, 320000, 290000, 350000, 0.90),
+    (6, 8, 65000, 1.92, 125000, 115000, 135000, 0.82),
+    (7, 9, 130000, 2.04, 265000, 240000, 290000, 0.87),
+    (8, 11, 190000, 2.00, 380000, 350000, 410000, 0.78),
+    (9, 13, 87500, 2.00, 175000, 160000, 190000, 0.80),
+    (10, 16, 92500, 2.00, 185000, 170000, 200000, 0.85);
 -- ========================
 INSERT IGNORE INTO Immagine (idImmagine, idImmobile, url, nomeFile, descrizione, copertina, ordinamento, dimensioneKb)
 VALUES
@@ -335,11 +406,49 @@ VALUES
     (5, 4, 'https://example.com/images/immobile4-1.jpg', 'immobile4-1.jpg', 'Monolocale centrale', TRUE, 1, 120);
 
 -- ========================
--- SAMPLE: Valutazioni pre-esistenti
+-- SAMPLE: Richieste di valutazione (vari stati)
 -- ========================
-INSERT IGNORE INTO ValutazioneImmobile (idValutazione, idImmobile, valoreBase, fattoreAggiustamento, valoreMedio, valoreMin, valoreMax, confidence)
+INSERT IGNORE INTO Richiesta (idRichiesta, idUtente, idImmobile, dataRichiesta, dataAppuntamento, stato, noteUtente, motivoAnnullamento)
 VALUES
-    (1, 1, 127500, 1.96, 250000, 225000, 275000, 0.85),
+    -- Richieste IN_ATTESA (non ancora assegnate)
+    (1, 1, 1, '2025-11-15 10:30:00', '2025-12-05 15:00:00', 'In attesa', 'Vorrei una valutazione per vendita', NULL),
+    (2, 5, 4, '2025-11-20 14:00:00', '2025-12-08 10:00:00', 'In attesa', 'Urgente, possibile vendita rapida', NULL),
+    (3, 10, 13, '2025-11-25 09:15:00', '2025-12-10 11:00:00', 'In attesa', 'Prima valutazione, no fretta', NULL),
+    (4, 12, 20, '2025-11-28 16:45:00', '2025-12-12 14:30:00', 'In attesa', 'Interessato a capire valore mercato', NULL),
+    
+    -- Richieste IN_ELABORAZIONE (prese in carico da agenti)
+    (5, 2, 3, '2025-10-10 11:00:00', '2025-10-25 16:00:00', 'In elaborazione', 'Villa da valutare per vendita', NULL),
+    (6, 5, 5, '2025-11-01 10:00:00', '2025-11-18 15:30:00', 'In elaborazione', 'Appartamento zona Nizza', NULL),
+    (7, 6, 6, '2025-11-05 14:30:00', '2025-11-20 10:00:00', 'In elaborazione', 'Crocetta, 4 locali', NULL),
+    (8, 7, 8, '2025-11-10 09:00:00', '2025-11-25 11:00:00', 'In elaborazione', 'Monolocale studenti', NULL),
+    (9, 7, 9, '2025-11-12 15:00:00', '2025-11-27 14:00:00', 'In elaborazione', 'Appartamento Crocetta', NULL),
+    (10, 11, 16, '2025-11-08 10:30:00', '2025-11-22 16:00:00', 'In elaborazione', 'Novara centro', NULL),
+    
+    -- Richieste COMPLETATA (valutazioni concluse)
+    (11, 9, 11, '2025-09-15 10:00:00', '2025-09-30 15:00:00', 'Completata', 'Casa indipendente zona Po', NULL),
+    (12, 10, 14, '2025-09-20 11:00:00', '2025-10-05 10:00:00', 'Completata', 'Villa collina', NULL),
+    
+    -- Richieste ANNULLATA
+    (13, 8, 10, '2025-10-01 14:00:00', '2025-10-15 11:00:00', 'Annullata', 'Appartamento Crocetta', 'Cliente ha ritirato richiesta');
+
+-- ========================
+-- SAMPLE: Contratti (collegati a richieste in elaborazione e completate)
+-- ========================
+INSERT IGNORE INTO Contratti (idContratto, idImmobile, idAgente, tipoContratto, dataContratto, dataScadenzaContratto, pathContrattoPDF)
+VALUES
+    -- Contratti per richieste IN_ELABORAZIONE (agente Sofia Costa - id 4)
+    (1, 3, 4, 'VENDITA', '2025-10-10', '2026-10-10', '/uploads/contratti/contratto_1.pdf'),
+    (2, 5, 4, 'VENDITA', '2025-11-01', '2026-11-01', '/uploads/contratti/contratto_2.pdf'),
+    (3, 6, 4, 'VENDITA', '2025-11-05', '2026-11-05', '/uploads/contratti/contratto_3.pdf'),
+    (4, 8, 4, 'VENDITA', '2025-11-10', '2026-11-10', '/uploads/contratti/contratto_4.pdf'),
+    (5, 9, 4, 'VENDITA', '2025-11-12', '2026-11-12', '/uploads/contratti/contratto_5.pdf'),
+    
+    -- Contratti per richieste IN_ELABORAZIONE (agente Davide Esposito - id 13)
+    (6, 16, 13, 'VENDITA', '2025-11-08', '2026-11-08', '/uploads/contratti/contratto_6.pdf'),
+    
+    -- Contratti per richieste COMPLETATA (agente Sofia Costa - id 4)
+    (7, 11, 4, 'VENDITA', '2025-09-15', '2026-09-15', '/uploads/contratti/contratto_7.pdf'),
+    (8, 14, 4, 'VENDITA', '2025-09-20', '2026-09-20', '/uploads/contratti/contratto_8.pdf');
     (2, 2, 108000, 1.67, 180000, 160000, 200000, 0.75);
 
 -- ========================
@@ -350,20 +459,29 @@ VALUES
     (1, 3, 4, 'Esclusivo', '2025-06-01', '2026-06-01', '/contracts/contratto-3.pdf');
 
 -- ========================
--- SAMPLE: Vendite
+-- SAMPLE: Vendite (per contratti completati)
 -- ========================
 INSERT IGNORE INTO Vendite (idVendita, idContratto, idImmobile, idUtente, commissionePercentuale)
 VALUES
-    (1, 1, 3, 2, 3.50);
+    (1, 7, 11, 9, 3.00),
+    (2, 8, 14, 10, 3.50);
 
 -- ========================
--- SAMPLE: Leads
+-- SAMPLE: Leads (potenziali clienti)
 -- ========================
-INSERT IGNORE INTO Leads (idLead, idUtente, nome, email, telefono, citta, fonte, convertitoInRichiesta, idRichiesta, assegnatoA, note, createdAt)
+INSERT IGNORE INTO Leads (idLead, idUtente, nome_completo, email, telefono, citta, fonte, convertitoInRichiesta, idRichiesta, assegnatoA, note, createdAt)
 VALUES
-    (1, NULL, 'Giulia Neri', 'giulia.neri@example.com', '3451234567', 'Torino', 'Sito', FALSE, NULL, 2, 'Interessata a 2 locali', NOW()),
-    (2, NULL, 'Marco L.', 'marco.l@example.com', '3462345678', 'Novara', 'Landing', TRUE, NULL, 2, 'Chiede sopralluogo', NOW()),
-    (3, 1, 'Paolo R', 'paolo.r@example.com', '3473456789', 'Torino', 'Referral', FALSE, NULL, 2, 'Lead da agente Luca', NOW());
+    (1, NULL, 'Giulia Neri', 'giulia.neri@example.com', '3451234567', 'Torino', 'Sito Web', FALSE, NULL, 4, 'Interessata a bilocale zona Crocetta', '2025-11-20 10:00:00'),
+    (2, NULL, 'Marco Leone', 'marco.leone@example.com', '3462345678', 'Novara', 'Landing Page', FALSE, NULL, 13, 'Cerca trilocale con giardino', '2025-11-22 14:30:00'),
+    (3, NULL, 'Stefania Piras', 'stefania.piras@example.com', '3473456789', 'Torino', 'Referral', FALSE, NULL, 4, 'Referral da cliente Mario Rossi', '2025-11-24 09:15:00'),
+    (4, NULL, 'Andrea Fabbri', 'andrea.fabbri@example.com', '3484567890', 'Alessandria', 'Google Ads', FALSE, NULL, 14, 'Primo contatto, cerca info mercato', '2025-11-26 16:20:00'),
+    (5, 1, 'Mario Rossi', 'mario.rossi@example.com', '3331234567', 'Torino', 'Cliente Esistente', TRUE, 1, 4, 'Cliente convertito a richiesta', '2025-11-10 11:00:00');
     
 -- Log di completamento
 SELECT 'Database inizializzato con successo!' AS Status;
+
+
+-- Password già hashate nel DB:
+
+-- Agente Sofia Costa (id=4): sofia.costa@example.com - password: password123 (hash bcrypt presente)
+-- Admin Anna Verdi (id=3): anna.verdi@example.com - password: admin123 (hash presente)
