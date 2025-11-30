@@ -3,6 +3,8 @@ package com.residea.residea.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.residea.residea.dto.ImmobileListDTO;
 import com.residea.residea.entities.Immobile;
 import com.residea.residea.entities.Utente;
 import com.residea.residea.repos.UtenteRepo;
@@ -88,6 +91,43 @@ public class ImmobileController {
             return immobiliService.getImmobiliByTipologia(t);
         } catch (IllegalArgumentException ex) {
             return java.util.Collections.emptyList();
+        }
+    }
+    
+    // ====================
+    // DASHBOARD AGENTE
+    // ====================
+    
+    /**
+     * GET /api/immobili/dashboard/all
+     * Recupera tutti gli immobili con dettagli completi per la dashboard agente
+     * Include: proprietario, agente assegnato, richiesta, contratto, valutazione, superficie
+     */
+    @GetMapping("/dashboard/all")
+    public ResponseEntity<List<ImmobileListDTO>> getAllImmobiliWithDetails() {
+        try {
+            List<ImmobileListDTO> immobili = immobiliService.getAllImmobiliWithDetails();
+            return ResponseEntity.ok(immobili);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    
+    /**
+     * GET /api/immobili/dashboard/{id}
+     * Recupera i dettagli completi di un immobile specifico
+     */
+    @GetMapping("/dashboard/{id}")
+    public ResponseEntity<ImmobileListDTO> getImmobileDetailsById(@org.springframework.web.bind.annotation.PathVariable("id") Integer id) {
+        try {
+            ImmobileListDTO immobile = immobiliService.getImmobileDetailsById(id);
+            return ResponseEntity.ok(immobile);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 }

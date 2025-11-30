@@ -151,13 +151,13 @@ CREATE TABLE IF NOT EXISTS ValutazioneImmobile (
 -- ========================
 CREATE TABLE IF NOT EXISTS Contratti (
     idContratto INT AUTO_INCREMENT PRIMARY KEY,
-    idAgente INT AUTO_INCREMENT,
+    idAgente INT,
     idImmobile INT NOT NULL,
     tipoContratto ENUM ('AFFITTO', 'VENDITA', 'COMODATO', 'ESCLUSIVO', 'altro'),
     dataContratto DATE,
     dataScadenzaContratto DATE,
     pathContrattoPDF VARCHAR(255),
-    FOREIGN KEY (idImmobile) REFERENCES Immobile(idImmobile) ON DELETE CASCADE
+    FOREIGN KEY (idImmobile) REFERENCES Immobile(idImmobile) ON DELETE CASCADE,
     FOREIGN KEY (idAgente) REFERENCES Utente(idUtente) ON DELETE CASCADE
 
 );
@@ -347,7 +347,7 @@ VALUES
 -- ========================
 INSERT IGNORE INTO Contratti (idContratto, idImmobile, idAgente, tipoContratto, dataContratto, dataScadenzaContratto, pathContrattoPDF)
 VALUES
-    (1, 3, 1, 'Esclusivo', '2025-06-01', '2026-06-01', '/contracts/contratto-3.pdf');
+    (1, 3, 4, 'Esclusivo', '2025-06-01', '2026-06-01', '/contracts/contratto-3.pdf');
 
 -- ========================
 -- SAMPLE: Vendite
