@@ -35,7 +35,7 @@ function AgentRequestContainer({
         num={preseInCarico.length}
         requests={preseInCarico}
       >
-        Prese in carico
+        In elaborazione
       </AgentRequest>
 
       <AgentRequest
