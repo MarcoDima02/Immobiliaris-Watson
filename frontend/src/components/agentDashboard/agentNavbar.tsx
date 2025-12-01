@@ -12,8 +12,13 @@ import { logoWhite } from '@/assets';
 /**
  * Icons
  */
-import { Home, LayoutDashboard, Settings, PanelRight } from 'lucide-react';
-import { FaMoneyBillWave, FaRegQuestionCircle } from 'react-icons/fa';
+import { LayoutDashboard, LogOut, PanelRight } from 'lucide-react';
+import { FaRegQuestionCircle } from 'react-icons/fa';
+
+/**
+ * Store
+ */
+import { useAuthStore } from '@/store/auth.store';
 
 const menu = [
   {
@@ -29,21 +34,9 @@ const menu = [
     match: 'exact',
   },
   {
-    label: 'Immobili',
+    label: 'Logout',
     to: '#',
-    icon: <Home className="w-5 h-5" />,
-    match: 'exact',
-  },
-  {
-    label: 'Acquisizioni',
-    to: '#',
-    icon: <FaMoneyBillWave className="w-5 h-5" />,
-    match: 'exact',
-  },
-  {
-    label: 'Impostazioni',
-    to: '#',
-    icon: <Settings className="w-5 h-5" />,
+    icon: <LogOut className="w-5 h-5" />,
     match: 'exact',
   },
 ];
@@ -54,6 +47,8 @@ function AgentNavbar() {
 
   const [isOpen, setIsOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
+
+  const { logout } = useAuthStore();
 
   useEffect(() => {
     const handleResize = () => {
@@ -159,11 +154,12 @@ function AgentNavbar() {
                 <div
                   className={`
                 ${baseClass} ${activeClass} 
-                w-full flex items-center 
+                w-full flex items-center cursor-pointer
                 ${isOpen ? 'gap-3' : 'justify-center'}
               `}
                   aria-current={isActive ? 'page' : undefined}
                   role="button"
+                  onClick={logout}
                 >
                   {MenuContent}
                 </div>
