@@ -109,7 +109,7 @@ function AgentNavbar() {
           className="p-2 rounded hover:bg-white/10 transition-all"
           aria-label={isOpen ? 'Chiudi sidebar' : 'Apri sidebar'}
         >
-          <PanelRight className="w-5 h-5 text-white" />
+          <PanelRight className="w-5 h-5 text-white cursor-pointer" />
         </button>
       </div>
 
