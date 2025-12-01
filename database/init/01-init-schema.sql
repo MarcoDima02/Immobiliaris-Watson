@@ -1,3 +1,5 @@
+-- password per gli accessi nella sezione login per ogni utente: agente123
+
 -- ============================================
 -- Script di inizializzazione database MySQL
 -- Eseguito automaticamente dal container MySQL
@@ -6,9 +8,25 @@
 -- Il database e l'utente sono già creati dalle variabili ambiente
 -- USE residea_db; -- già selezionato di default
 
--- ========================
--- TABELLA: Utente
--- ========================
+-- Passaggi creazione database e utente autorizzato
+-- CREATE DATABASE residea_db;
+-- Use residea_db;
+-- CREATE USER 'residea_user'@'localhost' IDENTIFIED BY 'ResideaP@ss';
+-- GRANT ALL PRIVILEGES ON residea_db.* TO 'residea_user'@'localhost';
+-- FLUSH PRIVILEGES;
+
+-- ============================================
+-- Comandi reset tabelle in caso sia necessario
+-- SET FOREIGN_KEY_CHECKS = 0;
+-- TRUNCATE TABLE Superfici;
+-- TRUNCATE TABLE DettagliImmobile;
+-- TRUNCATE TABLE ValutazioneImmobile;
+-- TRUNCATE TABLE Immobile;
+-- TRUNCATE TABLE Utente;
+-- SET FOREIGN_KEY_CHECKS = 1;
+-- ============================================
+
+
 CREATE TABLE IF NOT EXISTS Utente (
     idUtente INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(20) NOT NULL,
@@ -286,7 +304,7 @@ INSERT IGNORE INTO Utente (idUtente, nome, cognome, telefono, email, passwordHas
 VALUES 
     -- Proprietari
     (1, 'Mario', 'Rossi', '3331234567', 'mario.rossi@example.com', NULL, 'proprietario', TRUE, TRUE),
-    (2, 'Luca', 'Bianchi', '3332345678', 'luca.bianchi@example.com', '$2a$10$z8nV/pxKZg8HVv2u5U7Juu1d8yqV1T1ZsGzV8cQpGQh7yK6d5n6e2', 'proprietario', TRUE, TRUE),
+    (2, 'Luca', 'Bianchi', '3332345678', 'luca.bianchi@example.com', '$2b$12$4D0qFUtKe/AAq3YFojSSMOvbp8CB5P3VvN8YADAgTHNeSv/bCkGTy', 'proprietario', TRUE, TRUE),
     (5, 'Giulia', 'Ferrari', '3334567890', 'giulia.ferrari@example.com', NULL, 'proprietario', TRUE, TRUE),
     (6, 'Marco', 'Colombo', '3335678901', 'marco.colombo@example.com', NULL, 'proprietario', TRUE, TRUE),
     (7, 'Elena', 'Conti', '3336789012', 'elena.conti@example.com', NULL, 'proprietario', TRUE, TRUE),
@@ -298,11 +316,11 @@ VALUES
     
     -- Agenti
     (4, 'Sofia','Costa','3337778888','sofia.costa@example.com','$2b$12$4D0qFUtKe/AAq3YFojSSMOvbp8CB5P3VvN8YADAgTHNeSv/bCkGTy','agente',TRUE,TRUE),
-    (13, 'Davide', 'Esposito', '3332345670', 'davide.esposito@example.com', '$2a$10$k3MH0a9qW7jZl4Ey3P1bXe9u6V6pQ2F9xYg6cR8sH4jJ1uE0q9s8a', 'agente', TRUE, TRUE),
-    (14, 'Valentina', 'Greco', '3333456701', 'valentina.greco@example.com', '$2a$10$k3MH0a9qW7jZl4Ey3P1bXe9u6V6pQ2F9xYg6cR8sH4jJ1uE0q9s8a', 'agente', TRUE, TRUE),
+    (13, 'Davide', 'Esposito', '3332345670', 'davide.esposito@example.com', '$2b$12$4D0qFUtKe/AAq3YFojSSMOvbp8CB5P3VvN8YADAgTHNeSv/bCkGTy', 'agente', TRUE, TRUE),
+    (14, 'Valentina', 'Greco', '3333456701', 'valentina.greco@example.com', '$2b$12$4D0qFUtKe/AAq3YFojSSMOvbp8CB5P3VvN8YADAgTHNeSv/bCkGTy', 'agente', TRUE, TRUE),
     
     -- Amministratore
-    (3, 'Anna', 'Verdi', '3333456789', 'anna.verdi@example.com', '$2a$10$k3MH0a9qW7jZl4Ey3P1bXe9u6V6pQ2F9xYg6cR8sH4jJ1uE0q9s8a', 'amministratore', TRUE, TRUE);
+    (3, 'Anna', 'Verdi', '3333456789', 'anna.verdi@example.com', '$2b$12$4D0qFUtKe/AAq3YFojSSMOvbp8CB5P3VvN8YADAgTHNeSv/bCkGTy', 'amministratore', TRUE, TRUE);
 -- ========================
 -- SAMPLE: Immobili di esempio (20 immobili)
 -- ========================
@@ -380,7 +398,7 @@ VALUES
     (13, 90, 5, 0, 0, 12),
     (14, 350, 40, 800, 50, 25),
     (15, 32, 0, 0, 0, 0),
-    (16, 100, 10, 0, 0, 15),
+    (16, 100, 10, 0, 0, 15);
 -- ========================
 -- SAMPLE: Valutazioni (per immobili con richieste)
 -- ========================
@@ -449,14 +467,7 @@ VALUES
     -- Contratti per richieste COMPLETATA (agente Sofia Costa - id 4)
     (7, 11, 4, 'VENDITA', '2025-09-15', '2026-09-15', '/uploads/contratti/contratto_7.pdf'),
     (8, 14, 4, 'VENDITA', '2025-09-20', '2026-09-20', '/uploads/contratti/contratto_8.pdf');
-    (2, 2, 108000, 1.67, 180000, 160000, 200000, 0.75);
 
--- ========================
--- SAMPLE: Contratti
--- ========================
-INSERT IGNORE INTO Contratti (idContratto, idImmobile, idAgente, tipoContratto, dataContratto, dataScadenzaContratto, pathContrattoPDF)
-VALUES
-    (1, 3, 4, 'Esclusivo', '2025-06-01', '2026-06-01', '/contracts/contratto-3.pdf');
 
 -- ========================
 -- SAMPLE: Vendite (per contratti completati)
@@ -479,9 +490,3 @@ VALUES
     
 -- Log di completamento
 SELECT 'Database inizializzato con successo!' AS Status;
-
-
--- Password già hashate nel DB:
-
--- Agente Sofia Costa (id=4): sofia.costa@example.com - password: password123 (hash bcrypt presente)
--- Admin Anna Verdi (id=3): anna.verdi@example.com - password: admin123 (hash presente)

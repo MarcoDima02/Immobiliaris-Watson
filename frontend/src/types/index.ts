@@ -21,24 +21,65 @@ export interface User {
 }
 
 export interface AgenteRichiestaDTO {
+  // Contratto
   idContratto?: number;
-  contrattoNumero?: string;
+  tipoContratto?: string;
+  dataContratto?: string;
+  dataScadenzaContratto?: string;
+  pathContrattoPDF?: string;
 
-  immobile?: {
-    idImmobile: number;
-    indirizzo?: string;
-    citta?: string;
-    provincia?: string;
-    tipologia?: string;
-  };
+  // Immobile
+  idImmobile?: number;
+  tipologia?: string;
+  indirizzo?: string;
+  citta?: string;
+  provincia?: string;
+  cap?: string;
+  stato?: string;
 
-  richiesta?: {
-    idRichiesta: number;
-    dataRichiesta?: string;
-    stato?: string;
-  };
+  // Dettagli Immobile
+  nStanze?: number;
+  nBagni?: number;
+  nPiano?: number;
+  nPianiImmobile?: number;
+  balconeTerrazzo?: boolean;
+  giardino?: boolean;
+  garage?: boolean;
+  ascensore?: boolean;
+  cantina?: boolean;
+  tipoRiscaldamento?: string;
+  annoCostruzione?: number;
+  condizioneImmobile?: string;
+  classeEnergetica?: string;
 
-  proprietario?: User;
+  // Superfici
+  superficieMq?: number;
+  superficieBalconeTerrazzo?: number;
+  superficieGiardino?: number;
+  superficieGarage?: number;
+  superficieCantina?: number;
 
-  superfici?: Record<string, number>;
+  // Richiesta
+  idRichiesta?: number;
+  dataRichiesta?: string;
+  dataAppuntamento?: string;
+  statoRichiesta?: string;
+  noteUtente?: string;
+  motivoAnnullamento?: string;
+
+  // Utente (cliente che ha fatto la richiesta)
+  idUtente?: number;
+  nomeUtente?: string;
+  cognomeUtente?: string;
+  telefonoUtente?: string;
+  emailUtente?: string;
+
+  // Valutazione
+  idValutazione?: number;
+  valoreBase?: number;
+  fattoreAggiustamento?: number;
+  valoreMedio?: number;
+  valoreMin?: number;
+  valoreMax?: number;
+  confidence?: number;
 }
