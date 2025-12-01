@@ -83,3 +83,70 @@ export interface AgenteRichiestaDTO {
   valoreMax?: number;
   confidence?: number;
 }
+
+// src/types/admin.ts
+
+export interface UtenteDto {
+  idUtente: number;
+  nome: string;
+  cognome: string;
+  email: string;
+  telefono: string;
+  ruolo: 'PROPRIETARIO' | 'AGENTE' | 'AMMINISTRATORE';
+  verificaEmail: boolean;
+  consensoPrivacy: boolean;
+}
+
+export interface ImmobileDto {
+  idImmobile: number;
+  idProprietario: number | null;
+  tipologia: 'APPARTAMENTO' | 'VILLA' | 'ATTICO' | 'LOFT' | 'BILOCALE' | 'TRILOCALE' | 'QUADRILOCALE' | null;
+  indirizzo: string;
+  citta: string;
+  provincia: string;
+  cap: string;
+  latitudine: number | null;
+  longitudine: number | null;
+  stato: 'DISPONIBILE' | 'IN_TRATTATIVA' | 'VENDUTO' | 'RITIRATO' | null;
+}
+
+export interface ContrattoDto {
+  idContratto: number;
+  idImmobile: number | null;
+  idAgente: number | null;
+  tipoContratto: 'VENDITA' | 'AFFITTO' | 'ACQUISIZIONE' | null;
+  dataContratto: string;
+  dataScadenzaContratto: string | null;
+  pathContrattoPDF: string | null;
+}
+
+export interface RichiestaDto {
+  idRichiesta: number;
+  idUtente: number | null;
+  idImmobile: number | null;
+  dataRichiesta: string;
+  dataAppuntamento: string | null;
+  stato: 'IN_ATTESA' | 'IN_ELABORAZIONE' | 'COMPLETATA' | 'ANNULLATA' | null;
+  noteUtente: string | null;
+  motivoAnnullamento: string | null;
+}
+
+export interface VenditaDto {
+  idVendita: number;
+  idContratto: number | null;
+  idImmobile: number | null;
+  idUtente: number | null;
+  commissionePercentuale: number | null;
+}
+
+export interface ImmagineDto {
+  idImmagine: number;
+  idImmobile: number | null;
+  url: string;
+  nomeFile: string;
+  descrizione: string | null;
+  copertina: boolean;
+  ordinamento: number | null;
+  dimensioneKb: number | null;
+}
+

@@ -44,7 +44,6 @@ function AgentProtected() {
 
 // Lazy import for bundle optimization
 
-// const Evaluation = lazy(() => import('@/pages/Evaluation'));
 const NotFound = lazy(() => import('@/pages/NotFound'));
 
 const router = createBrowserRouter([
