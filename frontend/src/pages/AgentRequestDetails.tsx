@@ -110,7 +110,7 @@ function AgentRequestDetails() {
 
                 {/* COLONNA DI DESTRA */}
                 <div className="w-full lg:w-[40%] h-full mt-4">
-                    <div className="flex flex-wrap justify-start items-center px-4 gap-4 h-full w-full">
+                    <div className="flex flex-wrap justify-start items-center lg:px-4 px-0 gap-4 h-full w-full">
 
                         {/* Bottone modifica stato */}
                         <Button className="w-auto min-w-50">Modifica stato</Button>
@@ -165,7 +165,7 @@ function AgentRequestDetails() {
                             <Button className="h-1/2" variant={"outline"}>Visualizza immagini</Button>
                         </div>
 
-                        <div className="none xl:block w-1/2 h-full px-3 py-1">
+                        <div className="hidden xl:block w-1/2 h-full px-3 py-1">
                             <div className="bg-black/20 w-full h-full rounded-2xl flex justify-center items-center">
                                 <p className="text-4xl font-bold">12+</p>
                             </div>
