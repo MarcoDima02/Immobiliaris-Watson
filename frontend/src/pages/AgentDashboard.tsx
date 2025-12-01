@@ -69,8 +69,8 @@ const AgentDashboard = () => {
 
                 <h4 className="text-md font-semibold mt-4 mb-2 text-gray-700">📐 Dettagli</h4>
                 <div className="space-y-1 text-sm">
-                  <p><strong>Stanze:</strong> {d.nstanze} | <strong>Bagni:</strong> {d.nbagni}</p>
-                  <p><strong>Piano:</strong> {d.npiano} / {d.npianiImmobile}</p>
+                  <p><strong>Stanze:</strong> {d.nStanze} | <strong>Bagni:</strong> {d.nBagni}</p>
+                  <p><strong>Piano:</strong> {d.nPiano} / {d.nPianiImmobile}</p>
                   <p>
                     {d.balconeTerrazzo && '✓ Balcone/Terrazzo '}
                     {d.giardino && '✓ Giardino '}
