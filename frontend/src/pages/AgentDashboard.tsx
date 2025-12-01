@@ -7,8 +7,7 @@ import { useEffect } from 'react';
  * Store
  */
 import { useAuthStore } from '@/store/auth.store';
-import { Button } from '@/components/ui/button';
-import AgentRequestDiv from '@/components/agentDashboard/AgentRequestDiv';
+import AgentRequestContainer from '@/components/agentDashboard/AgentRequestContainer';
 
 const AgentDashboard = () => {
   const dashboard = useAuthStore((s) => s.agentDashboard);
@@ -26,20 +25,15 @@ const AgentDashboard = () => {
 
   if (dashboard === null) return <p>Caricamento dashboard...</p>;
   if (dashboard.length === 0) return <p>Nessun contratto trovato</p>;
-  console.log(dashboard);
+
   return (
     <>
-      <Button>Indietro</Button>
-      <h2 className="text-2xl font-bold mt-5">Richieste prese in carico:</h2>
-
-      <div className="flex gap-4 flex-wrap py-4">
-        {dashboard.map((request) => (
-          <>
-            <AgentRequestDiv key={Number(request.idContratto)} request={request} />
-          </>
-        ))}
-
+      <div>
+        <h2 className="text-2xl font-bold">Ciao Sofia!</h2>
+        <h3 className="font-medium">Ecco le tue richieste:</h3>
+        <AgentRequestContainer requests={dashboard} />
       </div>
+
     </>
   );
 };

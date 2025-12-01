@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router";
 
 function AgentRequestDiv({ request, key }: { request: any; key: number }) {
 
@@ -11,7 +12,7 @@ function AgentRequestDiv({ request, key }: { request: any; key: number }) {
                 </div>
                 <div>
                     <p className="font-bold">Data:</p>
-                    <p className="text-zinc-600">{(request.dataRichiesta).slice(0,10)} alle {(request.dataRichiesta).slice(11,16)}</p>
+                    <p className="text-zinc-600">{(request.dataRichiesta).slice(0, 10).replace(/-/g, "/")} alle {(request.dataRichiesta).slice(11, 16)}</p>
                 </div>
             </div>
 
@@ -22,8 +23,15 @@ function AgentRequestDiv({ request, key }: { request: any; key: number }) {
                 <p>{request.superficieMq} metri quadri</p>
             </div>
 
-            <p className="mt-4 font-bold">Stato: <span className="text-primary">{request.statoRichiesta}</span></p>
-            <Button className="mt-4 w-full">Visualizza i dettagli</Button>
+            <p className="mt-4 font-bold">Stato: <span className="text-primary">{request.statoRichiesta.replace(/_/g, " ")}
+            </span></p>
+            <Link
+                to="/backoffice/agent/request"
+                state={{ request }}
+            >
+                <Button className="mt-4 w-full">Visualizza i dettagli</Button>
+            </Link>
+
 
             {!request.agente && (
                 <Button variant={"outline"} className="mt-2 w-full">Prendi in carico</Button>
