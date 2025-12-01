@@ -1,62 +1,113 @@
+/**
+ * Node modules
+ */
+import { Link, useLocation } from 'react-router';
 
-import { logoWhite } from "@/assets";
-import { Home, LayoutDashboard, Settings } from "lucide-react";
-import { FaMoneyBillWave, FaRegQuestionCircle } from "react-icons/fa";
+/**
+ * Assets
+ */
+import { logoWhite } from '@/assets';
+
+/**
+ * Icons
+ */
+import { Home, LayoutDashboard, Settings } from 'lucide-react';
+import { FaMoneyBillWave, FaRegQuestionCircle } from 'react-icons/fa';
+
+const menu = [
+  {
+    label: 'Dashboard',
+    to: '/backoffice/agent/dashboard',
+    icon: <LayoutDashboard className="w-5 h-5" />,
+    match: 'start',
+  },
+  {
+    label: 'Richieste',
+    to: '/backoffice/agent/myRequests',
+    icon: <FaRegQuestionCircle className="w-5 h-5" />,
+    match: 'exact',
+  },
+  {
+    label: 'Immobili',
+    to: '#',
+    icon: <Home className="w-5 h-5" />,
+    match: 'exact',
+  },
+  {
+    label: 'Acquisizioni',
+    to: '#',
+    icon: <FaMoneyBillWave className="w-5 h-5" />,
+    match: 'exact',
+  },
+  {
+    label: 'Impostazioni',
+    to: '#',
+    icon: <Settings className="w-5 h-5" />,
+    match: 'exact',
+  },
+];
 
 function AgentNavbar() {
-    return (
-        <nav
-            className="fixed left-0 top-0 h-full w-13 md:w-60 bg-primary text-white flex flex-col"
-            role="navigation"
-            aria-label="Barra laterale principale"
-        >
-            <div className="flex items-center gap-3 border-b border-slate-800">
-                <picture className="w-36 m-auto py-3 hidden md:block"><img src={logoWhite} alt="Immobiliaris" /></picture>
-            </div>
+  const location = useLocation();
+  const pathname = location.pathname;
+  return (
+    <nav
+      className="fixed left-0 top-0 h-full w-14 md:w-60 bg-primary flex flex-col shadow-xl"
+      role="navigation"
+      aria-label="Barra laterale principale"
+    >
+      {/* LOGO */}
+      <div className="flex items-center justify-center border-b border-primary/50 py-4">
+        <img
+          src={logoWhite}
+          alt="Immobiliaris"
+          className="hidden md:block w-32"
+        />
+      </div>
 
-            <ul className="flex-col text-black">
-                <li>
-                    <a
-                        href="#"
-                        className="flex items-center bg-secondary gap-3 px-4 py-4 hover:bg-card transition-all focus:bg-card">
-                        <LayoutDashboard className="w-5 h-5" />
-                        <span className="hidden md:block">Dashboard</span>
-                    </a>
-                </li>
-                <li>
-                    <a
-                        href="#"
-                        className="flex items-center bg-secondary gap-3 px-4 py-4 hover:bg-card transition-all focus:bg-card">
-                        <FaRegQuestionCircle className="w-5 h-5" />
-                        <span className="hidden md:block">Richieste in attesa</span>
-                    </a>
-                </li>
-                <li>
-                    <a
-                        href="#"
-                        className="flex items-center bg-secondary gap-3 px-4 py-4 hover:bg-card transition-all focus:bg-card">
-                        <Home className="w-5 h-5" />
-                        <span className="hidden md:block">Immobili</span>
-                    </a>
-                </li>
-                <li>
-                    <a
-                        href="#"
-                        className="flex items-center bg-secondary gap-3 px-4 py-4 hover:bg-card transition-all focus:bg-card">
-                        <FaMoneyBillWave className="w-5 h-5" />
-                        <span className="hidden md:block">Acquisizioni</span>
-                    </a>
-                </li>
-                <li>
-                    <a
-                        href="#"
-                        className="flex items-center bg-secondary gap-3 px-4 py-4 hover:bg-card transition-all focus:bg-card">
-                        <Settings className="w-5 h-5" />
-                        <span className="hidden md:block">Impostazioni</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-    );
+      {/* MENU */}
+      <ul className="flex flex-col mt-4 bg-secondary">
+        {menu.map((item) => {
+          const isActive =
+            item.to !== '#' &&
+            (item.match === 'exact'
+              ? pathname === item.to
+              : // 'start'
+                pathname === item.to ||
+                pathname.startsWith(item.to + '/') ||
+                pathname.startsWith(item.to));
+
+          const baseClass =
+            'flex items-center gap-3 px-4 py-3 transition-all ';
+
+          const activeClass = isActive ? 'bg-card' : 'hover:bg-card/50';
+
+          return (
+            <li key={item.label}>
+              {item.to === '#' ? (
+                <div
+                  className={`${baseClass} ${activeClass}`}
+                  aria-current={isActive ? 'page' : undefined}
+                  role="button"
+                >
+                  {item.icon}
+                  <span className="hidden md:block">{item.label}</span>
+                </div>
+              ) : (
+                <Link
+                  to={item.to}
+                  className={`${baseClass} ${activeClass}`}
+                  aria-current={isActive ? 'page' : undefined}
+                >
+                  {item.icon}
+                  <span className="hidden md:block">{item.label}</span>
+                </Link>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+    </nav>
+  );
 }
 export default AgentNavbar;

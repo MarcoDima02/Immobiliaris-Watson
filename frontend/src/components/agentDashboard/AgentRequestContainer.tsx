@@ -1,17 +1,68 @@
-import { Link } from "react-router";
-import AgentRequest from "./AgentRequest";
+/**
+ * Components
+ */
+import AgentRequest from './AgentRequest';
 
-function AgentRequestContainer({ requests }: { requests: any }) {
+/**
+ * Types
+ */
+import type { AgenteRichiestaDTO } from '@/types';
 
-    return (
-        <div className="flex gap-5 py-4 flex-wrap" >
-            <Link state={{requests}} to={"/backoffice/agent/myRequests"}>
-                <AgentRequest num={5} type=""> Prese in carico </AgentRequest>
-            </Link>
-            <AgentRequest num={2} type="completato"> Completate con successo </AgentRequest>
-            <AgentRequest num={1} type="archiviato"> Archiviate </AgentRequest>
-        </div >
-    );
+// stato: 'IN_ATTESA' | 'IN_ELABORAZIONE' | 'COMPLETATA' | 'ANNULLATA' | null;
+
+function AgentRequestContainer({
+  requests,
+}: {
+  requests: AgenteRichiestaDTO[];
+}) {
+  const preseInCarico = requests.filter(
+    (request) => request.statoRichiesta === 'IN_ELABORAZIONE'
+  );
+  const completate = requests.filter(
+    (request) => request.statoRichiesta === 'COMPLETATA'
+  );
+  const inAttesa = requests.filter(
+    (request) => request.statoRichiesta === 'IN_ATTESA'
+  );
+
+  const annullate = requests.filter(
+    (request) => request.statoRichiesta === 'ANNULLATA'
+  );
+
+  return (
+    <div className="flex gap-5 py-4 flex-wrap">
+      <AgentRequest
+        num={preseInCarico.length}
+        requests={preseInCarico}
+      >
+        Prese in carico
+      </AgentRequest>
+
+      <AgentRequest
+        num={completate.length}
+        type="completato"
+        requests={completate}
+      >
+        Completate con successo
+      </AgentRequest>
+
+      <AgentRequest
+        num={inAttesa.length}
+        type="archiviato"
+        requests={inAttesa}
+      >
+        Archiviate
+      </AgentRequest>
+
+      <AgentRequest
+        num={annullate.length}
+        type="annullato"
+        requests={annullate}
+      >
+        Annullate
+      </AgentRequest>
+    </div>
+  );
 }
 
 export default AgentRequestContainer;

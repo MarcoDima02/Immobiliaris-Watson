@@ -19,8 +19,6 @@ const AgentDashboard = () => {
       // Forza sempre il reload dei dati
       loadDashboard();
     }
-
-
   }, [user]);
 
   if (dashboard === null) return <p>Caricamento dashboard...</p>;
@@ -29,11 +27,10 @@ const AgentDashboard = () => {
   return (
     <>
       <div>
-        <h2 className="text-2xl font-bold">Ciao Sofia!</h2>
+        <h2 className="text-2xl font-bold">Bentornat* {user?.nome}</h2>
         <h3 className="font-medium">Ecco le tue richieste:</h3>
         <AgentRequestContainer requests={dashboard} />
       </div>
-
     </>
   );
 };
