@@ -531,7 +531,7 @@ public void eliminaLead(@PathVariable Integer id, HttpSession session) {
         d.setCognome(u.getCognome());
         d.setEmail(u.getEmail());
         d.setTelefono(u.getTelefono());
-        d.setRuolo(u.getRuolo() == null ? null : u.getRuolo().name());
+        d.setRuolo(u.getRuolo() == null ? null : u.getRuolo());
         d.setVerificaEmail(u.isVerificaEmail());
         d.setConsensoPrivacy(u.isConsensoPrivacy());
         return d;
