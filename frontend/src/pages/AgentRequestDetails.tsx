@@ -1,9 +1,60 @@
-import { Button } from '@/components/ui/button';
+/**
+ * Node modules
+ */
+import { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router';
+import mapboxgl from 'mapbox-gl';
+
+/**
+ * Components
+ */
+import { Button } from '@/components/ui/button';
+
+mapboxgl.accessToken = mapboxgl.accessToken =
+  import.meta.env.VITE_MAPBOX_ACCESS_TOKEN ?? 'MAPBOX_TOKEN';
 
 function AgentRequestDetails() {
   const location = useLocation();
   const { request } = location.state || {};
+
+  const mapContainerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!request) return;
+
+    const address = `${request.indirizzo}, ${request.citta}, ${request.provincia}`;
+
+    const fetchCoordinates = async () => {
+      try {
+        const res = await fetch(
+          `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
+            address
+          )}.json?access_token=${mapboxgl.accessToken}`
+        );
+
+        const data = await res.json();
+
+        if (!data.features?.length) return;
+
+        const [lng, lat] = data.features[0].center;
+
+        if (!mapContainerRef.current) return;
+        const map = new mapboxgl.Map({
+          container: mapContainerRef.current,
+          style: 'mapbox://styles/mapbox/streets-v11',
+          center: [lng, lat],
+          zoom: 14,
+        });
+
+        new mapboxgl.Marker().setLngLat([lng, lat]).addTo(map);
+
+        return () => map.remove();
+      } catch (err) {
+        console.error('Errore caricamento mappa:', err);
+      }
+    };
+    fetchCoordinates();
+  }, [request]);
 
   if (!request) return <p>Nessuna richiesta trovata</p>;
 
@@ -136,7 +187,11 @@ function AgentRequestDetails() {
             {/* MAPPA */}
             <div className="flex flex-col bg-white rounded-xl shadow-md w-full h-full p-4">
               <p className="font-bold text-black">Posizione dell'immobile</p>
-              <div className="w-full h-100 bg-green-200 mt-5"></div>
+              <div
+                ref={mapContainerRef}
+                className="w-full h-80 rounded-xl mt-5"
+                style={{ minHeight: '300px' }}
+              ></div>
             </div>
           </div>
         </div>
