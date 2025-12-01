@@ -1,7 +1,7 @@
 /**
  * Node modules
  */
-import { createBrowserRouter } from 'react-router';
+import { createBrowserRouter, Outlet } from 'react-router';
 import { lazy } from 'react';
 
 /**
@@ -22,9 +22,13 @@ import AdminDashboard from '@/pages/AdminDashboard';
 import AgentDashboard from '@/pages/AgentDashboard';
 
 import Login from '@/pages/auth/Login';
+import AgentNavbar from '@/components/agentDashboard/agentNavbar';
+import AgentRequestDetails from '@/pages/AgentRequestDetails';
+import AgentMyRequests from '@/pages/AgentMyRequests';
+
 
 /**
- * Helpers
+ * Layout protetti
  */
 function AdminProtected() {
   return (
@@ -37,13 +41,16 @@ function AdminProtected() {
 function AgentProtected() {
   return (
     <ProtectedRoute roles={["AGENTE"]}>
-      <AgentDashboard />
+      <AgentNavbar />
+
+      <div className="ms-20 md:ms-65 mt-5">
+        <Outlet />
+      </div>
     </ProtectedRoute>
   );
 }
 
 // Lazy import for bundle optimization
-
 const NotFound = lazy(() => import('@/pages/NotFound'));
 
 const router = createBrowserRouter([
@@ -58,20 +65,43 @@ const router = createBrowserRouter([
       },
     ],
   },
+
   {
     path: '/login',
     Component: Login,
   },
+
   {
     path: '/backoffice',
     children: [
+      /**
+       * ADMIN
+       */
       {
         path: 'admin/dashboard',
         Component: AdminProtected
       },
+
+      /**
+       * AGENTE
+       */
       {
-        path: 'agent/dashboard',
+        path: 'agent',
         Component: AgentProtected,
+        children: [
+          {
+            path: 'dashboard',
+            Component: AgentDashboard
+          },
+          {
+            path: 'myRequests',
+            Component: AgentMyRequests
+          },
+          {
+            path: 'request',
+            Component: AgentRequestDetails
+          }
+        ]
       },
     ],
   },
