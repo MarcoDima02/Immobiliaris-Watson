@@ -51,6 +51,11 @@ public class ValutazioneFormController {
         if (request.getNStanze() == null || request.getNBagni() == null || request.getAnnoCostruzione() == null) {
             return ResponseEntity.badRequest().build();
         }
+        
+        // Validazione consenso privacy (GDPR) - obbligatorio
+        if (!Boolean.TRUE.equals(request.getAccettazioneTrattamentoDati())) {
+            return ResponseEntity.badRequest().build();
+        }
 
         Utente proprietario = null;
         if (request.getIdUtente() != null) {
