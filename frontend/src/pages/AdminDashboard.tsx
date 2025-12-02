@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useAuthStore } from "@/store/auth.store";
+import AdminInfoContainer from "@/components/adminDashboard/AdminInfoContainer";
 
 export default function AdminDashboard() {
   const {
@@ -19,6 +20,7 @@ export default function AdminDashboard() {
     loadAdminImmagini,
   } = useAuthStore();
 
+ 
   const [activeTab, setActiveTab] = useState<"utenti" | "immobili" | "contratti" | "richieste" | "vendite" | "immagini">("utenti");
 
   // Caricamento automatico una volta entrati nella dashboard
@@ -31,10 +33,13 @@ export default function AdminDashboard() {
     loadAdminRichieste();
     loadAdminVendite();
     loadAdminImmagini();
+     
   }, [user]);
 
   if (!user) return <div>Non autenticato…</div>;
   if (user.ruolo !== "AMMINISTRATORE") return <div>Accesso negato</div>;
+
+ 
 
   return (
      <div style={{ padding: "20px" }}>
@@ -63,65 +68,29 @@ export default function AdminDashboard() {
       {/* SEZIONI */}
 
       {activeTab === "utenti" && (
-        <Section title="Utenti" data={adminUtenti} empty="Nessun utente trovato" />
+        <AdminInfoContainer data={adminUtenti} />
       )}
 
       {activeTab === "immobili" && (
-        <Section title="Immobili" data={adminImmobili} empty="Nessun immobile trovato" />
+        <AdminInfoContainer data={adminImmobili} />
       )}
 
       {activeTab === "contratti" && (
-        <Section title="Contratti" data={adminContratti} empty="Nessun contratto trovato" />
+        <AdminInfoContainer data={adminContratti} />
       )}
 
       {activeTab === "richieste" && (
-        <Section title="Richieste" data={adminRichieste} empty="Nessuna richiesta trovata" />
+        <AdminInfoContainer data={adminRichieste} />
       )}
 
       {activeTab === "vendite" && (
-        <Section title="Vendite" data={adminVendite} empty="Nessuna vendita trovata" />
+        <AdminInfoContainer data={adminVendite} />
       )}
 
       {activeTab === "immagini" && (
-        <Section title="Immagini" data={adminImmagini} empty="Nessuna immagine trovata" />
+        <AdminInfoContainer data={adminImmagini} />
       )}
 
-    </div>
-  );
-}
-
-function Section({ title, data, empty }: { title: string; data: any[] | null; empty: string }) {
-  return (
-    <div>
-      <h2 style={{ marginBottom: "10px" }}>{title}</h2>
-
-      {!data || data.length === 0 ? (
-        <p>{empty}</p>
-      ) : (
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
-          <thead>
-            <tr>
-              {Object.keys(data[0]).map((key) => (
-                <th key={key} style={{ borderBottom: "1px solid #ccc", textAlign: "left", padding: "8px" }}>
-                  {key}
-                </th>
-              ))}
-            </tr>
-          </thead>
-
-          <tbody>
-            {data.map((item, idx) => (
-              <tr key={idx}>
-                {Object.values(item).map((value: any, i) => (
-                  <td key={i} style={{ borderBottom: "1px solid #eee", padding: "8px" }}>
-                    {typeof value === "object" ? JSON.stringify(value) : String(value)}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
     </div>
   );
 }

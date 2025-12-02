@@ -190,7 +190,7 @@ function AgentRequestDetails() {
               <div
                 ref={mapContainerRef}
                 className="w-full h-80 rounded-xl mt-5"
-                style={{ minHeight: '300px' }}
+                style={{ minHeight: '400px' }}
               ></div>
             </div>
           </div>
