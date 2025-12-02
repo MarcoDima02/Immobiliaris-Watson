@@ -86,14 +86,14 @@ const AgentDashboard = () => {
 
 
   return (
-    <>
+    <section className='container p-4'>
       <div>
         <h2 className="text-2xl font-bold">Bentornat* {user?.nome}</h2>
         <h3 className="font-medium">Ecco le tue richieste:</h3>
         <AgentRequestContainer requests={dashboard} />
       </div>
 
-         {/* ==== ULTIME ATTIVITÀ ==== */}
+        
       <h3 className="text-xl font-semibold mt-4 mb-2">Ultime attività</h3>
 
         <Card className="mt-6">
@@ -156,7 +156,7 @@ const AgentDashboard = () => {
           </Table>
         </CardContent>
       </Card>
-    </>
+    </section>
   );
 };
 
