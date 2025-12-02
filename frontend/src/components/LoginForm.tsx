@@ -4,7 +4,7 @@
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
-import { useNavigate } from 'react-router';
+import { useNavigate, Link } from 'react-router';
 
 /**
  * Helpers
@@ -54,7 +54,7 @@ import { useAuthStore } from '@/store/auth.store';
  */
 const LOGIN_FORM = {
   title: 'Accesso al backoffice',
-  footerText: 'Hai dimenticato la tua password?',
+  footerText: '',
 } as const;
 
 const LoginForm = ({ className, ...props }: React.ComponentProps<'div'>) => {
@@ -191,6 +191,12 @@ const LoginForm = ({ className, ...props }: React.ComponentProps<'div'>) => {
           </figure>
         </CardContent>
       </Card>
+
+      <div className='w-full flex justify-center'>
+        <Button asChild className='w-max'>
+          <Link to="/">Torna alla home</Link>
+        </Button>
+      </div>
     </div>
   );
 };

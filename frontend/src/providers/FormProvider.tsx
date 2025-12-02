@@ -43,6 +43,7 @@ export type FormPayload = {
   cognomeUtente?: string;
   emailUtente?: string;
   telefonoUtente?: string;
+  accettazioneTrattamentoDati?: true;
 };
 
 const defaultPayload: FormPayload = {

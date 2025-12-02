@@ -44,7 +44,7 @@ const More = ({ id }: MoreProps) => {
               size="lg"
               className="mt-8 mb-3 w-full sm:w-auto text-md lg:text-lg"
             >
-              Inizia gratuitamente
+              <a href='#valutazione'>Inizia gratuitamente</a>
             </Button>
             <p className="text-sm sm:text-base mt-2 italic">
               Nessun vincolo. Solo opportunità per valorizzare il tuo immobile.
@@ -66,7 +66,7 @@ const More = ({ id }: MoreProps) => {
                 size="lg"
                 className="mt-6 text-md lg:text-lg bg-background text-primary w-full"
               >
-                Ottieni valutazione
+                Visualizza richiesta
               </Button>
             </div>
           </div>
