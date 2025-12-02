@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Contratto pronto</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      
+      body {
+        font-family: 'Montserrat', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.7;
+        color: #5e223e;
+        background-color: #f3f3f6;
+        padding: 20px;
+      }
+      
+      .email-container {
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: #ffffff;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      }
+      
+      .header {
+        background: linear-gradient(135deg, #5e223e 0%, #7a2f52 100%);
+        padding: 40px 30px;
+        text-align: center;
+      }
+      
+      .logo {
+        max-width: 200px;
+        height: auto;
+        margin-bottom: 20px;
+      }
+      
+      .header h1 {
+        color: #f2e9e4;
+        font-size: 28px;
+        font-weight: 600;
+        margin: 0;
+        letter-spacing: 0.025em;
+      }
+      
+      .content {
+        padding: 40px 30px;
+        background-color: #ffffff;
+      }
+      
+      .greeting {
+        font-size: 18px;
+        color: #5e223e;
+        margin-bottom: 20px;
+        font-weight: 500;
+      }
+      
+      .message {
+        color: #5e223e;
+        font-size: 15px;
+        line-height: 1.8;
+        margin-bottom: 25px;
+      }
+      
+      .contratto-box {
+        background-color: #f2e9e4;
+        border-left: 4px solid #5e223e;
+        padding: 25px;
+        margin: 30px 0;
+        border-radius: 8px;
+      }
+      
+      .contratto-box h3 {
+        color: #5e223e;
+        font-size: 18px;
+        margin-bottom: 15px;
+        font-weight: 600;
+      }
+      
+      .detail-row {
+        display: flex;
+        padding: 10px 0;
+        border-bottom: 1px solid #c9ada7;
+      }
+      
+      .detail-row:last-child {
+        border-bottom: none;
+      }
+      
+      .detail-label {
+        font-weight: 600;
+        color: #5e223e;
+        min-width: 140px;
+      }
+      
+      .detail-value {
+        color: #5e223e;
+        flex: 1;
+      }
+      
+      .attachment-notice {
+        background-color: #e7d4d0;
+        border: 2px solid #c9ada7;
+        border-radius: 8px;
+        padding: 20px;
+        margin: 25px 0;
+        text-align: center;
+      }
+      
+      .attachment-icon {
+        font-size: 32px;
+        margin-bottom: 10px;
+      }
+      
+      .attachment-notice p {
+        color: #5e223e;
+        font-weight: 500;
+        margin: 5px 0;
+      }
+      
+      .cta-button {
+        display: inline-block;
+        background: linear-gradient(135deg, #5e223e 0%, #7a2f52 100%);
+        color: #f2e9e4 !important;
+        padding: 14px 32px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        margin: 20px 0;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s;
+      }
+      
+      .cta-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 10px -1px rgba(0, 0, 0, 0.15);
+      }
+      
+      .important-note {
+        background-color: #fff3cd;
+        border-left: 4px solid #ffc107;
+        padding: 15px;
+        margin: 20px 0;
+        border-radius: 4px;
+      }
+      
+      .important-note strong {
+        color: #856404;
+        display: block;
+        margin-bottom: 5px;
+      }
+      
+      .important-note p {
+        color: #856404;
+        font-size: 14px;
+        margin: 0;
+      }
+      
+      .footer {
+        background-color: #f2e9e4;
+        padding: 30px;
+        text-align: center;
+        border-top: 3px solid #c9ada7;
+      }
+      
+      .footer p {
+        color: #5e223e;
+        font-size: 14px;
+        margin: 8px 0;
+      }
+      
+      .footer-logo {
+        max-width: 120px;
+        height: auto;
+        margin: 15px auto;
+        opacity: 0.7;
+      }
+      
+      .social-links {
+        margin: 20px 0 10px;
+      }
+      
+      .social-links a {
+        color: #5e223e;
+        text-decoration: none;
+        margin: 0 10px;
+        font-size: 14px;
+      }
+      
+      .contract-id {
+        font-size: 12px;
+        color: #897a7a;
+        margin-top: 10px;
+      }
+      
+      @media only screen and (max-width: 600px) {
+        .email-container {
+          border-radius: 0;
+        }
+        
+        .content {
+          padding: 25px 20px;
+        }
+        
+        .header {
+          padding: 30px 20px;
+        }
+        
+        .detail-row {
+          flex-direction: column;
+        }
+        
+        .detail-label {
+          margin-bottom: 5px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="email-container">
+      <!-- Header con logo -->
+      <div class="header">
+        <img src="cid:logo" alt="Residea Logo" class="logo" />
+        <h1>Il tuo contratto è pronto!</h1>
+      </div>
+      
+      <!-- Contenuto principale -->
+      <div class="content">
+        <p class="greeting">
+          Gentile <strong>[[${proprietarioNome}]] [[${proprietarioCognome}]]</strong>,
+        </p>
+        
+        <p class="message">
+          Siamo lieti di informarti che il contratto relativo al tuo immobile è stato 
+          preparato e firmato dal nostro agente <strong>[[${agenteNome}]] [[${agenteCognome}]]</strong>.
+        </p>
+        
+        <!-- Box allegato -->
+        <div class="attachment-notice">
+          <div class="attachment-icon">📎</div>
+          <p><strong>Contratto allegato a questa email</strong></p>
+          <p style="font-size: 14px; color: #897a7a;">
+            Troverai il documento PDF in allegato a questa email
+          </p>
+        </div>
+        
+        <!-- Dettagli contratto -->
+        <div class="contratto-box">
+          <h3>Dettagli del Contratto</h3>
+          
+          <div class="detail-row">
+            <span class="detail-label">Tipo contratto:</span>
+            <span class="detail-value"><strong>[[${tipoContratto}]]</strong></span>
+          </div>
+          
+          <div class="detail-row">
+            <span class="detail-label">Data contratto:</span>
+            <span class="detail-value">[[${dataContratto}]]</span>
+          </div>
+          
+          <div class="detail-row" th:if="${immobileIndirizzo != null and immobileIndirizzo != ''}">
+            <span class="detail-label">Immobile:</span>
+            <span class="detail-value">[[${immobileIndirizzo}]], [[${immobileCitta}]]</span>
+          </div>
+          
+          <div class="detail-row">
+            <span class="detail-label">Agente referente:</span>
+            <span class="detail-value">[[${agenteNome}]] [[${agenteCognome}]]</span>
+          </div>
+        </div>
+        
+        <!-- Nota importante -->
+        <div class="important-note">
+          <strong>⚠️ Importante</strong>
+          <p>
+            Ti invitiamo a leggere attentamente il documento allegato. 
+            Per qualsiasi chiarimento o domanda, non esitare a contattare 
+            il tuo agente di riferimento.
+          </p>
+        </div>
+        
+        <p class="message">
+          Conserva questo documento in un luogo sicuro. È importante averlo a disposizione 
+          per tutta la durata del contratto.
+        </p>
+        
+        <p class="message" style="margin-top: 30px;">
+          Grazie per la fiducia accordata a <strong>Residea</strong>. 
+          Siamo a tua completa disposizione per qualsiasi necessità.
+        </p>
+      </div>
+      
+      <!-- Footer -->
+      <div class="footer">
+        <img src="cid:logo" alt="Residea" class="footer-logo" />
+        <p style="font-weight: 600; font-size: 16px; margin-top: 10px;">Residea</p>
+        <p>La tua agenzia immobiliare di fiducia</p>
+        
+        <div class="social-links">
+          <a href="#">Email</a>
+          <a href="#">Telefono</a>
+          <a href="#">Sito Web</a>
+        </div>
+        
+        <p class="contract-id">Contratto #[[${idContratto}]]</p>
+        
+        <p style="font-size: 12px; color: #897a7a; margin-top: 20px;">
+          Questo messaggio è stato inviato automaticamente dal sistema Residea.<br />
+          Si prega di non rispondere a questa email.
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

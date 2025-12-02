@@ -1,18 +1,18 @@
 package com.residea.residea.events;
 
-import java.math.BigDecimal;
-
 public class ValutazioneCreatedEvent {
     private final Integer idValutazione;
     private final String userEmail;
     private final String userName;
-    private final Integer valoreMedio;
+    private final Integer valoreMin;
+    private final Integer valoreMax;
 
-    public ValutazioneCreatedEvent(Integer idValutazione, String userEmail, String userName, Integer valoreMedio) {
+    public ValutazioneCreatedEvent(Integer idValutazione, String userEmail, String userName, Integer valoreMin, Integer valoreMax) {
         this.idValutazione = idValutazione;
         this.userEmail = userEmail;
         this.userName = userName;
-        this.valoreMedio = valoreMedio;
+        this.valoreMin = valoreMin;
+        this.valoreMax = valoreMax;
     }
 
     public Integer getIdValutazione() {
@@ -27,7 +27,11 @@ public class ValutazioneCreatedEvent {
         return userName;
     }
 
-    public Integer getValoreMedio() {
-        return valoreMedio;
+    public Integer getValoreMin() {
+        return valoreMin;
+    }
+
+    public Integer getValoreMassimo() {
+        return valoreMax;
     }
 }
