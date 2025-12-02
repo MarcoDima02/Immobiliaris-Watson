@@ -29,13 +29,13 @@ const menu = [
     },
     {
         label: 'Richieste',
-        to: '/backoffice/admin/Richieste',
+        to: '/backoffice/admin/richieste',
         icon: <FaRegQuestionCircle className="w-5 h-5" />,
         match: 'exact',
     },
     {
         label: 'Contratti',
-        to: '/backoffice/admin/Contratti',
+        to: '/backoffice/admin/contratti',
         icon: <FaRegQuestionCircle className="w-5 h-5" />,
         match: 'exact',
     },
