@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useAuthStore } from "@/store/auth.store";
 import AdminInfoContainer from "@/components/adminDashboard/AdminInfoContainer";
 
-export default function AdminDashboard() {
+export default function AdminDashboard({type} : {type : string}) {
   const {
     user,
     adminUtenti,
@@ -45,38 +45,18 @@ export default function AdminDashboard() {
     <div style={{ padding: "20px" }}>
       <h1 className="mb-6">Benvenut* Admin: {user.nome} {user.cognome}</h1>
 
-      {/* MENU TABS */}
-      <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
-        {["utenti", "richieste", "contratti"].map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab as any)}
-            style={{
-              padding: "10px",
-              borderRadius: "6px",
-              border: "1px solid #ccc",
-              background: activeTab === tab ? "#333" : "white",
-              color: activeTab === tab ? "white" : "black",
-              cursor: "pointer",
-            }}
-          >
-            {tab.toUpperCase()}
-          </button>
-        ))}
-      </div>
-
       {/* SEZIONI */}
 
-      {activeTab === "utenti" && (
-        <AdminInfoContainer data={adminUtenti} type="utente" />
+      {type === "utente" && (
+        <AdminInfoContainer data={adminUtenti} type="utenti" />
       )}
 
-      {activeTab === "richieste" && (
-        <AdminInfoContainer data={adminImmobili} type="richiesta" />
+      {type === "richiesta" && (
+        <AdminInfoContainer data={adminImmobili} type="richieste" />
       )}
 
-      {activeTab === "contratti" && (
-        <AdminInfoContainer data={adminImmobili} type="richiesta" />
+      {type === "contratto" && (
+        <AdminInfoContainer data={adminContratti} type="contratti" />
       )}
 
 

@@ -12,7 +12,7 @@ import { logoWhite } from '@/assets';
 /**
  * Icons
  */
-import { LayoutDashboard, LogOut, PanelRight } from 'lucide-react';
+import { LayoutDashboard, LogOut, PanelRight, Paperclip, User } from 'lucide-react';
 import { FaRegQuestionCircle } from 'react-icons/fa';
 
 /**
@@ -23,8 +23,8 @@ import { useAuthStore } from '@/store/auth.store';
 const menu = [
     {
         label: 'Utenti',
-        to: '/backoffice/admin/dashboard',
-        icon: <LayoutDashboard className="w-5 h-5" />,
+        to: '/backoffice/admin/utenti',
+        icon: <User className="w-5 h-5" />,
         match: 'start',
     },
     {
@@ -36,7 +36,7 @@ const menu = [
     {
         label: 'Contratti',
         to: '/backoffice/admin/contratti',
-        icon: <FaRegQuestionCircle className="w-5 h-5" />,
+        icon: <Paperclip className="w-5 h-5" />,
         match: 'exact',
     },
     {

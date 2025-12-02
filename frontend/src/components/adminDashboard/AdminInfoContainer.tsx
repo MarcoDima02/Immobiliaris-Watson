@@ -4,13 +4,13 @@ export default function AdminInfoContainer({ data, type }: { data: any[] | null,
     console.log(data);
     return (
         <>
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-10 px-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-10 px-8">
                 {data && (data.map((item) => (
                     <>
                         <div className="bg-white p-4 w-full rounded-xl shadow-xl text-black flex flex-col">
                             <div className="grid flex-col flex-wrap grid-cols-2 gap-3 mb-5 ">
 
-                                {type === "utente" && (
+                                {type === "utenti" && (
                                     <>
                                         <div>
                                             <p className="font-bold">Nome:</p>
@@ -35,7 +35,7 @@ export default function AdminInfoContainer({ data, type }: { data: any[] | null,
                                     </>
                                 )}
 
-                                {type === "richiesta" && (
+                                {type === "richieste" && (
                                     <>
                                         <div>
                                             <p className="font-bold">Indirizzo:</p>
