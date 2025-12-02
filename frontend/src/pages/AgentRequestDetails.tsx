@@ -197,30 +197,7 @@ function AgentRequestDetails() {
         </div>
 
         {/* STIMA IMMOBILE */}
-        {/* <div className="w-full lg:w-[60%]">
-          <div className="bg-white rounded-xl h-48 shadow-md mt-5 p-4">
-            <p className="font-bold text-black">Stima dell'immobile</p>
 
-            <div className="flex justify-between text-primary text-xl md:text-3xl lg:text-4xl xl:text-5xl px-5 py-3 font-extrabold">
-              <p className="w-[45%]">{request.valoreMin.toLocaleString()} €</p>
-              <p className="w-[10%] text-center"> - </p>
-              <p className="w-[45%] text-end">
-                {request.valoreMax.toLocaleString()} €
-              </p>
-            </div>
-
-            <div className="flex justify-between">
-              <p className="w-1/2 text-zinc-400 text-sm">
-                <i>Valore minimo</i>
-              </p>
-              <p className="w-1/2 text-zinc-400 text-sm text-end">
-                <i>Valore massimo</i>
-              </p>
-            </div>
-            <div>Valore effettivo</div>
-            <p className="">{request.valoreMedio.toLocaleString()} €</p>
-          </div>
-        </div> */}
         <div className="w-full lg:w-3/5">
           <div className="bg-white rounded-2xl shadow-lg mt-5 p-6 flex flex-col gap-6">
             {/* Titolo */}

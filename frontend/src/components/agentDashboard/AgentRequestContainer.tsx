@@ -34,6 +34,7 @@ function AgentRequestContainer({
       <AgentRequest
         num={preseInCarico.length}
         requests={preseInCarico}
+        type='default'
       >
         In elaborazione
       </AgentRequest>

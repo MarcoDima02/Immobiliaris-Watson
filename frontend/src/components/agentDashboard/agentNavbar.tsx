@@ -29,7 +29,7 @@ const menu = [
   },
   {
     label: 'Richieste',
-    to: '/backoffice/agent/myRequests',
+    to: '/backoffice/agent/myRequests/tutte',
     icon: <FaRegQuestionCircle className="w-5 h-5" />,
     match: 'exact',
   },
