@@ -1,7 +1,11 @@
 package com.residea.residea.controller;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.List;
 
+import org.hibernate.boot.model.relational.Database;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.residea.residea.dto.ContrattoDto;
 import com.residea.residea.dto.ImmagineDto;
 import com.residea.residea.dto.ImmobileDto;
+import com.residea.residea.dto.RichiestaDettagliImmobileDto;
 import com.residea.residea.dto.RichiestaDto;
 import com.residea.residea.dto.UtenteDto;
 import com.residea.residea.dto.VenditaDto;
@@ -29,6 +34,7 @@ import com.residea.residea.entities.Utente;
 import com.residea.residea.entities.Utente.Ruolo;
 import com.residea.residea.entities.Vendita;
 import com.residea.residea.services.ContrattoService;
+import com.residea.residea.services.DettagliImmobileService;
 import com.residea.residea.services.ImmagineService;
 import com.residea.residea.services.ImmobileService;
 import com.residea.residea.services.RichiestaService;
@@ -55,6 +61,9 @@ public class AmministratoreDashboard {
 
         @Autowired
         private RichiestaService richiestaService;
+
+        @Autowired
+        private DettagliImmobileService dettagliImmobileService;
 
         @Autowired
         private ImmagineService immagineService;
@@ -230,6 +239,8 @@ public ResponseEntity<List<RichiestaDto>> getRichieste(HttpSession session,
     List<RichiestaDto> dtos = richieste.stream().map(this::toRichiestaDto).toList();
     return ResponseEntity.ok(dtos);
 }
+
+
 
 @PostMapping("/richieste")
 public ResponseEntity<Richiesta> createRichiesta(@RequestBody Richiesta r, HttpSession session) {
@@ -407,6 +418,69 @@ public ResponseEntity<Vendita> updateVendita(@PathVariable Integer id, @RequestB
         return d;
     }
 
+    /**
+     * Mapper per Richiesta con Dettagli Immobile
+     * Combina: Richiesta + Immobile + DettagliImmobile + Utente
+     */
+    private RichiestaDettagliImmobileDto toRichiestaDettagliImmobileDto(Richiesta r) {
+        if (r == null) return null;
+        
+        RichiestaDettagliImmobileDto d = new RichiestaDettagliImmobileDto();
+        
+        // Dati Richiesta
+        d.setIdRichiesta(r.getIdRichiesta());
+        d.setDataRichiesta(r.getDataRichiesta());
+        d.setDataAppuntamento(r.getDataAppuntamento());
+        d.setStato(r.getStato() == null ? null : r.getStato().name());
+        d.setNoteUtente(r.getNoteUtente());
+        d.setMotivoAnnullamento(r.getMotivoAnnullamento());
+        
+        // Dati Utente (richiedente)
+        if (r.getUtente() != null) {
+            d.setIdUtente(r.getUtente().getIdUtente());
+            d.setNomeUtente(r.getUtente().getNome());
+            d.setCognomeUtente(r.getUtente().getCognome());
+            d.setEmailUtente(r.getUtente().getEmail());
+            d.setTelefonoUtente(r.getUtente().getTelefono());
+        }
+        
+        // Dati Immobile
+        if (r.getImmobile() != null) {
+            Immobile immobile = r.getImmobile();
+            d.setIdImmobile(immobile.getIdImmobile());
+            d.setTipologia(immobile.getTipologia() == null ? null : immobile.getTipologia().name());
+            d.setIndirizzo(immobile.getIndirizzo());
+            d.setCitta(immobile.getCitta());
+            d.setProvincia(immobile.getProvincia());
+            d.setCap(immobile.getCap());
+            d.setStatoImmobile(immobile.getStato() == null ? null : immobile.getStato().name());
+            d.setLatitudine(immobile.getLatitudine() == null ? null : immobile.getLatitudine().doubleValue());
+            d.setLongitudine(immobile.getLongitudine() == null ? null : immobile.getLongitudine().doubleValue());
+            
+            // Dati DettagliImmobile - JOIN con Immobile
+            com.residea.residea.entities.DettagliImmobile dettagli = dettagliImmobileService.getDettagliByIdImmobile(immobile.getIdImmobile());
+            if (dettagli != null) {
+                d.setNStanze(dettagli.getNStanze());
+                d.setNBagni(dettagli.getNBagni());
+                d.setNPiano(dettagli.getNPiano());
+                d.setNPianiImmobile(dettagli.getNPianiImmobile());
+                d.setBalconeTerrazzo(dettagli.isBalconeTerrazzo());
+                d.setGiardino(dettagli.isGiardino());
+                d.setGarage(dettagli.isGarage());
+                d.setAscensore(dettagli.isAscensore());
+                d.setCantina(dettagli.isCantina());
+                d.setTipoRiscaldamento(dettagli.getTipoRiscaldamento() == null ? null : dettagli.getTipoRiscaldamento().name());
+                d.setAnnoCostruzione(dettagli.getAnnoCostruzione());
+                d.setCondizioneImmobile(dettagli.getCondizioneImmobile() == null ? null : dettagli.getCondizioneImmobile().name());
+                d.setClasseEnergetica(dettagli.getClasseEnergetica() == null ? null : dettagli.getClasseEnergetica().getDisplayValue());
+                d.setEsposizione(dettagli.getEsposizione());
+                d.setPrezzo(dettagli.getPrezzo() == null ? null : dettagli.getPrezzo().doubleValue());
+            }
+        }
+        
+        return d;
+    }
+
     // --- Endpoints per Immagini ---
     @GetMapping("/immagini")
     public ResponseEntity<List<ImmagineDto>> getImmagini(HttpSession session,
@@ -429,6 +503,47 @@ public ResponseEntity<Vendita> updateVendita(@PathVariable Integer id, @RequestB
         }
 
         List<ImmagineDto> dtos = immagini.stream().map(this::toImmagineDto).toList();
+        return ResponseEntity.ok(dtos);
+    }
+
+    /**
+     * GET /api/admin/dashboard/richieste/con-dettagli
+     * 
+     * Ritorna tutte le richieste con i dettagli completi dell'immobile associato.
+     * Combina dati da: Richiesta, Immobile, DettagliImmobile, Utente
+     * 
+     * @param session Session HTTP
+     * @param stato Filtro opzionale per stato richiesta
+     * @param idUtente Filtro opzionale per ID utente
+     * @param idImmobile Filtro opzionale per ID immobile
+     * @return Lista di RichiestaDettagliImmobileDto con dati aggregati
+     */
+    @GetMapping("/richieste/dettagli")
+    public ResponseEntity<List<RichiestaDettagliImmobileDto>> getRichiesteConDettagli(
+            HttpSession session,
+            @RequestParam(value = "stato", required = false) Richiesta.Stato stato,
+            @RequestParam(value = "utente", required = false) Integer idUtente,
+            @RequestParam(value = "immobile", required = false) Integer idImmobile) {
+        
+        List<Richiesta> richieste = richiestaService.getAllRichieste();
+        System.out.println("Richieste trovate per con i dettagli: " + richieste.size());
+
+        // Filtri opzionali
+        if (stato != null) {
+            richieste.removeIf(r -> r.getStato() != stato);
+        }
+        if (idUtente != null) {
+            richieste.removeIf(r -> r.getUtente() == null || !r.getUtente().getIdUtente().equals(idUtente));
+        }
+        if (idImmobile != null) {
+            richieste.removeIf(r -> r.getImmobile() == null || !r.getImmobile().getIdImmobile().equals(idImmobile));
+        }
+
+        // Mappa ogni richiesta con i dettagli dell'immobile
+        List<RichiestaDettagliImmobileDto> dtos = richieste.stream()
+                .map(this::toRichiestaDettagliImmobileDto)
+                .toList();
+        
         return ResponseEntity.ok(dtos);
     }
 
