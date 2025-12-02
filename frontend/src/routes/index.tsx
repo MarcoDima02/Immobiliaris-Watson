@@ -25,6 +25,7 @@ import Login from '@/pages/auth/Login';
 import AgentNavbar from '@/components/agentDashboard/agentNavbar';
 import AgentRequestDetails from '@/pages/AgentRequestDetails';
 import AgentMyRequests from '@/pages/AgentMyRequests';
+import AdminNavbar from '@/components/adminDashboard/adminNavbar';
 
 
 /**
@@ -33,7 +34,11 @@ import AgentMyRequests from '@/pages/AgentMyRequests';
 function AdminProtected() {
   return (
     <ProtectedRoute roles={["AMMINISTRATORE"]}>
-      <AdminDashboard />
+      <AdminNavbar />
+
+      <div className="ms-20 md:ms-65 mt-5">
+        <Outlet />
+      </div>
     </ProtectedRoute>
   );
 }
@@ -78,8 +83,22 @@ const router = createBrowserRouter([
        * ADMIN
        */
       {
-        path: 'admin/dashboard',
-        Component: AdminProtected
+        path: 'admin',
+        Component: AdminProtected,
+        children: [
+          {
+            path: 'dashboard',
+            Component: AdminDashboard
+          },
+          {
+            path: 'myRequests',
+            Component: AgentMyRequests
+          },
+          {
+            path: 'request',
+            Component: AgentRequestDetails
+          }
+        ]
       },
 
       /**
