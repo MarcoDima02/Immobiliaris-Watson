@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,14 +31,7 @@ public class UtenteRestController {
         return utentiService.getAllUtenti();
     }
 
-    // POST /api/utenti → crea nuovo utente
-@PostMapping
-public Utente creaUtente(@RequestBody Utente utente) {
-    if (utente.getRuolo() != null) {
-        utente.setRuolo(Utente.Ruolo.valueOf(utente.getRuolo().name().toUpperCase()));
-    }
-    return utentiService.salvaUtente(utente);
-}
+
 
     // GET /api/utenti/telefono/{telefono} → cerca utente per telefono
     @GetMapping("/telefono/{telefono}")
@@ -74,5 +68,29 @@ public Utente creaUtente(@RequestBody Utente utente) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }
     }
+
+        @PostMapping
+    public Utente creaUtente(@RequestBody Utente utente) {
+        if (utente.getPasswordHash() == null || utente.getPasswordHash().isBlank()) {
+            throw new IllegalArgumentException("La password è obbligatoria");
+        }
+        if (utente.getRuolo() != null) {
+            utente.setRuolo(Utente.Ruolo.valueOf(utente.getRuolo().name().toUpperCase()));
+        }
+        // salva password in chiaro
+        return utentiService.salvaUtente(utente);
+    }
+
+    @PutMapping
+    public Utente aggiornaUtente(@RequestBody Utente utente) {
+        if (utente.getPasswordHash() == null || utente.getPasswordHash().isBlank()) {
+            throw new IllegalArgumentException("La password è obbligatoria");
+        }
+        if (utente.getRuolo() != null) {
+            utente.setRuolo(Utente.Ruolo.valueOf(utente.getRuolo().name().toUpperCase()));
+        }
+        return utentiService.salvaUtente(utente);
+    }
+
 
 }
