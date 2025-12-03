@@ -16,7 +16,6 @@ import {
   DialogTitle,
   DialogFooter,
 } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import {
   Select,
@@ -50,25 +49,9 @@ function AgentRequestDetails() {
   const [immagini, setImmagini] = useState<any[]>([]);
   const [loadingImages, setLoadingImages] = useState(false);
   const [currentRequest, setCurrentRequest] = useState(request);
+  const [loadingContratto, setLoadingContratto] = useState(false);
 
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
-  
-
-  // const handleModificaStato = async () => {
-  //   const nuovoStato = prompt(
-  //     'Nuovo stato (IN_ELABORAZIONE, COMPLETATA, ANNULLATA)'
-  //   );
-  //   if (!nuovoStato) return;
-
-  //   try {
-  //     await aggiornaStatoRichiesta(request.idRichiesta, nuovoStato);
-  //     alert('Stato aggiornato!');
-  //     window.location.reload();
-  //   } catch (err) {
-  //     console.error(err);
-  //     alert("Errore nell'aggiornamento dello stato");
-  //   }
-  // };
 
   const handleApriModificaStato = () => {
     setNuovoStato(request?.statoRichiesta || '');
@@ -84,9 +67,9 @@ function AgentRequestDetails() {
       await aggiornaStatoRichiesta(request.idRichiesta, nuovoStato);
       toast.success('Stato aggiornato con successo!');
       setCurrentRequest({
-      ...currentRequest,
-      statoRichiesta: nuovoStato,
-    });
+        ...currentRequest,
+        statoRichiesta: nuovoStato,
+      });
     } catch (err) {
       console.error(err);
       toast.error('Errore aggiornamento stato');
@@ -96,31 +79,30 @@ function AgentRequestDetails() {
     }
   };
 
-  // const handleUploadContratto = async () => {
-  //   if (!request.idContratto)
-  //     return alert('La richiesta non ha ancora un contratto!');
+  const fetchContratto = async () => {
+    if (!currentRequest?.idContratto) return;
 
-  //   const input = document.createElement('input');
-  //   input.type = 'file';
-  //   input.accept = 'application/pdf';
+    setLoadingContratto(true);
+    try {
+      const res = await fetch(
+        `http://localhost:8080/api/contratti/${currentRequest.idContratto}`
+      );
+      if (!res.ok) throw new Error('Errore caricamento contratto');
+      const data = await res.json();
+      setCurrentRequest((prev) => ({ ...prev, pathContrattoPDF: data.path }));
+    } catch (err) {
+      console.error(err);
+      toast.error('Errore caricamento contratto');
+    } finally {
+      setLoadingContratto(false);
+    }
+  };
 
-  //   input.onchange = async () => {
-  //     if (!input.files?.length) return;
-  //     const file = input.files[0];
+  useEffect(() => {
+    if (!currentRequest) return;
+    fetchContratto();
+  }, [currentRequest?.idContratto]);
 
-  //     try {
-  //       const percorsoFile = await uploadContrattoPDF(file);
-  //       alert('Contratto caricato!');
-
-  //       request.pathContrattoPDF = percorsoFile;
-  //     } catch (err) {
-  //       console.error(err);
-  //       alert('Errore durante upload contratto');
-  //     }
-  //   };
-
-  //   input.click();
-  // };
   const handleUploadContratto = async () => {
     if (!currentRequest.idContratto)
       return toast.error('La richiesta non ha ancora un contratto!');
@@ -137,6 +119,11 @@ function AgentRequestDetails() {
         const percorsoFile = await uploadContrattoPDF(file);
         toast.success('Contratto caricato!');
         currentRequest.pathContrattoPDF = percorsoFile;
+
+        setCurrentRequest((prev) => ({
+          ...prev,
+          pathContrattoPDF: percorsoFile,
+        }));
       } catch (err) {
         console.error(err);
         toast.error('Errore durante upload contratto');
@@ -146,72 +133,18 @@ function AgentRequestDetails() {
     input.click();
   };
 
-  // const handleVisualizzaContratti = () => {
-  //   if (!request.pathContrattoPDF) return alert('Nessun contratto disponibile');
-  //   setShowPdf(true);
-  // };
   const handleVisualizzaContratti = () => {
     if (!currentRequest.pathContrattoPDF)
       return toast.error('Nessun contratto disponibile');
     setShowPdf(true);
   };
 
-  // const handleUploadImages = async () => {
-  //   const input = document.createElement('input');
-  //   input.type = 'file';
-  //   input.accept = 'image/*';
-  //   input.multiple = true;
-
-  //   input.onchange = async () => {
-  //     const files = input.files;
-  //     if (!files?.length) return;
-
-  //     const formData = new FormData();
-  //     for (let f of files) formData.append('files', f);
-
-  //     await fetch(
-  //       `http://localhost:8080/api/immobili/${request.idImmobile}/immagini`,
-  //       {
-  //         method: 'POST',
-  //         body: formData,
-  //       }
-  //     );
-
-  //     alert('Immagini caricate');
-  //   };
-
-  //   input.click();
-  // };
-
-  // const handleUploadImages = async () => {
-  //   const input = document.createElement('input');
-  //   input.type = 'file';
-  //   input.accept = 'image/*';
-  //   input.multiple = true;
-
-  //   input.onchange = async () => {
-  //     const files = input.files;
-  //     if (!files?.length) return;
-
-  //     const formData = new FormData();
-  //     for (let f of files) formData.append('files', f);
-
-  //     try {
-  //       await fetch(
-  //         `http://localhost:8080/api/immobili/${request.idImmobile}/immagini`,
-  //         { method: 'POST', body: formData }
-  //       );
-  //       toast.success('Immagini caricate!');
-  //     } catch (err) {
-  //       console.error(err);
-  //       toast.error('Errore caricamento immagini');
-  //     }
-  //   };
-
-  //   input.click();
-  // };
-
   const handleUploadImages = async () => {
+    if (!currentRequest?.idImmobile) {
+      toast.error('ID immobile mancante');
+      return;
+    }
+
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = 'image/*';
@@ -222,16 +155,25 @@ function AgentRequestDetails() {
       if (!files?.length) return;
 
       const formData = new FormData();
-      for (let f of files) formData.append('files', f);
+      for (let f of files) {
+        formData.append('files', f);
+      }
 
       try {
-        await fetch(
+        const res = await fetch(
           `http://localhost:8080/api/immobili/${currentRequest.idImmobile}/immagini`,
-          { method: 'POST', body: formData }
+          {
+            method: 'POST',
+            body: formData,
+          }
         );
-        toast.success('Immagine caricate!');
 
-        // Aggiorna lista immagini dopo upload
+        if (!res.ok) {
+          const err = await res.text();
+          throw new Error(err);
+        }
+
+        toast.success('Immagine caricate!');
         fetchImmagini();
       } catch (err) {
         console.error(err);
@@ -250,7 +192,9 @@ function AgentRequestDetails() {
       const res = await fetch(
         `http://localhost:8080/api/immagini/immobile/${currentRequest.idImmobile}`
       );
+
       if (!res.ok) throw new Error('Errore caricamento immagini');
+
       const data = await res.json();
       setImmagini(data);
     } catch (err) {
@@ -260,10 +204,6 @@ function AgentRequestDetails() {
       setLoadingImages(false);
     }
   };
-
-  // const handleViewImages = () => {
-  //   window.location.href = `/immobile/${request.idImmobile}/immagini`;
-  // };
 
   useEffect(() => {
     if (!currentRequest) return;
@@ -325,7 +265,7 @@ function AgentRequestDetails() {
               <SelectTrigger>
                 <SelectValue placeholder="Seleziona stato" />
               </SelectTrigger>
-              <SelectContent className='bg-card'>
+              <SelectContent className="bg-card">
                 <SelectItem value="IN_ELABORAZIONE">IN_ELABORAZIONE</SelectItem>
                 <SelectItem value="COMPLETATA">COMPLETATA</SelectItem>
                 <SelectItem value="ANNULLATA">ANNULLATA</SelectItem>
@@ -354,9 +294,9 @@ function AgentRequestDetails() {
         open={showPdf}
         onOpenChange={setShowPdf}
       >
-        <DialogTitle>Contratto</DialogTitle>
+        <DialogTitle className="sr-only">Contratto</DialogTitle>
         <DialogContent
-          className="w-4/5 h-4/5 max-w-5xl max-h-[90vh]"
+          className="w-4/5 h-4/5 max-w-5xl max-h-[90vh] "
           closeButtonClassName="text-white bg-primary p-1 cursor-pointer opacity-100 hover:bg-white hover:text-primary"
         >
           <div className="relative w-full h-full">
@@ -364,6 +304,7 @@ function AgentRequestDetails() {
               <iframe
                 src={`http://localhost:8080/api/contratti/pdf/${currentRequest.pathContrattoPDF.split('/').pop()}`}
                 className="w-full h-full"
+                allowFullScreen
               />
             )}
           </div>
@@ -374,30 +315,39 @@ function AgentRequestDetails() {
         open={showImages}
         onOpenChange={setShowImages}
       >
-        <DialogTitle>Immagini</DialogTitle>
         <DialogContent
           className="w-4/5 h-4/5 max-w-5xl max-h-[90vh]"
           closeButtonClassName="text-white bg-primary p-1 cursor-pointer opacity-100 hover:bg-white hover:text-primary"
         >
-          <DialogHeader>
-            <DialogTitle>Immagini Immobile</DialogTitle>
-          </DialogHeader>
-          <div className="grid grid-cols-3 gap-4 overflow-auto h-full mt-4">
+          <div
+            className="grid gap-4 overflow-auto h-full mt-6"
+            style={{
+              gridTemplateColumns: '1fr',
+              scrollbarWidth: 'thin',
+              scrollbarColor: '#5e223e #f2e9e4',
+            }}
+          >
             {loadingImages ? (
-              <p>Caricamento immagini...</p>
-            ) : immagini.length ? (
+              <p className="col-span-3 text-center text-zinc-500">
+                Caricamento immagini...
+              </p>
+            ) : immagini.length > 0 ? (
               immagini.map((img) => (
                 <img
                   key={img.idImmagine}
-                  src={`http://localhost:8080/api/immagini/immobile/${currentRequest.idImmobile}/${img.filename}`}
+                  src={`http://localhost:8080${img.url}`}
                   alt="immobile"
                   className="w-full h-auto object-cover rounded"
+                  onError={(e) => {
+                    // Nasconde immagini non caricate correttamente
+                    (e.target as HTMLImageElement).style.display = 'none';
+                  }}
                 />
               ))
             ) : (
-              <p className="col-span-3 text-center text-zinc-500">
+              <div className="col-span-3 flex justify-center items-center h-full text-zinc-500">
                 Nessuna immagine disponibile
-              </p>
+              </div>
             )}
           </div>
         </DialogContent>
@@ -489,7 +439,9 @@ function AgentRequestDetails() {
             {/* Garage */}
             <div className="w-1/2 py-2">
               <p className="font-bold">Garage:</p>
-              <p className="text-zinc-600">{currentRequest.garage ? 'Sì' : 'No'}</p>
+              <p className="text-zinc-600">
+                {currentRequest.garage ? 'Sì' : 'No'}
+              </p>
             </div>
 
             {/* Classe energetica */}
@@ -532,24 +484,8 @@ function AgentRequestDetails() {
                 className="w-auto min-w-50"
                 onClick={handleVisualizzaContratti}
               >
-                Visualizza contratti
+                {loadingContratto ? 'Caricamento...' : 'Visualizza contratti'}
               </Button>
-              {/* {showPdf && (
-                <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
-                  <div className="bg-white w-4/5 h-4/5 p-4 relative">
-                    <button
-                      className="absolute top-2 right-2 text-red-500"
-                      onClick={() => setShowPdf(false)}
-                    >
-                      Chiudi
-                    </button>
-                    <iframe
-                      src={`http://localhost:8080/api/contratti/pdf/${currentRequest.pathContrattoPDF.split('/').pop()}`}
-                      className="w-full h-full"
-                    />
-                  </div>
-                </div>
-              )} */}
             </div>
 
             {/* MAPPA */}
@@ -631,7 +567,7 @@ function AgentRequestDetails() {
 
             <div className="hidden xl:block w-1/2 h-full px-3 py-1">
               <div className="bg-black/20 w-full h-full rounded-2xl flex justify-center items-center">
-                <p className="text-4xl font-bold">12+</p>
+                <p className="text-4xl font-bold">+{immagini.length}</p>
               </div>
             </div>
           </div>
