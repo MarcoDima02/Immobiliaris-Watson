@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,14 +17,13 @@ import com.residea.residea.entities.Immobile;
 import com.residea.residea.entities.PrezzoPerCap;
 import com.residea.residea.entities.Superficie;
 import com.residea.residea.entities.ValutazioneImmobile;
+import com.residea.residea.events.ValutazioneCreatedEvent;
 import com.residea.residea.repos.CittaRepo;
 import com.residea.residea.repos.DettagliImmobileRepo;
 import com.residea.residea.repos.ImmobileRepo;
 import com.residea.residea.repos.PrezzoPerCapRepo;
 import com.residea.residea.repos.SuperficiRepo;
 import com.residea.residea.repos.ValutazioneImmobileRepo;
-import org.springframework.context.ApplicationEventPublisher;
-import com.residea.residea.events.ValutazioneCreatedEvent;
 import com.residea.residea.services.ValutazioneImmobileService;
 
 @Service
@@ -493,7 +493,20 @@ public class ValutazioneServiceImpl implements ValutazioneImmobileService {
             }
 
             if (email != null && !email.isBlank()) {
-                publisher.publishEvent(new ValutazioneCreatedEvent(valutazione.getIdValutazione(), email, name, result.getValoreMin(), result.getValoreMax()));
+                publisher.publishEvent(new ValutazioneCreatedEvent(
+                    valutazione.getIdValutazione(), 
+                    email, 
+                    name, 
+                    result.getValoreMin(), 
+                    result.getValoreMax(),
+                    immobile.getTipologia() != null ? immobile.getTipologia().name() : "N/D",
+                    immobile.getIndirizzo(),
+                    immobile.getCitta(),
+                    immobile.getProvincia(),
+                    req.getSuperficie(),
+                    req.getNStanze(),
+                    req.getNBagni()
+                ));
             }
         } catch (Exception ex) {
             // non-blocking: log and continue

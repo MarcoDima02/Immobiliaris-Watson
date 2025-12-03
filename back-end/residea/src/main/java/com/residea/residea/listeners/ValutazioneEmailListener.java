@@ -32,6 +32,15 @@ public class ValutazioneEmailListener {
             vars.put("nome", ev.getUserName() == null ? "utente" : ev.getUserName());
             vars.put("valoreMin", ev.getValoreMin());
             vars.put("valoreMax", ev.getValoreMassimo());
+            
+            // Dati immobile per riepilogo
+            vars.put("tipologia", ev.getTipologia());
+            vars.put("indirizzo", ev.getIndirizzo());
+            vars.put("citta", ev.getCitta());
+            vars.put("provincia", ev.getProvincia());
+            vars.put("superficie", ev.getSuperficie());
+            vars.put("nStanze", ev.getNStanze());
+            vars.put("nBagni", ev.getNBagni());
 
             emailService.sendHtmlEmail(ev.getUserEmail(), "La tua valutazione è pronta", "emails/valutazione-created", vars);
         } catch (Exception ex) {

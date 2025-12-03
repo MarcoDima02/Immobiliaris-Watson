@@ -89,10 +89,8 @@
             font-weight: 700;
             color: #5e223e;
             margin: 15px 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
+            display: block;
+            text-align: center;
         }
 
         .valuation-range .separator {
@@ -253,6 +251,41 @@
                     <span class="amount">€<span th:text="${#numbers.formatInteger(valoreMax, 0, 'POINT')}">180000</span></span>
                 </div>
                 <p class="valuation-note">Stima basata sui dati forniti e sulle condizioni di mercato attuali</p>
+            </div>
+
+            <!-- Riepilogo dati immobile -->
+            <div class="next-steps">
+                <h3>📋 Riepilogo Immobile</h3>
+                <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+                    <tr style="border-bottom: 1px solid #e0e0e0;">
+                        <td style="padding: 10px 0; color: #777; font-size: 14px;"><strong>Tipologia:</strong></td>
+                        <td style="padding: 10px 0; color: #333; font-size: 14px; text-align: right;" th:text="${tipologia}">Appartamento</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #e0e0e0;">
+                        <td style="padding: 10px 0; color: #777; font-size: 14px;"><strong>Indirizzo:</strong></td>
+                        <td style="padding: 10px 0; color: #333; font-size: 14px; text-align: right;" th:text="${indirizzo}">Via Roma 123</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #e0e0e0;">
+                        <td style="padding: 10px 0; color: #777; font-size: 14px;"><strong>Città:</strong></td>
+                        <td style="padding: 10px 0; color: #333; font-size: 14px; text-align: right;">
+                            <span th:text="${citta}">Milano</span> (<span th:text="${provincia}">MI</span>)
+                        </td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #e0e0e0;">
+                        <td style="padding: 10px 0; color: #777; font-size: 14px;"><strong>Superficie:</strong></td>
+                        <td style="padding: 10px 0; color: #333; font-size: 14px; text-align: right;">
+                            <span th:text="${superficie}">120</span> m²
+                        </td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #e0e0e0;">
+                        <td style="padding: 10px 0; color: #777; font-size: 14px;"><strong>Stanze:</strong></td>
+                        <td style="padding: 10px 0; color: #333; font-size: 14px; text-align: right;" th:text="${nStanze}">3</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px 0; color: #777; font-size: 14px;"><strong>Bagni:</strong></td>
+                        <td style="padding: 10px 0; color: #333; font-size: 14px; text-align: right;" th:text="${nBagni}">2</td>
+                    </tr>
+                </table>
             </div>
 
             <!-- Info box con note importanti -->
