@@ -28,7 +28,11 @@ import {
 /**
  * Fetch functions
  */
-import { aggiornaStatoRichiesta, uploadContrattoPDF } from '@/api';
+import {
+  aggiornaStatoRichiesta,
+  uploadContrattoPDF,
+  allegaContrattoPDF,
+} from '@/api';
 
 /**
  * Store
@@ -115,6 +119,8 @@ function AgentRequestDetails() {
       if (!input.files?.length) return;
       const file = input.files[0];
 
+      const contrattoId = currentRequest.idContratto;
+
       try {
         const percorsoFile = await uploadContrattoPDF(file);
         toast.success('Contratto caricato!');
@@ -124,6 +130,16 @@ function AgentRequestDetails() {
           ...prev,
           pathContrattoPDF: percorsoFile,
         }));
+
+        try {
+          await allegaContrattoPDF(contrattoId, percorsoFile);
+          setTimeout(() => {
+            toast.success('Email inviata con il contratto!');
+          }, 500);
+        } catch (err) {
+          console.error(err);
+          toast.error('Errore invio email');
+        }
       } catch (err) {
         console.error(err);
         toast.error('Errore durante upload contratto');
@@ -296,7 +312,7 @@ function AgentRequestDetails() {
       >
         <DialogTitle className="sr-only">Contratto</DialogTitle>
         <DialogContent
-          className="w-4/5 h-4/5 max-w-5xl max-h-[90vh] "
+          className="w-4/5 h-4/5 max-w-5xl max-h-[90vh]"
           closeButtonClassName="text-white bg-primary p-1 cursor-pointer opacity-100 hover:bg-white hover:text-primary"
         >
           <div className="relative w-full h-full">

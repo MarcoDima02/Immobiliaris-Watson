@@ -58,3 +58,43 @@ export const uploadContrattoPDF = async (file: File) => {
 
   return response.text(); 
 };
+
+// ---- ALLEGA CONTRATTO PDF (invia email al proprietario) ----
+// export const allegaContrattoPDF = async (idContratto: number, pathPDF: string) => {
+//   const response = await fetch(
+//     http://localhost:8080/api/contratti/${idContratto}/allega-pdf,
+//     {
+//       method: 'PATCH',
+//       headers: { 'Content-Type': 'application/json' },
+//       body: JSON.stringify({ pathPDF }),
+//     }
+//   );
+
+//   if (!response.ok) {
+//     throw new Error(await response.text());
+//   }
+
+//   return response.json();
+// };
+
+export const allegaContrattoPDF = async (idContratto: number, pathPDF: string) => {
+  try {
+    const response = await fetch(
+      `http://localhost:8080/api/contratti/${idContratto}/allega-pdf`,
+      {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pathPDF }),
+      }
+    );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(errorText || 'Errore durante l\'allegato del PDF');
+    }
+    return response.json();
+  } catch (err) {
+    console.error('Errore allegando il PDF:', err);
+    throw err;
+  }
+};
