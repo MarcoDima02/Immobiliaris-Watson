@@ -102,7 +102,6 @@ function AgentRequestDetails() {
     }
   };
 
-  console.log(request)
   useEffect(() => {
     if (!currentRequest) return;
     fetchContratto();

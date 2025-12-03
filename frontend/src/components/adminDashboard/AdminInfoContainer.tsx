@@ -41,18 +41,15 @@ export default function AdminInfoContainer({ data, type }: { data: any[] | null,
 
     async function handleClick(id: number) {
         const dettagli = await getDettagliImmobile(id);
-        console.log(dettagli)
         navigate("/backoffice/admin/richiesta", {
             state: { request: dettagli }
         });
     }
 
 
-    console.log(data)
 
     const openModal = (item: any) => {
         setSelectedUser(item);
-        console.log("utente", item);
         setFormData({
             nome: item.nome,
             cognome: item.cognome,
