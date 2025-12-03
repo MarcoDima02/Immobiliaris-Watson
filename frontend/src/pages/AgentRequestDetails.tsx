@@ -309,7 +309,7 @@ function AgentRequestDetails() {
         open={statoDialogOpen}
         onOpenChange={setStatoDialogOpen}
       >
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-[425px] bg-card">
           <DialogHeader>
             <DialogTitle>Modifica stato richiesta</DialogTitle>
           </DialogHeader>
@@ -321,7 +321,7 @@ function AgentRequestDetails() {
               <SelectTrigger>
                 <SelectValue placeholder="Seleziona stato" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className='bg-card'>
                 <SelectItem value="IN_ELABORAZIONE">IN_ELABORAZIONE</SelectItem>
                 <SelectItem value="COMPLETATA">COMPLETATA</SelectItem>
                 <SelectItem value="ANNULLATA">ANNULLATA</SelectItem>
