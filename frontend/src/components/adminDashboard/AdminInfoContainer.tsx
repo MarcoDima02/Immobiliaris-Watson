@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { Button } from "../ui/button";
 import { useState } from "react";
 
@@ -6,6 +6,7 @@ export default function AdminInfoContainer({ data, type }: { data: any[] | null,
     const [showModal, setShowModal] = useState(false);
     const [selectedUser, setSelectedUser] = useState<any>(null);
     const [filterNome, setFilterNome] = useState("");
+    const [dettagliImmobile, setDettagliImmobile] = useState("");
     const [filterCognome, setFilterCognome] = useState("");
     const [formData, setFormData] = useState({
         nome: "",
@@ -14,6 +15,42 @@ export default function AdminInfoContainer({ data, type }: { data: any[] | null,
         telefono: "",
         email: "",
     });
+    async function getDettagliImmobile(id: number) {
+        try {
+            const response = await fetch(`http://localhost:8080/api/richieste/${id}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(`Errore nella fetch: ${response.status}`);
+            }
+
+            const data = await response.json();
+            setDettagliImmobile(data);
+            return data;
+
+        } catch (error) {
+            console.error("Errore durante getDettagliImmobile:", error);
+            return null;
+        }
+    }
+
+    const navigate = useNavigate();
+
+
+    async function handleClick(id: number) {
+        const dettagli = await getDettagliImmobile(id);
+        console.log(dettagli)
+        navigate("/backoffice/admin/richiesta", {
+            state: { dettagliImmobile: dettagli }
+        });
+    }
+
+
+    console.log(data)
 
     const openModal = (item: any) => {
         setSelectedUser(item);
@@ -155,6 +192,47 @@ export default function AdminInfoContainer({ data, type }: { data: any[] | null,
                                 </div>
                             </div>
                         )}
+
+                        {type === "contratti" && (
+                            <div className="flex flex-col gap-3 mb-5">
+                                <div className="flex flex-col w-full">
+                                    <div className="w-full flex justify-evenly mb-4">
+                                        <div className="w-full">
+                                            <p className="font-bold">Cliente:</p>
+                                            <p className="text-zinc-600">{item.nomeUtente} {item.cognomeUtente}</p>
+                                        </div>
+                                        <div className="w-full">
+                                            <p className="font-bold">Data contratto:</p>
+                                            <p className="text-zinc-600">
+                                                {item.dataContratto?.slice(0, 10).replace(/-/g, "/")} alle {item.dataContratto?.slice(11, 16)}
+                                            </p>
+                                        </div>
+                                        <div className="w-full">
+                                            <p className="font-bold">Data scadenza:</p>
+                                            <p className="text-zinc-600">
+                                                {item.dataScadenzaContratto?.slice(0, 10).replace(/-/g, "/")} alle {item.dataScadenzaContratto?.slice(11, 16)}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex flex-col my-3 text-zinc-600">
+                                        <p className="font-bold text-black mb-2">Immobile:</p>
+                                        <p>{item.nstanze} stanze</p>
+                                        <p>{item.nbagni} bagni</p>
+                                        <p className="mt-3 font-bold w-full">
+                                            Stato: <span className="text-primary">{item.stato?.replace(/_/g, " ")}</span>
+                                        </p>
+                                    </div>
+
+                                    <Button className="mt-4 w-full" onClick={() => handleClick(item.idImmobile)}>
+                                        Visualizza dettagli immobile
+                                    </Button>
+
+                                </div>
+                            </div>
+                        )}
+
+
                     </div>
                 ))}
             </div>
