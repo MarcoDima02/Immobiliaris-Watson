@@ -9,7 +9,12 @@ public class StaticResourceConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        // Serve i PDF dei contratti
         registry.addResourceHandler("/uploads/contratti/**")
                 .addResourceLocations("file:uploads/contratti/");
+        
+        // Serve le immagini degli immobili
+        registry.addResourceHandler("/uploads/immagini/**")
+                .addResourceLocations("file:uploads/immagini/");
     }
 }

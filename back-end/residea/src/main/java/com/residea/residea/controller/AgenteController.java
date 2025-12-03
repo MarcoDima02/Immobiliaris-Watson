@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.residea.residea.dto.AgenteRichiestaDTO;
 import com.residea.residea.dto.DashboardStatsDTO;
 import com.residea.residea.dto.RichiestaCardDTO;
+import com.residea.residea.dto.RichiestaDettagliImmobileDto;
 import com.residea.residea.services.AgenteService;
 
 /**
@@ -44,12 +44,12 @@ public class AgenteController {
      * - Valutazioni immobili
      * 
      * @param idAgente ID dell'agente
-     * @return Lista di AgenteRichiestaDTO con dati aggregati
+     * @return Lista di RichiestaDettagliImmobileDto con dati aggregati (DTO UNIFICATO)
      */
     @GetMapping("/dashboard/{idAgente}")
-    public ResponseEntity<List<AgenteRichiestaDTO>> getDashboard(@PathVariable Integer idAgente) {
+    public ResponseEntity<List<RichiestaDettagliImmobileDto>> getDashboard(@PathVariable Integer idAgente) {
         try {
-            List<AgenteRichiestaDTO> dashboardData = agenteService.getDashboardData(idAgente);
+            List<RichiestaDettagliImmobileDto> dashboardData = agenteService.getDashboardData(idAgente);
             return ResponseEntity.ok(dashboardData);
         } catch (Exception e) {
             logger.error("Errore nel fetching dashboard per agente: " + idAgente, e);
@@ -65,12 +65,12 @@ public class AgenteController {
      * (Optional: se vuoi avere endpoint specifico)
      * 
      * @param idAgente ID dell'agente
-     * @return Lista di AgenteRichiestaDTO con dati dei soli contratti
+     * @return Lista di RichiestaDettagliImmobileDto con dati dei soli contratti (DTO UNIFICATO)
      */
     @GetMapping("/contratti/{idAgente}")
-    public ResponseEntity<List<AgenteRichiestaDTO>> getContrattiByAgente(@PathVariable Integer idAgente) {
+    public ResponseEntity<List<RichiestaDettagliImmobileDto>> getContrattiByAgente(@PathVariable Integer idAgente) {
         try {
-            List<AgenteRichiestaDTO> contratti = agenteService.getDashboardData(idAgente);
+            List<RichiestaDettagliImmobileDto> contratti = agenteService.getDashboardData(idAgente);
             return ResponseEntity.ok(contratti);
         } catch (Exception e) {
             return ResponseEntity.status(500).body(null);
@@ -84,12 +84,12 @@ public class AgenteController {
      * Include: contratti, immobili, dettagli immobili, superfici, richieste, valutazioni, utenti.
      * 
      * @param idAgente ID dell'agente
-     * @return Lista di AgenteRichiestaDTO con dati aggregati delle richieste
+     * @return Lista di RichiestaDettagliImmobileDto con dati aggregati delle richieste (DTO UNIFICATO)
      */
     @GetMapping("/richieste-prese-in-carico/{idAgente}")
-    public ResponseEntity<List<AgenteRichiestaDTO>> getRichiestePrese(@PathVariable Integer idAgente) {
+    public ResponseEntity<List<RichiestaDettagliImmobileDto>> getRichiestePrese(@PathVariable Integer idAgente) {
         try {
-            List<AgenteRichiestaDTO> richieste = agenteService.getDashboardData(idAgente);
+            List<RichiestaDettagliImmobileDto> richieste = agenteService.getDashboardData(idAgente);
             return ResponseEntity.ok(richieste);
         } catch (Exception e) {
             logger.error("Errore nel fetching richieste prese in carico per agente: " + idAgente, e);
@@ -103,12 +103,12 @@ public class AgenteController {
      * Restituisce i dettagli completi di una singola richiesta/contratto.
      * 
      * @param idContratto ID del contratto
-     * @return AgenteRichiestaDTO con dettagli della richiesta
+     * @return RichiestaDettagliImmobileDto con dettagli della richiesta (DTO UNIFICATO)
      */
     @GetMapping("/richiesta-dettagli/{idContratto}")
-    public ResponseEntity<AgenteRichiestaDTO> getRichiestaDettagli(@PathVariable Integer idContratto) {
+    public ResponseEntity<RichiestaDettagliImmobileDto> getRichiestaDettagli(@PathVariable Integer idContratto) {
         try {
-            AgenteRichiestaDTO richiestaDettagli = agenteService.getRichiestaDettagli(idContratto);
+            RichiestaDettagliImmobileDto richiestaDettagli = agenteService.getRichiestaDettagli(idContratto);
             if (richiestaDettagli != null) {
                 return ResponseEntity.ok(richiestaDettagli);
             } else {
