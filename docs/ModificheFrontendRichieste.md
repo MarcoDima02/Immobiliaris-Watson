@@ -17,7 +17,125 @@ Questo documento descrive le modifiche necessarie al frontend per integrare le n
 
 ## 🔧 Modifiche Richieste
 
-### 1. Form Valutazione - Consenso Privacy GDPR
+### 1. Pulsante "Prendi in Carico" - Chiamata API
+
+**File**: `frontend/src/components/agentDashboard/AgentRequestDiv.tsx`
+
+**Problema**: Il pulsante "Prendi in carico" non fa nulla.
+
+**Soluzione**: Aggiungere funzione che chiama l'endpoint backend.
+
+**API Service** - Creare/aggiornare `frontend/src/api/agente.ts`:
+
+```typescript
+export const prendiInCaricoRichiesta = async (idAgente: number, idRichiesta: number) => {
+  const response = await fetch(
+    `http://localhost:8080/api/agente/${idAgente}/richieste/${idRichiesta}/prendi-in-carico`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  );
+  
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(`Errore nella richiesta: ${response.status} - ${error}`);
+  }
+  
+  return response;
+};
+```
+
+**Modifica componente** `AgentRequestDiv.tsx`:
+
+```tsx
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router";
+import { prendiInCaricoRichiesta } from "@/api/agente";
+import { useAuthStore } from "@/store/auth.store";
+import { useState } from "react";
+
+function AgentRequestDiv({ request, key }: { request: any; key: number }) {
+    const { user } = useAuthStore();
+    const [loading, setLoading] = useState(false);
+
+    const handlePrendiInCarico = async () => {
+        if (!user?.idUtente) return;
+        
+        setLoading(true);
+        try {
+            await prendiInCaricoRichiesta(user.idUtente, request.idRichiesta);
+            alert('Richiesta presa in carico con successo! Email inviata al proprietario.');
+            window.location.reload(); // Ricarica per aggiornare la lista
+        } catch (error) {
+            console.error('Errore:', error);
+            alert('Errore nel prendere in carico la richiesta');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <div key={key} className="bg-white p-4 rounded-xl shadow-md text-black">
+            {/* ... resto del codice ... */}
+            
+            {!request.idContratto && (
+                <Button 
+                    variant={"outline"} 
+                    className="mt-2 w-full"
+                    onClick={handlePrendiInCarico}
+                    disabled={loading}
+                >
+                    {loading ? 'Caricamento...' : 'Prendi in carico'}
+                </Button>
+            )}
+        </div>
+    );
+}
+```
+
+**Nota**: Quando l'agente clicca "Prendi in carico":
+1. Backend crea un Contratto per l'immobile
+2. Cambia stato richiesta da IN_ATTESA → IN_ELABORAZIONE
+3. Invia automaticamente email al proprietario con dati agente
+
+---
+
+### 2. Dashboard Agenti - Fix Chiavi React
+
+**File**: `frontend/src/pages/AgentMyRequests.tsx`
+
+**Problema**: Warning React "Encountered two children with the same key".
+
+**Causa**: Le richieste IN_ATTESA hanno `idContratto: null`, quindi `Number(null)` = `0` crea chiavi duplicate.
+
+**Soluzione**: Usare `idRichiesta` come chiave invece di `idContratto`.
+
+**Modifica da applicare** (linea ~58):
+
+```tsx
+// PRIMA (ERRATO):
+filtered.map((request: any) => (
+  <AgentRequestDiv
+    key={Number(request.idContratto)}  // ❌ Crea duplicati
+    request={request}
+  />
+))
+
+// DOPO (CORRETTO):
+filtered.map((request: any) => (
+  <AgentRequestDiv
+    key={request.idRichiesta}  // ✅ Chiave unica
+    request={request}
+  />
+))
+```
+
+---
+
+### 3. Form Valutazione - Consenso Privacy GDPR
 
 **File**: `frontend/src/components/form/StepUser.tsx`
 
@@ -87,39 +205,7 @@ defaultValues: {
 
 ---
 
-### 2. Dashboard Agenti - Fix Chiavi React
-
-**File**: `frontend/src/pages/AgentMyRequests.tsx`
-
-**Problema**: Warning React "Encountered two children with the same key".
-
-**Causa**: Le richieste IN_ATTESA hanno `idContratto: null`, quindi `Number(null)` = `0` crea chiavi duplicate.
-
-**Soluzione**: Usare `idRichiesta` come chiave invece di `idContratto`.
-
-**Modifica da applicare** (linea ~58):
-
-```tsx
-// PRIMA (ERRATO):
-filtered.map((request: any) => (
-  <AgentRequestDiv
-    key={Number(request.idContratto)}  // ❌ Crea duplicati
-    request={request}
-  />
-))
-
-// DOPO (CORRETTO):
-filtered.map((request: any) => (
-  <AgentRequestDiv
-    key={request.idRichiesta}  // ✅ Chiave unica
-    request={request}
-  />
-))
-```
-
----
-
-### 3. Dettagli Richiesta - Rendering Null-Safe
+### 4. Dettagli Richiesta - Rendering Null-Safe
 
 **File**: `frontend/src/pages/AgentRequestDetails.tsx`
 
@@ -294,16 +380,20 @@ Il backend invia automaticamente email in questi casi:
 
 ## ✅ Checklist Implementazione
 
+- [ ] **Pulsante "Prendi in Carico"**: Aggiungere funzione `handlePrendiInCarico` con chiamata API
+- [ ] **API Service**: Creare funzione `prendiInCaricoRichiesta` in `agente.ts`
 - [ ] Aggiungere checkbox privacy in `StepUser.tsx`
 - [ ] Aggiungere validazione `accettazioneTrattamentoDati` nello schema Zod
 - [ ] Aggiungere campo al tipo `FormPayload`
 - [ ] Cambiare chiave React da `idContratto` a `idRichiesta` in `AgentMyRequests.tsx`
 - [ ] Aggiungere controlli null per valutazione in `AgentRequestDetails.tsx`
 - [ ] Correggere `nstanze` → `nStanze` e `nbagni` → `nBagni`
+- [ ] Testare "Prendi in Carico" (deve creare contratto e inviare email)
 - [ ] Testare submit form con checkbox privacy unchecked (deve fallire)
 - [ ] Testare submit form con checkbox privacy checked (deve funzionare)
 - [ ] Verificare nessun warning "duplicate keys" in console React
 - [ ] Testare visualizzazione dettagli richiesta senza valutazione
+- [ ] Verificare email in MailHog dopo "Prendi in Carico"
 
 ---
 
