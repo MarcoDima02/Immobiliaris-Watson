@@ -262,7 +262,7 @@ export default function AdminInfoContainer({
                                     <Button
                                         className="mt-4 w-full"
                                         variant={'outline'}
-                                        onClick={() => window.open(item.pathContrattoPDF, '_blank')}
+                                        onClick={() => window.open(`http://localhost:8080${item.pathContrattoPDF}`, '_blank')}
                                     >
                                         Visualizza contratto
                                     </Button>
