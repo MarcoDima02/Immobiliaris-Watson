@@ -34,7 +34,9 @@ import com.residea.residea.services.DettagliImmobileService;
 import com.residea.residea.services.ImmagineService;
 import com.residea.residea.services.ImmobileService;
 import com.residea.residea.services.RichiestaService;
+import com.residea.residea.services.SuperficieService;
 import com.residea.residea.services.UtentiService;
+import com.residea.residea.services.ValutazioneImmobileService;
 import com.residea.residea.services.VenditaService;
 
 import jakarta.servlet.http.HttpSession;
@@ -58,11 +60,17 @@ public class AmministratoreDashboard {
         @Autowired
         private RichiestaService richiestaService;
 
-        @Autowired
-        private DettagliImmobileService dettagliImmobileService;
+    @Autowired
+    private DettagliImmobileService dettagliImmobileService;
 
         @Autowired
         private ImmagineService immagineService;
+
+        @Autowired
+        private SuperficieService superficieService;
+
+        @Autowired
+        private ValutazioneImmobileService valutazioneImmobileService;
 
         // Controllo amministratore
     private boolean isAmministratore(HttpSession session) {
@@ -497,6 +505,33 @@ public ResponseEntity<Vendita> updateVendita(@PathVariable Integer id, @RequestB
                 d.setClasseEnergetica(dettagli.getClasseEnergetica() == null ? null : dettagli.getClasseEnergetica().getDisplayValue());
                 d.setEsposizione(dettagli.getEsposizione());
                 d.setPrezzo(dettagli.getPrezzo() == null ? null : dettagli.getPrezzo().doubleValue());
+            }
+            
+            // Dati Superfici
+            java.util.Optional<com.residea.residea.entities.Superficie> supOpt = superficieService.getSuperficieById(immobile.getIdImmobile());
+            if (supOpt.isPresent()) {
+                com.residea.residea.entities.Superficie sup = supOpt.get();
+                d.setSuperficieMq(sup.getSuperficieMq());
+                d.setSuperficieBalconeTerrazzo(sup.getSuperficieBalconeTerrazzo());
+                d.setSuperficieGiardino(sup.getSuperficieGiardino());
+                d.setSuperficieGarage(sup.getSuperficieGarage());
+                d.setSuperficieCantina(sup.getSuperficieCantina());
+            }
+            
+            // Dati Valutazione
+            try {
+                com.residea.residea.entities.ValutazioneImmobile valutazione = valutazioneImmobileService.getValutazioneByIdImmobile(immobile.getIdImmobile());
+                if (valutazione != null) {
+                    d.setIdValutazione(valutazione.getIdValutazione());
+                    d.setValoreBase(valutazione.getValoreBase() == null ? null : valutazione.getValoreBase().longValue());
+                    d.setFattoreAggiustamento(valutazione.getFattoreAggiustamento());
+                    d.setValoreMedio(valutazione.getValoreMedio() == null ? null : valutazione.getValoreMedio().longValue());
+                    d.setValoreMin(valutazione.getValoreMin() == null ? null : valutazione.getValoreMin().longValue());
+                    d.setValoreMax(valutazione.getValoreMax() == null ? null : valutazione.getValoreMax().longValue());
+                    d.setConfidence(valutazione.getConfidence());
+                }
+            } catch (Exception e) {
+                // Valutazione non trovata - campi rimangono null
             }
         }
         
