@@ -77,7 +77,7 @@ export default function AdminInfoContainer({ data, type }: { data: any[] | null,
                                                 </p>
                                             </div>
 
-                                            <Link to="/backoffice/admin/request" state={{ item }}>
+                                            <Link to="/backoffice/admin/richiesta" state={{ item }}>
                                                 <Button className="mt-4 w-full">Visualizza dettagli</Button>
                                             </Link>
                                         </div>

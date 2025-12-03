@@ -25,13 +25,31 @@ mapboxgl.accessToken = mapboxgl.accessToken =
 
 function AgentRequestDetails() {
   const location = useLocation();
-  const { request } = location.state || {};
+
+  // Prende quello che esiste: prima request, altrimenti item
+  const request = location.state?.request || location.state?.item || null;
+
+  // Se esiste anche item separato, lo prendo
+  const item = location.state?.item || location.state?.request || null;
+
   const [loadingStato, setLoadingStato] = useState(false);
   const [showPdf, setShowPdf] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [nuovoStato, setNuovoStato] = useState(request.statoRichiesta);
+
+  // Stato iniziale: se c’è request prendo il suo stato, altrimenti prendo da item
+  const [nuovoStato, setNuovoStato] = useState(
+    location.state?.request?.statoRichiesta ??
+    location.state?.item?.statoRichiesta ??
+    null
+  );
+
+  // Se NON ho né request né item, proteggo la pagina
+  if (!request && !item) {
+    return <p>Errore: nessun dato ricevuto</p>;
+  }
 
 
+  console.log(item);
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
 
   const handleModificaStato = async () => {
@@ -354,7 +372,7 @@ function AgentRequestDetails() {
             <div className="flex flex-col">
               <p className="text-black font-bold">Stato attuale:</p>
               <p className="text-primary font-medium">
-                {nuovoStato || request.statoRichiesta.replace(/_/g, ' ')}
+                {/* {nuovoStato || request.statoRichiesta.replace(/_/g, ' ')} */}
               </p>
             </div>
 
@@ -411,14 +429,11 @@ function AgentRequestDetails() {
             <h2 className="font-bold text-black text-xl md:text-2xl tracking-tight">
               Stima dell'immobile
             </h2>
-
             {/* Valore effettivo (PRINCIPALE) */}
             <div className="text-center py-4">
-              <p className="text-zinc-600 font-medium">
-                Valore effettivo stimato
-              </p>
+              <p className="text-zinc-600 font-medium">Valore effettivo stimato</p>
               <p className="text-primary text-4xl md:text-5xl lg:text-6xl font-extrabold mt-2">
-                {request.valoreMedio.toLocaleString()} €
+                {((request?.valoreMedio ?? item?.valoreMedio) ?? 0).toLocaleString()} €
               </p>
             </div>
 
@@ -429,11 +444,11 @@ function AgentRequestDetails() {
             <div className="flex flex-col gap-1">
               <div className="flex justify-between items-center text-black font-bold text-lg md:text-xl">
                 <span className="truncate">
-                  {request.valoreMin.toLocaleString()} €
+                  {((request?.valoreMin ?? item?.valoreMin) ?? 0).toLocaleString()} €
                 </span>
                 <span className="mx-3 text-zinc-300 text-xl">•</span>
                 <span className="truncate text-right">
-                  {request.valoreMax.toLocaleString()} €
+                  {((request?.valoreMax ?? item?.valoreMax) ?? 0).toLocaleString()} €
                 </span>
               </div>
 

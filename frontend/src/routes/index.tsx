@@ -101,6 +101,10 @@ const router = createBrowserRouter([
           {
             path: 'richieste',
             element: <AdminDashboard type={"richiesta"} />
+          },
+          {
+            path: 'richiesta',
+            element: <AgentRequestDetails />
           }
         ]
       },
