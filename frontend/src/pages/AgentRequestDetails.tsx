@@ -9,6 +9,23 @@ import mapboxgl from 'mapbox-gl';
  * Components
  */
 import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogClose,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { toast } from 'sonner';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 /**
  * Fetch functions
@@ -28,29 +45,53 @@ function AgentRequestDetails() {
   const { request } = location.state || {};
   const [loadingStato, setLoadingStato] = useState(false);
   const [showPdf, setShowPdf] = useState(false);
+  const [statoDialogOpen, setStatoDialogOpen] = useState(false);
+  const [nuovoStato, setNuovoStato] = useState('');
 
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
 
-  const handleModificaStato = async () => {
-    const nuovoStato = prompt(
-      'Nuovo stato (IN_ELABORAZIONE, COMPLETATA, ANNULLATA)'
-    );
-    if (!nuovoStato) return;
+  // const handleModificaStato = async () => {
+  //   const nuovoStato = prompt(
+  //     'Nuovo stato (IN_ELABORAZIONE, COMPLETATA, ANNULLATA)'
+  //   );
+  //   if (!nuovoStato) return;
 
+  //   try {
+  //     await aggiornaStatoRichiesta(request.idRichiesta, nuovoStato);
+  //     alert('Stato aggiornato!');
+  //     window.location.reload();
+  //   } catch (err) {
+  //     console.error(err);
+  //     alert("Errore nell'aggiornamento dello stato");
+  //   }
+  // };
+
+  const handleApriModificaStato = () => {
+    setNuovoStato(request?.statoRichiesta || '');
+    setStatoDialogOpen(true);
+  };
+  const handleChiudiModificaStato = () => setStatoDialogOpen(false);
+
+  const handleConfermaStato = async () => {
+    if (!nuovoStato) return toast.error('Inserisci uno stato valido!');
+
+    setLoadingStato(true);
     try {
       await aggiornaStatoRichiesta(request.idRichiesta, nuovoStato);
-      alert('Stato aggiornato!');
+      toast.success('Stato aggiornato con successo!');
       window.location.reload();
     } catch (err) {
       console.error(err);
-      alert("Errore nell'aggiornamento dello stato");
+      toast.error('Errore aggiornamento stato');
+    } finally {
+      setLoadingStato(false);
+      setStatoDialogOpen(false);
     }
   };
 
   // const handleUploadContratto = async () => {
-  //   if (!request.idContratto) {
+  //   if (!request.idContratto)
   //     return alert('La richiesta non ha ancora un contratto!');
-  //   }
 
   //   const input = document.createElement('input');
   //   input.type = 'file';
@@ -62,7 +103,9 @@ function AgentRequestDetails() {
 
   //     try {
   //       const percorsoFile = await uploadContrattoPDF(file);
-  //       alert('Contratto caricato! Percorso: ' + percorsoFile);
+  //       alert('Contratto caricato!');
+
+  //       request.pathContrattoPDF = percorsoFile;
   //     } catch (err) {
   //       console.error(err);
   //       alert('Errore durante upload contratto');
@@ -71,10 +114,9 @@ function AgentRequestDetails() {
 
   //   input.click();
   // };
-
   const handleUploadContratto = async () => {
     if (!request.idContratto)
-      return alert('La richiesta non ha ancora un contratto!');
+      return toast.error('La richiesta non ha ancora un contratto!');
 
     const input = document.createElement('input');
     input.type = 'file';
@@ -85,24 +127,54 @@ function AgentRequestDetails() {
       const file = input.files[0];
 
       try {
-        const percorsoFile = await uploadContrattoPDF(file); 
-        alert('Contratto caricato!');
-
-        
+        const percorsoFile = await uploadContrattoPDF(file);
+        toast.success('Contratto caricato!');
         request.pathContrattoPDF = percorsoFile;
       } catch (err) {
         console.error(err);
-        alert('Errore durante upload contratto');
+        toast.error('Errore durante upload contratto');
       }
     };
 
     input.click();
   };
 
+  // const handleVisualizzaContratti = () => {
+  //   if (!request.pathContrattoPDF) return alert('Nessun contratto disponibile');
+  //   setShowPdf(true);
+  // };
   const handleVisualizzaContratti = () => {
-    if (!request.pathContrattoPDF) return alert('Nessun contratto disponibile');
+    if (!request.pathContrattoPDF)
+      return toast.error('Nessun contratto disponibile');
     setShowPdf(true);
   };
+
+  // const handleUploadImages = async () => {
+  //   const input = document.createElement('input');
+  //   input.type = 'file';
+  //   input.accept = 'image/*';
+  //   input.multiple = true;
+
+  //   input.onchange = async () => {
+  //     const files = input.files;
+  //     if (!files?.length) return;
+
+  //     const formData = new FormData();
+  //     for (let f of files) formData.append('files', f);
+
+  //     await fetch(
+  //       `http://localhost:8080/api/immobili/${request.idImmobile}/immagini`,
+  //       {
+  //         method: 'POST',
+  //         body: formData,
+  //       }
+  //     );
+
+  //     alert('Immagini caricate');
+  //   };
+
+  //   input.click();
+  // };
 
   const handleUploadImages = async () => {
     const input = document.createElement('input');
@@ -117,19 +189,24 @@ function AgentRequestDetails() {
       const formData = new FormData();
       for (let f of files) formData.append('files', f);
 
-      await fetch(
-        `http://localhost:8080/api/immobili/${request.idImmobile}/immagini`,
-        {
-          method: 'POST',
-          body: formData,
-        }
-      );
-
-      alert('Immagini caricate');
+      try {
+        await fetch(
+          `http://localhost:8080/api/immobili/${request.idImmobile}/immagini`,
+          { method: 'POST', body: formData }
+        );
+        toast.success('Immagini caricate!');
+      } catch (err) {
+        console.error(err);
+        toast.error('Errore caricamento immagini');
+      }
     };
 
     input.click();
   };
+
+  // const handleViewImages = () => {
+  //   window.location.href = `/immobile/${request.idImmobile}/immagini`;
+  // };
 
   const handleViewImages = () => {
     window.location.href = `/immobile/${request.idImmobile}/immagini`;
@@ -177,6 +254,69 @@ function AgentRequestDetails() {
   return (
     <>
       <Button onClick={() => history.back()}>Indietro</Button>
+
+      {/* --- Dialog Modifica Stato --- */}
+      <Dialog
+        open={statoDialogOpen}
+        onOpenChange={setStatoDialogOpen}
+      >
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Modifica stato richiesta</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <Select
+              value={nuovoStato}
+              onValueChange={setNuovoStato}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Seleziona stato" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="IN_ELABORAZIONE">IN_ELABORAZIONE</SelectItem>
+                <SelectItem value="COMPLETATA">COMPLETATA</SelectItem>
+                <SelectItem value="ANNULLATA">ANNULLATA</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={handleChiudiModificaStato}
+            >
+              Annulla
+            </Button>
+            <Button
+              onClick={handleConfermaStato}
+              disabled={loadingStato}
+            >
+              {loadingStato ? 'Caricamento...' : 'Conferma'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* --- Dialog PDF --- */}
+      <Dialog
+        open={showPdf}
+        onOpenChange={setShowPdf}
+        
+      >
+        <DialogContent 
+        className="w-4/5 h-4/5 max-w-5xl max-h-[90vh]" 
+        closeButtonClassName="text-white bg-primary p-1 cursor-pointer opacity-100 hover:bg-white hover:text-primary">
+
+          <div className="relative w-full h-full">
+          
+            {request.pathContrattoPDF && (
+              <iframe
+                src={`http://localhost:8080/api/contratti/pdf/${request.pathContrattoPDF.split('/').pop()}`}
+                className="w-full h-full"
+              />
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <div className="flex flex-col lg:flex-row flex-wrap pb-5">
         {/* INFO CLIENTE + IMMOBILE */}
@@ -281,7 +421,7 @@ function AgentRequestDetails() {
             {/* Bottone modifica stato */}
             <Button
               className="w-auto min-w-50"
-              onClick={handleModificaStato}
+              onClick={handleApriModificaStato}
             >
               {loadingStato ? 'Caricamento...' : 'Modifica stato'}
             </Button>
@@ -309,7 +449,7 @@ function AgentRequestDetails() {
               >
                 Visualizza contratti
               </Button>
-              {showPdf && (
+              {/* {showPdf && (
                 <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
                   <div className="bg-white w-4/5 h-4/5 p-4 relative">
                     <button
@@ -324,7 +464,7 @@ function AgentRequestDetails() {
                     />
                   </div>
                 </div>
-              )}
+              )} */}
             </div>
 
             {/* MAPPA */}
