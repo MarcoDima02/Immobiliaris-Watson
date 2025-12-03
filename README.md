@@ -137,22 +137,73 @@ Sistema di valutazione basato su:
 
 ## Team
 
-Referente Aziendale:
-Paolo Ghirlinzoni – Immobiliaris / Gruppo Indomus
+**Gruppo:** Immobiliaris Watson  
+**Referente Aziendale:** Paolo Ghirlinzoni – Immobiliaris / Gruppo Indomus  
+**Studio di Sviluppo:** Prisma Studio
 
-Team di Sviluppo:
-Prisma Studio - Team Immobiliaris Watson
+### Membri del Team e Ruoli
 
-Marco Dima – Team Leader & Software Developer – [MarcoDima02](https://github.com/MarcoDima02)
-Alessandro Grotta – Software Developer – [Grottino](https://github.com/Grottino)
-Andrea Bellissimo – Software Developer – [AndreaBellissimo](https://github.com/AndreaBellissimo)
+#### Software Developers
 
-Massimo Musso – Web Developer – [Max-HKW](https://github.com/Max-HKW)
-Davide Martinelli – Web developer – [davide-its](https://github.com/davide-its)
+**Marco Dima** – Team Leader & Software Developer – [@MarcoDima02](https://github.com/MarcoDima02)
+- Coordinamento generale del progetto
+- Architettura backend e database
+- Sviluppo API REST con Spring Boot
+- Gestione repository e CI/CD
+- Integrazione servizi e deployment
 
-Alessia Valendino – Digital Strategist – [alessiavalendino](https://github.com/alessiavalendino)
-Irene Dabusti – Digital Strategist – [irenedabusti](https://github.com/irenedabusti)
-Asmaa Tantaoui – Digital Strategist – [AsmaaTantaoui](https://github.com/AsmaaTantaoui)
+**Alessandro Grotta** – Software Developer – [@Grottino](https://github.com/Grottino)
+- Sviluppo backend Java + Spring Boot
+- Implementazione business logic
+- Gestione autenticazione e sicurezza
+- Testing e debugging backend
+- Ottimizzazione query database
+
+**Andrea Bellissimo** – Software Developer – [@AndreaBellissimo](https://github.com/AndreaBellissimo)
+- Sviluppo backend e API REST
+- Configurazione e gestione database MySQL
+- Implementazione servizi email e automazioni
+- Testing e validazione dati
+- Documentazione tecnica
+
+#### Web Developers
+
+**Massimo Musso** – Web Developer – [@Max-HKW](https://github.com/Max-HKW)
+- Sviluppo frontend React + TypeScript
+- Implementazione UI/UX da mockup
+- Integrazione API REST
+- Form validation e gestione stato
+- Responsive design e accessibility
+
+**Davide Martinelli** – Web Developer – [@davide-its](https://github.com/davide-its)
+- Sviluppo frontend e componenti React
+- Ottimizzazione performance frontend
+- SEO on-page e technical (meta tag, structured data)
+- Testing cross-browser e responsive
+- Implementazione design system
+
+#### Digital Strategists
+
+**Alessia Valendino** – Digital Strategist – [@alessiavalendino](https://github.com/alessiavalendino)
+- Analisi buyer persona e competitor
+- Definizione strategia di comunicazione
+- Gestione campagne Meta Ads
+- Content strategy e copywriting
+- Analytics e reportistica
+
+**Irene Dabusti** – Digital Strategist – [@irenedabusti](https://github.com/irenedabusti)
+- Definizione TOV e linee editoriali
+- Proposta visual identity e branding
+- Copywriting sito e ottimizzazione SEO
+- Social media strategy
+- Lead generation e funnel
+
+**Asmaa Tantaoui** – Digital Strategist – [@AsmaaTantaoui](https://github.com/AsmaaTantaoui)
+- Gestione campagne Google Ads e Performance Max
+- Strategia di conversione lead
+- PED (Piano Editoriale Digitale)
+- Marketing automation
+- A/B testing e ottimizzazione conversioni
 
 ---
 
@@ -337,35 +388,240 @@ In sviluppo - sviluppo frontend e backend, strategia in definizione
 
 ## Come Iniziare
 
+Questa sezione contiene istruzioni complete per installare e avviare il progetto su una macchina pulita (fisica o virtuale). Le istruzioni sono state testate e garantiscono la replicabilità della release.
+
 ### Prerequisiti
 
+Prima di iniziare, assicurati di avere installato:
+
+- **Java Development Kit (JDK) 21** - [Download](https://www.oracle.com/java/technologies/downloads/#java21)
+- **Node.js 18+** e **npm** - [Download](https://nodejs.org/)
+- **MySQL 8.0+** - [Download](https://dev.mysql.com/downloads/mysql/)
+- **Git** - [Download](https://git-scm.com/downloads)
+- **Docker** (opzionale, per MailHog) - [Download](https://www.docker.com/products/docker-desktop/)
+
+Verifica le versioni installate:
+
 ```bash
-- Java 21
-- Node.js 18+
-- MySQL 8.0+
-- Git
+java -version        # Dovrebbe mostrare Java 21
+node -v              # Dovrebbe mostrare v18.x o superiore
+npm -v               # Dovrebbe mostrare 9.x o superiore
+mysql --version      # Dovrebbe mostrare 8.0.x
+git --version        # Dovrebbe mostrare 2.x
 ```
 
-### Setup Locale (In Sviluppo)
+### Setup Completo del Progetto
+
+#### 1. Clone del Repository
 
 ```bash
-# Clone repository
-git clone https://github.com/[org]/immobiliaris-watson.git
-cd immobiliaris-watson
+# Clona il repository
+git clone https://github.com/MarcoDima02/Immobiliaris-Watson.git
+cd Immobiliaris-Watson
+```
 
-# Backend setup
-cd backend
+#### 2. Setup Database
+
+```bash
+# Avvia MySQL (se non già in esecuzione)
+# Windows: Avvia il servizio MySQL dal pannello servizi
+# Linux/Mac: sudo systemctl start mysql
+
+# Accedi a MySQL
+mysql -u root -p
+
+# Crea il database e importa lo schema
+CREATE DATABASE residea;
+USE residea;
+SOURCE database/init/01-init-schema.sql;
+
+# (Opzionale) Popola il database con dati di esempio
+SOURCE database/seeds/popolazioneDb.sql;
+
+# Esci da MySQL
+EXIT;
+```
+
+**Nota:** Se riscontri problemi di connessione, verifica le credenziali in `back-end/residea/src/main/resources/application.properties`.
+
+#### 3. Setup Backend (Spring Boot)
+
+```bash
+# Entra nella directory del backend
+cd back-end/residea
+
+# Compila il progetto con Maven Wrapper (Windows)
+mvnw.cmd clean install
+
+# Compila il progetto con Maven Wrapper (Linux/Mac)
 ./mvnw clean install
+
+# Avvia il server Spring Boot (Windows)
+mvnw.cmd spring-boot:run
+
+# Avvia il server Spring Boot (Linux/Mac)
 ./mvnw spring-boot:run
-
-# Frontend setup
-cd frontend
-npm install
-npm run dev
-
-# Database setup
-mysql -u root -p < database/schema.sql
 ```
+
+Il backend sarà disponibile su: **http://localhost:8080**
+
+**Verifica funzionamento:**
+```bash
+# Testa un endpoint
+curl http://localhost:8080/api/utenti
+```
+
+#### 4. Setup Frontend (React + TypeScript)
+
+Apri un **nuovo terminale** (mantieni il backend in esecuzione):
+
+```bash
+# Dalla root del progetto, entra nella directory frontend
+cd frontend
+
+# Installa le dipendenze
+npm install
+
+# Avvia il server di sviluppo
+npm run dev
+```
+
+Il frontend sarà disponibile su: **http://localhost:5173**
+
+**Verifica funzionamento:** Apri il browser e vai su http://localhost:5173
+
+#### 5. Setup MailHog (Servizio Email - Opzionale)
+
+MailHog è utilizzato in sviluppo per testare l'invio email senza inviare email reali.
+
+```bash
+# Con Docker
+docker run -d -p 1025:1025 -p 8025:8025 --name mailhog mailhog/mailhog
+
+# Oppure con Docker Compose (dalla root del progetto)
+docker-compose -f docker-compose.dev.yml up mailhog -d
+```
+
+MailHog Web UI disponibile su: **http://localhost:8025**
+
+### Configurazione Ambiente
+
+#### Variabili d'Ambiente Backend
+
+Il file `back-end/residea/src/main/resources/application.properties` contiene le configurazioni:
+
+```properties
+# Database
+spring.datasource.url=jdbc:mysql://localhost:3306/residea
+spring.datasource.username=root
+spring.datasource.password=your_password_here
+
+# Server
+server.port=8080
+
+# Email (MailHog)
+spring.mail.host=localhost
+spring.mail.port=1025
+
+# Upload Immagini
+immagini.upload-dir=uploads/immagini
+spring.servlet.multipart.max-file-size=10MB
+spring.servlet.multipart.max-request-size=50MB
+```
+
+**Importante:** Modifica `spring.datasource.password` con la password del tuo database MySQL.
+
+#### Variabili d'Ambiente Frontend
+
+Il frontend utilizza Vite. Verifica `frontend/vite.config.ts` per la configurazione del proxy API.
+
+### Struttura Comandi Rapidi
+
+```bash
+# Backend
+cd back-end/residea
+mvnw.cmd spring-boot:run          # Windows
+./mvnw spring-boot:run             # Linux/Mac
+
+# Frontend
+cd frontend
+npm run dev                        # Development server
+npm run build                      # Build produzione
+npm run preview                    # Preview build produzione
+
+# Database
+mysql -u root -p residea < database/init/01-init-schema.sql
+mysql -u root -p residea < database/seeds/popolazioneDb.sql
+
+# Docker (MailHog)
+docker-compose -f docker-compose.dev.yml up mailhog -d
+docker-compose -f docker-compose.dev.yml down
+```
+
+### Troubleshooting
+
+#### Problema: Backend non si avvia
+
+**Errore:** `Cannot connect to database`
+- Verifica che MySQL sia in esecuzione
+- Controlla username/password in `application.properties`
+- Assicurati che il database `residea` esista
+
+**Errore:** `Port 8080 already in use`
+- Cambia porta in `application.properties`: `server.port=8081`
+
+#### Problema: Frontend non si connette al backend
+
+**Errore:** `Network Error` o `CORS error`
+- Verifica che il backend sia in esecuzione su localhost:8080
+- Controlla la configurazione proxy in `vite.config.ts`
+
+#### Problema: Immagini non si caricano
+
+- Assicurati che la directory `back-end/residea/uploads/immagini` esista
+- Verifica i permessi di scrittura sulla directory
+- Controlla la configurazione in `application.properties`
+
+### Ripristino Stato Iniziale del Progetto
+
+Per ripristinare il database allo stato iniziale:
+
+```bash
+# Accedi a MySQL
+mysql -u root -p
+
+# Elimina e ricrea il database
+DROP DATABASE IF EXISTS residea;
+CREATE DATABASE residea;
+USE residea;
+
+# Importa schema iniziale
+SOURCE database/init/01-init-schema.sql;
+
+# Popola con dati di esempio
+SOURCE database/seeds/popolazioneDb.sql;
+
+EXIT;
+```
+
+### Accesso alle Funzionalità
+
+Una volta avviato il progetto, puoi accedere a:
+
+- **Frontend:** http://localhost:5173
+- **Backend API:** http://localhost:8080/api
+- **MailHog UI:** http://localhost:8025 (se avviato)
+- **Database:** MySQL su localhost:3306
+
+**Utenti di test** (disponibili dopo il seed del database):
+
+| Ruolo | Email | Password |
+|-------|-------|----------|
+| Amministratore | anna.verdi@example.com | admin123 |
+| Agente | sofia.costa@example.com | agente123 |
+| Utente | utente@example.com | |
+
+**Nota:** Le password sono hash bcrypt nel database. Verifica il file `database/seeds/popolazioneDb.sql` per i dettagli.
 
 ---
 
@@ -537,7 +793,7 @@ develop (staging) ────────────────────�
 
 ---
 
-**Ultimo aggiornamento:** Novembre 2025
+**Ultimo aggiornamento:** Dicembre 2025
 **Versione:** 0.1.0 (Alpha)
 **Status:** 🚀 In Development
 
