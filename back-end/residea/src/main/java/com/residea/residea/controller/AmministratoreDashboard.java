@@ -391,6 +391,13 @@ public ResponseEntity<Vendita> updateVendita(@PathVariable Integer id, @RequestB
         d.setIdContratto(c.getIdContratto());
         d.setIdImmobile(c.getIdImmobile() == null ? null : c.getIdImmobile().getIdImmobile());
         d.setIdAgente(c.getAgente() == null ? null : c.getAgente().getIdUtente());
+        
+        // Aggiungi nome e cognome dell'agente
+        if (c.getAgente() != null) {
+            d.setNomeAgente(c.getAgente().getNome());
+            d.setCognomeAgente(c.getAgente().getCognome());
+        }
+        
         d.setTipoContratto(c.getTipoContratto() == null ? null : c.getTipoContratto().name());
         d.setDataContratto(c.getDataContratto());
         d.setDataScadenzaContratto(c.getDataScadenzaContratto());
