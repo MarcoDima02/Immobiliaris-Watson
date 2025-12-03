@@ -1,21 +1,34 @@
 package com.residea.residea.controller;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.residea.residea.dto.ImmobileListDTO;
+import com.residea.residea.entities.Immagine;
 import com.residea.residea.entities.Immobile;
 import com.residea.residea.entities.Utente;
 import com.residea.residea.repos.UtenteRepo;
+import com.residea.residea.services.ImmagineService;
 import com.residea.residea.services.ImmobileService;
 
 @RestController
@@ -27,6 +40,12 @@ public class ImmobileController {
 
     @Autowired
     private UtenteRepo utenteRepo;
+    
+    @Autowired
+    private ImmagineService immagineService;
+    
+    @Value("${immagini.upload-dir}")
+    private String uploadDir;
 
     // GET /api/immobili → restituisce lista di immobili
     @GetMapping
@@ -128,6 +147,97 @@ public class ImmobileController {
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    
+    /**
+     * POST /api/immobili/{idImmobile}/immagini
+     * Carica una o più immagini per un immobile specifico.
+     * Le immagini vengono salvate fisicamente in uploads/immagini/
+     * e i metadati vengono registrati nel database.
+     * 
+     * @param idImmobile ID dell'immobile
+     * @param files Array di file immagine da caricare
+     * @return Lista di Immagine salvate nel database
+     */
+    @PostMapping("/{idImmobile}/immagini")
+    public ResponseEntity<?> uploadImmagini(
+            @PathVariable Integer idImmobile,
+            @RequestParam("files") MultipartFile[] files) {
+        
+        try {
+            // Verifica che l'immobile esista
+            Immobile immobile = immobiliService.getImmobileById(idImmobile);
+            if (immobile == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Immobile non trovato con ID: " + idImmobile);
+            }
+            
+            // Verifica che ci siano file
+            if (files == null || files.length == 0) {
+                return ResponseEntity.badRequest().body("Nessun file fornito");
+            }
+            
+            // Crea la directory se non esiste
+            Path uploadPath = Paths.get(uploadDir);
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+            
+            List<Immagine> immaginiSalvate = new ArrayList<>();
+            int ordinamento = immagineService.getImmaginiByImmobileId(idImmobile).size();
+            
+            for (MultipartFile file : files) {
+                if (file.isEmpty()) {
+                    continue;
+                }
+                
+                // Valida che sia un'immagine
+                String originalFilename = StringUtils.cleanPath(file.getOriginalFilename());
+                String contentType = file.getContentType();
+                if (contentType == null || !contentType.startsWith("image/")) {
+                    return ResponseEntity.badRequest()
+                        .body("File non valido: " + originalFilename + ". Solo immagini consentite.");
+                }
+                
+                // Genera nome file unico
+                String extension = "";
+                int dotIndex = originalFilename.lastIndexOf('.');
+                if (dotIndex > 0) {
+                    extension = originalFilename.substring(dotIndex);
+                }
+                String uniqueFileName = System.currentTimeMillis() + "_" + idImmobile + extension;
+                
+                // Salva il file fisicamente
+                Path targetPath = uploadPath.resolve(uniqueFileName);
+                Files.copy(file.getInputStream(), targetPath, StandardCopyOption.REPLACE_EXISTING);
+                
+                // Calcola dimensione in KB
+                Integer dimensioneKb = (int) (file.getSize() / 1024);
+                
+                // Crea record nel database
+                Immagine immagine = new Immagine();
+                immagine.setImmobile(immobile);
+                immagine.setUrl("/uploads/immagini/" + uniqueFileName);
+                immagine.setNomeFile(originalFilename);
+                immagine.setDimensioneKb(dimensioneKb);
+                immagine.setOrdinamento(ordinamento++);
+                immagine.setCopertina(immaginiSalvate.isEmpty()); // Prima immagine = copertina
+                
+                Immagine salvata = immagineService.salvaImmagine(immagine);
+                immaginiSalvate.add(salvata);
+            }
+            
+            return ResponseEntity.status(HttpStatus.CREATED).body(immaginiSalvate);
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Errore durante il salvataggio dei file: " + e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Errore imprevisto: " + e.getMessage());
         }
     }
 }

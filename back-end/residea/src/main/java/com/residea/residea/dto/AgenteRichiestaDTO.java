@@ -1,18 +1,23 @@
 package com.residea.residea.dto;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import lombok.Getter;
 import lombok.Setter;
-
-import java.math.BigDecimal;
 @Getter
 @Setter
 /**
  * DTO che aggrega i dati di una richiesta/contratto per la dashboard dell'agente.
  * Include: Contratto, Immobile, DettagliImmobile, Superfici, Richiesta, ValutazioneImmobile
+ * 
+ * @deprecated Utilizzare {@link RichiestaDettagliImmobileDto} invece. 
+ *             Questo DTO è mantenuto solo per retrocompatibilità temporanea.
+ *             Il DTO unificato RichiestaDettagliImmobileDto viene ora utilizzato sia per admin che per agente,
+ *             con nomi di campi standardizzati (statoRichiesta, statoImmobile) e include tutti i campi necessari.
  */
+@Deprecated
 public class AgenteRichiestaDTO {
 
     // --- CONTRATTO ---
