@@ -17,7 +17,7 @@ export default function AdminInfoContainer({ data, type }: { data: any[] | null,
     });
     async function getDettagliImmobile(id: number) {
         try {
-            const response = await fetch(`http://localhost:8080/api/richieste/${id}`, {
+            const response = await fetch(`http://localhost:8080/api/admin/dashboard/richieste/${id}/dettagli`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -29,7 +29,6 @@ export default function AdminInfoContainer({ data, type }: { data: any[] | null,
             }
 
             const data = await response.json();
-            setDettagliImmobile(data);
             return data;
 
         } catch (error) {
@@ -45,7 +44,7 @@ export default function AdminInfoContainer({ data, type }: { data: any[] | null,
         const dettagli = await getDettagliImmobile(id);
         console.log(dettagli)
         navigate("/backoffice/admin/richiesta", {
-            state: { dettagliImmobile: dettagli }
+            state: { item: dettagli }
         });
     }
 
@@ -54,6 +53,7 @@ export default function AdminInfoContainer({ data, type }: { data: any[] | null,
 
     const openModal = (item: any) => {
         setSelectedUser(item);
+        console.log("utente", item);
         setFormData({
             nome: item.nome,
             cognome: item.cognome,
@@ -68,7 +68,7 @@ export default function AdminInfoContainer({ data, type }: { data: any[] | null,
         if (!selectedUser) return;
 
         try {
-            const response = await fetch(`/admin/dashboard/utenti/${selectedUser.id}`, {
+            const response = await fetch(`http://localhost:8080/admin/dashboard/utenti/${selectedUser.idUtente}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -81,11 +81,6 @@ export default function AdminInfoContainer({ data, type }: { data: any[] | null,
             }
 
             const updatedUser = await response.json();
-            console.log("Utente aggiornato:", updatedUser);
-
-            // Aggiorna la lista locali in stato se vuoi subito vedere i cambiamenti
-            // Per esempio, se hai uno stato 'data', fai:
-            // setData(prev => prev?.map(u => u.id === updatedUser.id ? updatedUser : u));
 
             setShowModal(false);
         } catch (error) {
@@ -196,36 +191,31 @@ export default function AdminInfoContainer({ data, type }: { data: any[] | null,
                         {type === "contratti" && (
                             <div className="flex flex-col gap-3 mb-5">
                                 <div className="flex flex-col w-full">
-                                    <div className="w-full flex justify-evenly mb-4">
-                                        <div className="w-full">
-                                            <p className="font-bold">Cliente:</p>
-                                            <p className="text-zinc-600">{item.nomeUtente} {item.cognomeUtente}</p>
-                                        </div>
-                                        <div className="w-full">
-                                            <p className="font-bold">Data contratto:</p>
-                                            <p className="text-zinc-600">
-                                                {item.dataContratto?.slice(0, 10).replace(/-/g, "/")} alle {item.dataContratto?.slice(11, 16)}
-                                            </p>
-                                        </div>
-                                        <div className="w-full">
-                                            <p className="font-bold">Data scadenza:</p>
-                                            <p className="text-zinc-600">
-                                                {item.dataScadenzaContratto?.slice(0, 10).replace(/-/g, "/")} alle {item.dataScadenzaContratto?.slice(11, 16)}
-                                            </p>
-                                        </div>
-                                    </div>
 
-                                    <div className="flex flex-col my-3 text-zinc-600">
-                                        <p className="font-bold text-black mb-2">Immobile:</p>
-                                        <p>{item.nstanze} stanze</p>
-                                        <p>{item.nbagni} bagni</p>
-                                        <p className="mt-3 font-bold w-full">
-                                            Stato: <span className="text-primary">{item.stato?.replace(/_/g, " ")}</span>
+                                    <div className="w-full">
+                                        <p className="font-bold">Cliente:</p>
+                                        <p className="text-zinc-600">{item.nomeUtente} {item.cognomeUtente}</p>
+                                    </div>
+                                    <div className="w-full">
+                                        <p className="font-bold">Data contratto:</p>
+                                        <p className="text-zinc-600">
+                                            {item.dataContratto?.slice(0, 10).replace(/-/g, "/")} alle {item.dataContratto?.slice(11, 16)}
                                         </p>
+                                    </div>
+                                    <div className="w-full">
+                                        <p className="font-bold">Data scadenza:</p>
+                                        <p className="text-zinc-600">
+                                            {item.dataScadenzaContratto?.slice(0, 10).replace(/-/g, "/")} alle {item.dataScadenzaContratto?.slice(11, 16)}
+                                        </p>
+
                                     </div>
 
                                     <Button className="mt-4 w-full" onClick={() => handleClick(item.idImmobile)}>
-                                        Visualizza dettagli immobile
+                                        Visualizza immobile
+                                    </Button>
+
+                                    <Button className="mt-4 w-full" variant={"outline"} onClick={() => window.open(item.pathContrattoPDF, "_blank")}>
+                                        Visualizza contratto
                                     </Button>
 
                                 </div>

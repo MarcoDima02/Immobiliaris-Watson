@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/button';
 /**
  * Fetch functions
  */
-import { aggiornaStatoRichiesta, uploadContrattoPDF, allegaContrattoPDF } from '@/api';
+import { aggiornaStatoRichiesta, uploadContrattoPDF } from '@/api';
 
 /**
  * Store
@@ -32,6 +32,8 @@ function AgentRequestDetails() {
   // Se esiste anche item separato, lo prendo
   const item = location.state?.item || location.state?.request || null;
 
+  const { dettagliImmobile } = location.state || {};
+
   const [loadingStato, setLoadingStato] = useState(false);
   const [showPdf, setShowPdf] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -43,13 +45,14 @@ function AgentRequestDetails() {
     null
   );
 
+
+
   // Se NON ho né request né item, proteggo la pagina
   if (!request && !item) {
     return <p>Errore: nessun dato ricevuto</p>;
   }
 
 
-  console.log(item);
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
 
   const handleModificaStato = async () => {
@@ -94,8 +97,8 @@ function AgentRequestDetails() {
   // };
 
   const handleUploadContratto = async () => {
-    if (!request.idContratto)
-      return alert('La richiesta non ha ancora un contratto!');
+    // if (!request.idContratto)
+      // return alert('La richiesta non ha ancora un contratto!');
 
     const input = document.createElement('input');
     input.type = 'file';
@@ -161,7 +164,6 @@ function AgentRequestDetails() {
     if (!request) return;
     if (!request) return;
 
-    const address = `${request.indirizzo}, ${request.citta}, ${request.provincia}`;
     const address = `${request.indirizzo}, ${request.citta}, ${request.provincia}`;
 
     const fetchCoordinates = async () => {
@@ -273,7 +275,6 @@ function AgentRequestDetails() {
               <p className="font-bold">Nome e cognome:</p>
               <p className="text-zinc-600">
                 {request.nomeUtente} {request.cognomeUtente}
-                {request.nomeUtente} {request.cognomeUtente}
               </p>
             </div>
 
@@ -281,13 +282,11 @@ function AgentRequestDetails() {
             <div className="w-1/2 py-2">
               <p className="font-bold">Numero di cellulare:</p>
               <p className="text-zinc-600">{request.telefonoUtente}</p>
-              <p className="text-zinc-600">{request.telefonoUtente}</p>
             </div>
 
             {/* Email */}
             <div className="w-full py-2">
               <p className="font-bold">Email:</p>
-              <p className="text-zinc-600">{request.emailUtente}</p>
               <p className="text-zinc-600">{request.emailUtente}</p>
             </div>
 
@@ -301,7 +300,6 @@ function AgentRequestDetails() {
               <p className="font-bold">Indirizzo:</p>
               <p className="text-zinc-600">
                 {request.indirizzo}, {request.citta}
-                {request.indirizzo}, {request.citta}
               </p>
             </div>
 
@@ -309,13 +307,11 @@ function AgentRequestDetails() {
             <div className="w-1/2 py-2">
               <p className="font-bold">Tipo di immobile:</p>
               <p className="text-zinc-600">{request.tipologia}</p>
-              <p className="text-zinc-600">{request.tipologia}</p>
             </div>
 
             {/* CAP */}
             <div className="w-1/2 py-2">
               <p className="font-bold">CAP:</p>
-              <p className="text-zinc-600">{request.cap}</p>
               <p className="text-zinc-600">{request.cap}</p>
             </div>
 
@@ -323,13 +319,11 @@ function AgentRequestDetails() {
             <div className="w-1/2 py-2">
               <p className="font-bold">Provincia:</p>
               <p className="text-zinc-600">{request.provincia}</p>
-              <p className="text-zinc-600">{request.provincia}</p>
             </div>
 
             {/* MQ */}
             <div className="w-1/2 py-2">
               <p className="font-bold">Metri quadri:</p>
-              <p className="text-zinc-600">{request.superficieMq} mq</p>
               <p className="text-zinc-600">{request.superficieMq} mq</p>
             </div>
 
@@ -337,13 +331,11 @@ function AgentRequestDetails() {
             <div className="w-1/2 py-2">
               <p className="font-bold">Numero di locali:</p>
               <p className="text-zinc-600">{request.nstanze}</p>
-              <p className="text-zinc-600">{request.nstanze}</p>
             </div>
 
             {/* Bagni */}
             <div className="w-1/2 py-2">
               <p className="font-bold">Numero di bagni:</p>
-              <p className="text-zinc-600">{request.nbagni}</p>
               <p className="text-zinc-600">{request.nbagni}</p>
             </div>
 
@@ -359,13 +351,11 @@ function AgentRequestDetails() {
             <div className="w-1/2 py-2">
               <p className="font-bold">Garage:</p>
               <p className="text-zinc-600">{request.garage ? 'Sì' : 'No'}</p>
-              <p className="text-zinc-600">{request.garage ? 'Sì' : 'No'}</p>
             </div>
 
             {/* Classe energetica */}
             <div className="w-1/2 py-2">
               <p className="font-bold">Classe energetica:</p>
-              <p className="text-zinc-600">{request.classeEnergetica}</p>
               <p className="text-zinc-600">{request.classeEnergetica}</p>
             </div>
           </div>
@@ -416,7 +406,6 @@ function AgentRequestDetails() {
                       Chiudi
                     </button>
                     <iframe
-                      src={`http://localhost:8080/api/contratti/pdf/${request.pathContrattoPDF.split('/').pop()}`}
                       src={`http://localhost:8080/api/contratti/pdf/${request.pathContrattoPDF.split('/').pop()}`}
                       className="w-full h-full"
                     />
