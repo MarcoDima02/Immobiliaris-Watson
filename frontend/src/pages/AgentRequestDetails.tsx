@@ -9,6 +9,22 @@ import mapboxgl from 'mapbox-gl';
  * Components
  */
 import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { toast } from 'sonner';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 /**
  * Fetch functions
@@ -49,29 +65,60 @@ function AgentRequestDetails() {
   }
 
 
-  console.log(item);
+  console.log(item);  const [statoDialogOpen, setStatoDialogOpen] = useState(false);
+  const [showImages, setShowImages] = useState(false);
+  const [immagini, setImmagini] = useState<any[]>([]);
+  const [loadingImages, setLoadingImages] = useState(false);
+  const [currentRequest, setCurrentRequest] = useState(request);
+
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
+  
 
-  const handleModificaStato = async () => {
-    const nuovoStato = prompt(
-      'Nuovo stato (IN_ELABORAZIONE, COMPLETATA, ANNULLATA)'
-    );
-    if (!nuovoStato) return;
+  // const handleModificaStato = async () => {
+  //   const nuovoStato = prompt(
+  //     'Nuovo stato (IN_ELABORAZIONE, COMPLETATA, ANNULLATA)'
+  //   );
+  //   if (!nuovoStato) return;
 
+  //   try {
+  //     await aggiornaStatoRichiesta(request.idRichiesta, nuovoStato);
+  //     alert('Stato aggiornato!');
+  //     window.location.reload();
+  //   } catch (err) {
+  //     console.error(err);
+  //     alert("Errore nell'aggiornamento dello stato");
+  //   }
+  // };
+
+  const handleApriModificaStato = () => {
+    setNuovoStato(request?.statoRichiesta || '');
+    setStatoDialogOpen(true);
+  };
+  const handleChiudiModificaStato = () => setStatoDialogOpen(false);
+
+  const handleConfermaStato = async () => {
+    if (!nuovoStato) return toast.error('Inserisci uno stato valido!');
+
+    setLoadingStato(true);
     try {
       await aggiornaStatoRichiesta(request.idRichiesta, nuovoStato);
-      alert('Stato aggiornato!');
-      window.location.reload();
+      toast.success('Stato aggiornato con successo!');
+      setCurrentRequest({
+      ...currentRequest,
+      statoRichiesta: nuovoStato,
+    });
     } catch (err) {
       console.error(err);
-      alert("Errore nell'aggiornamento dello stato");
+      toast.error('Errore aggiornamento stato');
+    } finally {
+      setLoadingStato(false);
+      setStatoDialogOpen(false);
     }
   };
 
   // const handleUploadContratto = async () => {
-  //   if (!request.idContratto) {
+  //   if (!request.idContratto)
   //     return alert('La richiesta non ha ancora un contratto!');
-  //   }
 
   //   const input = document.createElement('input');
   //   input.type = 'file';
@@ -83,7 +130,9 @@ function AgentRequestDetails() {
 
   //     try {
   //       const percorsoFile = await uploadContrattoPDF(file);
-  //       alert('Contratto caricato! Percorso: ' + percorsoFile);
+  //       alert('Contratto caricato!');
+
+  //       request.pathContrattoPDF = percorsoFile;
   //     } catch (err) {
   //       console.error(err);
   //       alert('Errore durante upload contratto');
@@ -92,10 +141,9 @@ function AgentRequestDetails() {
 
   //   input.click();
   // };
-
   const handleUploadContratto = async () => {
-    if (!request.idContratto)
-      return alert('La richiesta non ha ancora un contratto!');
+    if (!currentRequest.idContratto)
+      return toast.error('La richiesta non ha ancora un contratto!');
 
     const input = document.createElement('input');
     input.type = 'file';
@@ -107,23 +155,81 @@ function AgentRequestDetails() {
 
       try {
         const percorsoFile = await uploadContrattoPDF(file);
-        alert('Contratto caricato!');
-
-
-        request.pathContrattoPDF = percorsoFile;
+        toast.success('Contratto caricato!');
+        currentRequest.pathContrattoPDF = percorsoFile;
       } catch (err) {
         console.error(err);
-        alert('Errore durante upload contratto');
+        toast.error('Errore durante upload contratto');
       }
     };
 
     input.click();
   };
 
+  // const handleVisualizzaContratti = () => {
+  //   if (!request.pathContrattoPDF) return alert('Nessun contratto disponibile');
+  //   setShowPdf(true);
+  // };
   const handleVisualizzaContratti = () => {
-    if (!request.pathContrattoPDF) return alert('Nessun contratto disponibile');
+    if (!currentRequest.pathContrattoPDF)
+      return toast.error('Nessun contratto disponibile');
     setShowPdf(true);
   };
+
+  // const handleUploadImages = async () => {
+  //   const input = document.createElement('input');
+  //   input.type = 'file';
+  //   input.accept = 'image/*';
+  //   input.multiple = true;
+
+  //   input.onchange = async () => {
+  //     const files = input.files;
+  //     if (!files?.length) return;
+
+  //     const formData = new FormData();
+  //     for (let f of files) formData.append('files', f);
+
+  //     await fetch(
+  //       `http://localhost:8080/api/immobili/${request.idImmobile}/immagini`,
+  //       {
+  //         method: 'POST',
+  //         body: formData,
+  //       }
+  //     );
+
+  //     alert('Immagini caricate');
+  //   };
+
+  //   input.click();
+  // };
+
+  // const handleUploadImages = async () => {
+  //   const input = document.createElement('input');
+  //   input.type = 'file';
+  //   input.accept = 'image/*';
+  //   input.multiple = true;
+
+  //   input.onchange = async () => {
+  //     const files = input.files;
+  //     if (!files?.length) return;
+
+  //     const formData = new FormData();
+  //     for (let f of files) formData.append('files', f);
+
+  //     try {
+  //       await fetch(
+  //         `http://localhost:8080/api/immobili/${request.idImmobile}/immagini`,
+  //         { method: 'POST', body: formData }
+  //       );
+  //       toast.success('Immagini caricate!');
+  //     } catch (err) {
+  //       console.error(err);
+  //       toast.error('Errore caricamento immagini');
+  //     }
+  //   };
+
+  //   input.click();
+  // };
 
   const handleUploadImages = async () => {
     const input = document.createElement('input');
@@ -138,28 +244,51 @@ function AgentRequestDetails() {
       const formData = new FormData();
       for (let f of files) formData.append('files', f);
 
-      await fetch(
-        `http://localhost:8080/api/immobili/${request.idImmobile}/immagini`,
-        {
-          method: 'POST',
-          body: formData,
-        }
-      );
+      try {
+        await fetch(
+          `http://localhost:8080/api/immobili/${currentRequest.idImmobile}/immagini`,
+          { method: 'POST', body: formData }
+        );
+        toast.success('Immagine caricate!');
 
-      alert('Immagini caricate');
+        // Aggiorna lista immagini dopo upload
+        fetchImmagini();
+      } catch (err) {
+        console.error(err);
+        toast.error('Errore caricamento immagini');
+      }
     };
 
     input.click();
   };
 
-  const handleViewImages = () => {
-    window.location.href = `/immobile/${request.idImmobile}/immagini`;
+  const fetchImmagini = async () => {
+    if (!currentRequest?.idImmobile) return;
+
+    setLoadingImages(true);
+    try {
+      const res = await fetch(
+        `http://localhost:8080/api/immagini/immobile/${currentRequest.idImmobile}`
+      );
+      if (!res.ok) throw new Error('Errore caricamento immagini');
+      const data = await res.json();
+      setImmagini(data);
+    } catch (err) {
+      console.error(err);
+      toast.error('Errore caricamento immagini');
+    } finally {
+      setLoadingImages(false);
+    }
   };
 
-  useEffect(() => {
-    if (!request) return;
+  // const handleViewImages = () => {
+  //   window.location.href = `/immobile/${request.idImmobile}/immagini`;
+  // };
 
-    const address = `${request.indirizzo}, ${request.citta}, ${request.provincia}`;
+  useEffect(() => {
+    if (!currentRequest) return;
+
+    const address = `${currentRequest.indirizzo}, ${currentRequest.citta}, ${currentRequest.provincia}`;
 
     const fetchCoordinates = async () => {
       try {
@@ -208,7 +337,7 @@ function AgentRequestDetails() {
   };
 
 
-  if (!request) return <p>Nessuna richiesta trovata</p>;
+  if (!currentRequest) return <p>Nessuna richiesta trovata</p>;
 
   return (
     <>
@@ -259,6 +388,101 @@ function AgentRequestDetails() {
 
       <Button onClick={() => history.back()}>Indietro</Button>
 
+      {/* --- Dialog Modifica Stato --- */}
+      <Dialog
+        open={statoDialogOpen}
+        onOpenChange={setStatoDialogOpen}
+      >
+        <DialogContent className="sm:max-w-[425px] bg-card">
+          <DialogHeader>
+            <DialogTitle>Modifica stato richiesta</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <Select
+              value={nuovoStato}
+              onValueChange={setNuovoStato}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Seleziona stato" />
+              </SelectTrigger>
+              <SelectContent className='bg-card'>
+                <SelectItem value="IN_ELABORAZIONE">IN_ELABORAZIONE</SelectItem>
+                <SelectItem value="COMPLETATA">COMPLETATA</SelectItem>
+                <SelectItem value="ANNULLATA">ANNULLATA</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={handleChiudiModificaStato}
+            >
+              Annulla
+            </Button>
+            <Button
+              onClick={handleConfermaStato}
+              disabled={loadingStato}
+            >
+              {loadingStato ? 'Caricamento...' : 'Conferma'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* --- Dialog PDF --- */}
+      <Dialog
+        open={showPdf}
+        onOpenChange={setShowPdf}
+      >
+        <DialogTitle>Contratto</DialogTitle>
+        <DialogContent
+          className="w-4/5 h-4/5 max-w-5xl max-h-[90vh]"
+          closeButtonClassName="text-white bg-primary p-1 cursor-pointer opacity-100 hover:bg-white hover:text-primary"
+        >
+          <div className="relative w-full h-full">
+            {currentRequest.pathContrattoPDF && (
+              <iframe
+                src={`http://localhost:8080/api/contratti/pdf/${currentRequest.pathContrattoPDF.split('/').pop()}`}
+                className="w-full h-full"
+              />
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={showImages}
+        onOpenChange={setShowImages}
+      >
+        <DialogTitle>Immagini</DialogTitle>
+        <DialogContent
+          className="w-4/5 h-4/5 max-w-5xl max-h-[90vh]"
+          closeButtonClassName="text-white bg-primary p-1 cursor-pointer opacity-100 hover:bg-white hover:text-primary"
+        >
+          <DialogHeader>
+            <DialogTitle>Immagini Immobile</DialogTitle>
+          </DialogHeader>
+          <div className="grid grid-cols-3 gap-4 overflow-auto h-full mt-4">
+            {loadingImages ? (
+              <p>Caricamento immagini...</p>
+            ) : immagini.length ? (
+              immagini.map((img) => (
+                <img
+                  key={img.idImmagine}
+                  src={`http://localhost:8080/api/immagini/immobile/${currentRequest.idImmobile}/${img.filename}`}
+                  alt="immobile"
+                  className="w-full h-auto object-cover rounded"
+                />
+              ))
+            ) : (
+              <p className="col-span-3 text-center text-zinc-500">
+                Nessuna immagine disponibile
+              </p>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+
       <div className="flex flex-col lg:flex-row flex-wrap pb-5">
         {/* INFO CLIENTE + IMMOBILE */}
         <div className="bg-white p-4 rounded-xl shadow-md text-black mt-4 w-full lg:w-[60%]">
@@ -269,20 +493,20 @@ function AgentRequestDetails() {
             <div className="w-1/2 py-2">
               <p className="font-bold">Nome e cognome:</p>
               <p className="text-zinc-600">
-                {request.nomeUtente} {request.cognomeUtente}
+                {currentRequest.nomeUtente} {currentRequest.cognomeUtente}
               </p>
             </div>
 
             {/* Numero */}
             <div className="w-1/2 py-2">
               <p className="font-bold">Numero di cellulare:</p>
-              <p className="text-zinc-600">{request.telefonoUtente}</p>
+              <p className="text-zinc-600">{currentRequest.telefonoUtente}</p>
             </div>
 
             {/* Email */}
             <div className="w-full py-2">
               <p className="font-bold">Email:</p>
-              <p className="text-zinc-600">{request.emailUtente}</p>
+              <p className="text-zinc-600">{currentRequest.emailUtente}</p>
             </div>
 
             {/* IMMOBILE */}
@@ -294,44 +518,44 @@ function AgentRequestDetails() {
             <div className="w-1/2 py-2">
               <p className="font-bold">Indirizzo:</p>
               <p className="text-zinc-600">
-                {request.indirizzo}, {request.citta}
+                {currentRequest.indirizzo}, {currentRequest.citta}
               </p>
             </div>
 
             {/* Tipologia */}
             <div className="w-1/2 py-2">
               <p className="font-bold">Tipo di immobile:</p>
-              <p className="text-zinc-600">{request.tipologia}</p>
+              <p className="text-zinc-600">{currentRequest.tipologia}</p>
             </div>
 
             {/* CAP */}
             <div className="w-1/2 py-2">
               <p className="font-bold">CAP:</p>
-              <p className="text-zinc-600">{request.cap}</p>
+              <p className="text-zinc-600">{currentRequest.cap}</p>
             </div>
 
             {/* Provincia */}
             <div className="w-1/2 py-2">
               <p className="font-bold">Provincia:</p>
-              <p className="text-zinc-600">{request.provincia}</p>
+              <p className="text-zinc-600">{currentRequest.provincia}</p>
             </div>
 
             {/* MQ */}
             <div className="w-1/2 py-2">
               <p className="font-bold">Metri quadri:</p>
-              <p className="text-zinc-600">{request.superficieMq} mq</p>
+              <p className="text-zinc-600">{currentRequest.superficieMq} mq</p>
             </div>
 
             {/* Locali */}
             <div className="w-1/2 py-2">
               <p className="font-bold">Numero di locali:</p>
-              <p className="text-zinc-600">{request.nstanze}</p>
+              <p className="text-zinc-600">{currentRequest.nstanze}</p>
             </div>
 
             {/* Bagni */}
             <div className="w-1/2 py-2">
               <p className="font-bold">Numero di bagni:</p>
-              <p className="text-zinc-600">{request.nbagni}</p>
+              <p className="text-zinc-600">{currentRequest.nbagni}</p>
             </div>
 
             {/* Balcone */}
@@ -345,13 +569,13 @@ function AgentRequestDetails() {
             {/* Garage */}
             <div className="w-1/2 py-2">
               <p className="font-bold">Garage:</p>
-              <p className="text-zinc-600">{request.garage ? 'Sì' : 'No'}</p>
+              <p className="text-zinc-600">{currentRequest.garage ? 'Sì' : 'No'}</p>
             </div>
 
             {/* Classe energetica */}
             <div className="w-1/2 py-2">
               <p className="font-bold">Classe energetica:</p>
-              <p className="text-zinc-600">{request.classeEnergetica}</p>
+              <p className="text-zinc-600">{currentRequest.classeEnergetica}</p>
             </div>
           </div>
         </div>
@@ -372,7 +596,7 @@ function AgentRequestDetails() {
             <div className="flex flex-col">
               <p className="text-black font-bold">Stato attuale:</p>
               <p className="text-primary font-medium">
-                {nuovoStato || request.statoRichiesta.replace(/_/g, ' ')}
+                {currentRequest.statoRichiesta.replace(/_/g, ' ')}
               </p>
             </div>
 
@@ -391,7 +615,7 @@ function AgentRequestDetails() {
               >
                 Visualizza contratti
               </Button>
-              {showPdf && (
+              {/* {showPdf && (
                 <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
                   <div className="bg-white w-4/5 h-4/5 p-4 relative">
                     <button
@@ -401,12 +625,12 @@ function AgentRequestDetails() {
                       Chiudi
                     </button>
                     <iframe
-                      src={`http://localhost:8080/api/contratti/pdf/${request.pathContrattoPDF.split('/').pop()}`}
+                      src={`http://localhost:8080/api/contratti/pdf/${currentRequest.pathContrattoPDF.split('/').pop()}`}
                       className="w-full h-full"
                     />
                   </div>
                 </div>
-              )}
+              )} */}
             </div>
 
             {/* MAPPA */}
@@ -433,7 +657,7 @@ function AgentRequestDetails() {
             <div className="text-center py-4">
               <p className="text-zinc-600 font-medium">Valore effettivo stimato</p>
               <p className="text-primary text-4xl md:text-5xl lg:text-6xl font-extrabold mt-2">
-                {((request?.valoreMedio ?? item?.valoreMedio) ?? 0).toLocaleString()} €
+                {currentRequest.valoreMedio.toLocaleString()} €
               </p>
             </div>
 
@@ -444,11 +668,11 @@ function AgentRequestDetails() {
             <div className="flex flex-col gap-1">
               <div className="flex justify-between items-center text-black font-bold text-lg md:text-xl">
                 <span className="truncate">
-                  {((request?.valoreMin ?? item?.valoreMin) ?? 0).toLocaleString()} €
+                  {currentRequest.valoreMin.toLocaleString()} €
                 </span>
                 <span className="mx-3 text-zinc-300 text-xl">•</span>
                 <span className="truncate text-right">
-                  {((request?.valoreMax ?? item?.valoreMax) ?? 0).toLocaleString()} €
+                  {currentRequest.valoreMax.toLocaleString()} €
                 </span>
               </div>
 
@@ -474,6 +698,10 @@ function AgentRequestDetails() {
               <Button
                 className="h-1/2"
                 variant={'outline'}
+                onClick={() => {
+                  fetchImmagini();
+                  setShowImages(true);
+                }}
               >
                 Visualizza immagini
               </Button>
