@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
-import com.residea.residea.dto.AgenteRichiestaDTO;
+import com.residea.residea.dto.RichiestaDettagliImmobileDto;
 import com.residea.residea.entities.Contratto;
 import com.residea.residea.entities.DettagliImmobile;
 import com.residea.residea.entities.Richiesta;
@@ -52,9 +52,11 @@ public class AgenteService {
     /**
      * Restituisce i dati aggregati per la dashboard dell'agente.
      * Include: Richieste IN_ATTESA (disponibili per tutti), Contratti dell'agente, Immobili, Richieste, Superfici, Valutazioni
+     * 
+     * @return Lista di RichiestaDettagliImmobileDto (DTO UNIFICATO admin/agente)
      */
-    public List<AgenteRichiestaDTO> getDashboardData(Integer idAgente) {
-        List<AgenteRichiestaDTO> result = new ArrayList<>();
+    public List<RichiestaDettagliImmobileDto> getDashboardData(Integer idAgente) {
+        List<RichiestaDettagliImmobileDto> result = new ArrayList<>();
 
         // 0. PRIMA: Aggiungere tutte le richieste IN_ATTESA che NON hanno un contratto con questo agente
         List<Richiesta> richiesteInAttesa = richiestaRepo.findByStato(Richiesta.Stato.IN_ATTESA);
@@ -69,7 +71,7 @@ public class AgenteService {
                 continue;
             }
             
-            AgenteRichiestaDTO dto = new AgenteRichiestaDTO();
+            RichiestaDettagliImmobileDto dto = new RichiestaDettagliImmobileDto();
             
             // Dati Richiesta
             dto.setIdRichiesta(richiesta.getIdRichiesta());
@@ -87,7 +89,7 @@ public class AgenteService {
             dto.setCitta(immobile.getCitta());
             dto.setProvincia(immobile.getProvincia());
             dto.setCap(immobile.getCap());
-            dto.setStato(immobile.getStato() != null ? immobile.getStato().name() : null);
+            dto.setStatoImmobile(immobile.getStato() != null ? immobile.getStato().name() : null);
             
             // Dati DettagliImmobile
             DettagliImmobile dettagli = dettagliRepo.findById(immobile.getIdImmobile()).orElse(null);
@@ -143,6 +145,12 @@ public class AgenteService {
             dto.setIdContratto(null);
             dto.setTipoContratto(null);
             
+            // Campi admin-only: null per agenti
+            dto.setLatitudine(null);
+            dto.setLongitudine(null);
+            dto.setEsposizione(null);
+            dto.setPrezzo(null);
+            
             result.add(dto);
         }
 
@@ -157,12 +165,12 @@ public class AgenteService {
 
             // Se non ci sono richieste, aggiungere il contratto da solo
             if (richieste.isEmpty()) {
-                AgenteRichiestaDTO dto = mapContratoToDTO(contratto);
+                RichiestaDettagliImmobileDto dto = mapContratoToDTO(contratto);
                 result.add(dto);
             } else {
                 // Per ogni richiesta, creare un DTO
                 for (Richiesta richiesta : richieste) {
-                    AgenteRichiestaDTO dto = new AgenteRichiestaDTO();
+                    RichiestaDettagliImmobileDto dto = new RichiestaDettagliImmobileDto();
 
                     // Dati Contratto
                     dto.setIdContratto(contratto.getIdContratto());
@@ -178,7 +186,7 @@ public class AgenteService {
                     dto.setCitta(contratto.getIdImmobile().getCitta());
                     dto.setProvincia(contratto.getIdImmobile().getProvincia());
                     dto.setCap(contratto.getIdImmobile().getCap());
-                    dto.setStato(contratto.getIdImmobile().getStato() != null ? contratto.getIdImmobile().getStato().name() : null);
+                    dto.setStatoImmobile(contratto.getIdImmobile().getStato() != null ? contratto.getIdImmobile().getStato().name() : null);
 
                     // Dati DettagliImmobile
                     DettagliImmobile dettagli = dettagliRepo.findById(idImmobile).orElse(null);
@@ -237,6 +245,12 @@ public class AgenteService {
                         dto.setConfidence(valutazione.getConfidence());
                     }
 
+                    // Campi admin-only: null per agenti
+                    dto.setLatitudine(null);
+                    dto.setLongitudine(null);
+                    dto.setEsposizione(null);
+                    dto.setPrezzo(null);
+
                     result.add(dto);
                 }
             }
@@ -248,8 +262,8 @@ public class AgenteService {
     /**
      * Mappa un Contratto a AgenteRichiestaDTO senza richieste associate
      */
-    private AgenteRichiestaDTO mapContratoToDTO(Contratto contratto) {
-        AgenteRichiestaDTO dto = new AgenteRichiestaDTO();
+    private RichiestaDettagliImmobileDto mapContratoToDTO(Contratto contratto) {
+        RichiestaDettagliImmobileDto dto = new RichiestaDettagliImmobileDto();
 
         // Dati Contratto
         dto.setIdContratto(contratto.getIdContratto());
@@ -266,7 +280,7 @@ public class AgenteService {
         dto.setCitta(contratto.getIdImmobile().getCitta());
         dto.setProvincia(contratto.getIdImmobile().getProvincia());
         dto.setCap(contratto.getIdImmobile().getCap());
-        dto.setStato(contratto.getIdImmobile().getStato() != null ? contratto.getIdImmobile().getStato().name() : null);
+        dto.setStatoImmobile(contratto.getIdImmobile().getStato() != null ? contratto.getIdImmobile().getStato().name() : null);
 
         // Dati DettagliImmobile
         DettagliImmobile dettagli = dettagliRepo.findById(idImmobile).orElse(null);
@@ -308,6 +322,12 @@ public class AgenteService {
             dto.setConfidence(valutazione.getConfidence());
         }
 
+        // Campi admin-only: null per agenti
+        dto.setLatitudine(null);
+        dto.setLongitudine(null);
+        dto.setEsposizione(null);
+        dto.setPrezzo(null);
+
         return dto;
     }
 
@@ -315,9 +335,9 @@ public class AgenteService {
      * Restituisce i dettagli completi di una singola richiesta/contratto per ID contratto.
      * 
      * @param idContratto ID del contratto
-     * @return AgenteRichiestaDTO con tutti i dettagli della richiesta
+     * @return RichiestaDettagliImmobileDto con tutti i dettagli della richiesta
      */
-    public AgenteRichiestaDTO getRichiestaDettagli(Integer idContratto) {
+    public RichiestaDettagliImmobileDto getRichiestaDettagli(Integer idContratto) {
         // Trovare il contratto
         Contratto contratto = contrattoRepo.findById(idContratto).orElse(null);
         if (contratto == null) {
@@ -337,7 +357,7 @@ public class AgenteService {
         // Se ci sono richieste, restituire la prima (o implementare logica diversa)
         Richiesta richiesta = richieste.get(0);
 
-        AgenteRichiestaDTO dto = new AgenteRichiestaDTO();
+        RichiestaDettagliImmobileDto dto = new RichiestaDettagliImmobileDto();
 
         // Dati Contratto
         dto.setIdContratto(contratto.getIdContratto());
@@ -353,7 +373,7 @@ public class AgenteService {
         dto.setCitta(contratto.getIdImmobile().getCitta());
         dto.setProvincia(contratto.getIdImmobile().getProvincia());
         dto.setCap(contratto.getIdImmobile().getCap());
-        dto.setStato(contratto.getIdImmobile().getStato() != null ? contratto.getIdImmobile().getStato().name() : null);
+        dto.setStatoImmobile(contratto.getIdImmobile().getStato() != null ? contratto.getIdImmobile().getStato().name() : null);
 
         // Dati DettagliImmobile
         DettagliImmobile dettagli = dettagliRepo.findById(idImmobile).orElse(null);
@@ -411,6 +431,12 @@ public class AgenteService {
             dto.setValoreMax(valutazione.getValoreMax() != null ? valutazione.getValoreMax().longValue() : null);
             dto.setConfidence(valutazione.getConfidence());
         }
+
+        // Campi admin-only: null per agenti
+        dto.setLatitudine(null);
+        dto.setLongitudine(null);
+        dto.setEsposizione(null);
+        dto.setPrezzo(null);
 
         return dto;
     }

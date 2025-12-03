@@ -1,25 +1,40 @@
 package com.residea.residea.dto;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
- * DTO che combina Richiesta + Immobile + DettagliImmobile
- * Utilizzato per visualizzare una richiesta con tutti i dettagli dell'immobile associato
+ * DTO UNIFICATO che combina Contratto + Richiesta + Immobile + DettagliImmobile + Superfici + Valutazione
+ * Utilizzato sia per dashboard Agente che Admin
+ * 
+ * NAMING STANDARD:
+ * - statoRichiesta: stato della richiesta (IN_ATTESA, IN_ELABORAZIONE, ecc.)
+ * - statoImmobile: stato dell'immobile (DISPONIBILE, VENDUTO, ecc.)
  */
 public class RichiestaDettagliImmobileDto {
 
+    // ===== CONTRATTO (solo se presente) =====
+    private Integer idContratto;
+    private String tipoContratto;
+    private LocalDate dataContratto;
+    private LocalDate dataScadenzaContratto;
+    private String pathContrattoPDF;
+
     // ===== RICHIESTA =====
     private Integer idRichiesta;
+    private LocalDateTime dataRichiesta;
+    private LocalDateTime dataAppuntamento;
+    private String statoRichiesta;  // STANDARDIZZATO: era "stato" in Admin
+    private String noteUtente;
+    private String motivoAnnullamento;
+    
+    // ===== UTENTE (richiedente) =====
     private Integer idUtente;
     private String nomeUtente;
     private String cognomeUtente;
     private String emailUtente;
     private String telefonoUtente;
-    private LocalDateTime dataRichiesta;
-    private LocalDateTime dataAppuntamento;
-    private String stato;
-    private String noteUtente;
-    private String motivoAnnullamento;
 
     // ===== IMMOBILE =====
     private Integer idImmobile;
@@ -28,9 +43,9 @@ public class RichiestaDettagliImmobileDto {
     private String citta;
     private String provincia;
     private String cap;
-    private String statoImmobile;
-    private Double latitudine;
-    private Double longitudine;
+    private String statoImmobile;  // STANDARDIZZATO: era "stato" in Agente
+    private Double latitudine;     // Solo Admin
+    private Double longitudine;    // Solo Admin
 
     // ===== DETTAGLI IMMOBILE =====
     private Integer nStanze;
@@ -46,13 +61,72 @@ public class RichiestaDettagliImmobileDto {
     private Integer annoCostruzione;
     private String condizioneImmobile;
     private String classeEnergetica;
-    private String esposizione;
-    private Double prezzo;
+    private String esposizione;    // Solo Admin
+    private Double prezzo;         // Solo Admin
+    
+    // ===== SUPERFICI (nuovo da Agente) =====
+    private BigDecimal superficieMq;
+    private BigDecimal superficieBalconeTerrazzo;
+    private BigDecimal superficieGiardino;
+    private BigDecimal superficieGarage;
+    private BigDecimal superficieCantina;
+    
+    // ===== VALUTAZIONE (nuovo da Agente) =====
+    private Integer idValutazione;
+    private Long valoreBase;
+    private BigDecimal fattoreAggiustamento;
+    private Long valoreMedio;
+    private Long valoreMin;
+    private Long valoreMax;
+    private BigDecimal confidence;
 
     // ===== COSTRUTTORI =====
     public RichiestaDettagliImmobileDto() {}
 
     // ===== GETTER & SETTER =====
+    
+    // CONTRATTO
+    public Integer getIdContratto() {
+        return idContratto;
+    }
+
+    public void setIdContratto(Integer idContratto) {
+        this.idContratto = idContratto;
+    }
+
+    public String getTipoContratto() {
+        return tipoContratto;
+    }
+
+    public void setTipoContratto(String tipoContratto) {
+        this.tipoContratto = tipoContratto;
+    }
+
+    public LocalDate getDataContratto() {
+        return dataContratto;
+    }
+
+    public void setDataContratto(LocalDate dataContratto) {
+        this.dataContratto = dataContratto;
+    }
+
+    public LocalDate getDataScadenzaContratto() {
+        return dataScadenzaContratto;
+    }
+
+    public void setDataScadenzaContratto(LocalDate dataScadenzaContratto) {
+        this.dataScadenzaContratto = dataScadenzaContratto;
+    }
+
+    public String getPathContrattoPDF() {
+        return pathContrattoPDF;
+    }
+
+    public void setPathContrattoPDF(String pathContrattoPDF) {
+        this.pathContrattoPDF = pathContrattoPDF;
+    }
+    
+    // RICHIESTA
     public Integer getIdRichiesta() {
         return idRichiesta;
     }
@@ -118,11 +192,19 @@ public class RichiestaDettagliImmobileDto {
     }
 
     public String getStato() {
-        return stato;
+        return statoRichiesta;  // COMPATIBILITÀ: getter per vecchio nome
     }
 
     public void setStato(String stato) {
-        this.stato = stato;
+        this.statoRichiesta = stato;  // COMPATIBILITÀ: setter per vecchio nome
+    }
+
+    public String getStatoRichiesta() {
+        return statoRichiesta;
+    }
+
+    public void setStatoRichiesta(String statoRichiesta) {
+        this.statoRichiesta = statoRichiesta;
     }
 
     public String getNoteUtente() {
@@ -333,6 +415,104 @@ public class RichiestaDettagliImmobileDto {
         this.prezzo = prezzo;
     }
 
+    // SUPERFICI
+    public BigDecimal getSuperficieMq() {
+        return superficieMq;
+    }
+
+    public void setSuperficieMq(BigDecimal superficieMq) {
+        this.superficieMq = superficieMq;
+    }
+
+    public BigDecimal getSuperficieBalconeTerrazzo() {
+        return superficieBalconeTerrazzo;
+    }
+
+    public void setSuperficieBalconeTerrazzo(BigDecimal superficieBalconeTerrazzo) {
+        this.superficieBalconeTerrazzo = superficieBalconeTerrazzo;
+    }
+
+    public BigDecimal getSuperficieGiardino() {
+        return superficieGiardino;
+    }
+
+    public void setSuperficieGiardino(BigDecimal superficieGiardino) {
+        this.superficieGiardino = superficieGiardino;
+    }
+
+    public BigDecimal getSuperficieGarage() {
+        return superficieGarage;
+    }
+
+    public void setSuperficieGarage(BigDecimal superficieGarage) {
+        this.superficieGarage = superficieGarage;
+    }
+
+    public BigDecimal getSuperficieCantina() {
+        return superficieCantina;
+    }
+
+    public void setSuperficieCantina(BigDecimal superficieCantina) {
+        this.superficieCantina = superficieCantina;
+    }
+
+    // VALUTAZIONE
+    public Integer getIdValutazione() {
+        return idValutazione;
+    }
+
+    public void setIdValutazione(Integer idValutazione) {
+        this.idValutazione = idValutazione;
+    }
+
+    public Long getValoreBase() {
+        return valoreBase;
+    }
+
+    public void setValoreBase(Long valoreBase) {
+        this.valoreBase = valoreBase;
+    }
+
+    public BigDecimal getFattoreAggiustamento() {
+        return fattoreAggiustamento;
+    }
+
+    public void setFattoreAggiustamento(BigDecimal fattoreAggiustamento) {
+        this.fattoreAggiustamento = fattoreAggiustamento;
+    }
+
+    public Long getValoreMedio() {
+        return valoreMedio;
+    }
+
+    public void setValoreMedio(Long valoreMedio) {
+        this.valoreMedio = valoreMedio;
+    }
+
+    public Long getValoreMin() {
+        return valoreMin;
+    }
+
+    public void setValoreMin(Long valoreMin) {
+        this.valoreMin = valoreMin;
+    }
+
+    public Long getValoreMax() {
+        return valoreMax;
+    }
+
+    public void setValoreMax(Long valoreMax) {
+        this.valoreMax = valoreMax;
+    }
+
+    public BigDecimal getConfidence() {
+        return confidence;
+    }
+
+    public void setConfidence(BigDecimal confidence) {
+        this.confidence = confidence;
+    }
+
     @Override
     public String toString() {
         return "RichiestaDettagliImmobileDto{" +
@@ -341,6 +521,8 @@ public class RichiestaDettagliImmobileDto {
                 ", tipologia='" + tipologia + '\'' +
                 ", nomeUtente='" + nomeUtente + '\'' +
                 ", nStanze=" + nStanze +
+                ", statoRichiesta='" + statoRichiesta + '\'' +
+                ", idContratto=" + idContratto +
                 '}';
     }
 }
