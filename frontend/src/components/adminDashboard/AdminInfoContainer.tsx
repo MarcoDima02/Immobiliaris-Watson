@@ -6,7 +6,6 @@ export default function AdminInfoContainer({ data, type }: { data: any[] | null,
     const [showModal, setShowModal] = useState(false);
     const [selectedUser, setSelectedUser] = useState<any>(null);
     const [filterNome, setFilterNome] = useState("");
-    const [dettagliImmobile, setDettagliImmobile] = useState("");
     const [filterCognome, setFilterCognome] = useState("");
     const [formData, setFormData] = useState({
         nome: "",
@@ -68,7 +67,7 @@ export default function AdminInfoContainer({ data, type }: { data: any[] | null,
         if (!selectedUser) return;
 
         try {
-            const response = await fetch(`http://localhost:8080/admin/dashboard/utenti/${selectedUser.idUtente}`, {
+            const response = await fetch(`http://localhost:8080/api/admin/dashboard/utenti/${selectedUser.idUtente}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -81,6 +80,12 @@ export default function AdminInfoContainer({ data, type }: { data: any[] | null,
             }
 
             const updatedUser = await response.json();
+
+            // avviso
+            alert("Utente aggiornato");
+
+
+
 
             setShowModal(false);
         } catch (error) {
@@ -123,7 +128,7 @@ export default function AdminInfoContainer({ data, type }: { data: any[] | null,
             )}
 
             {/* Griglia */}
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-10 px-8">
+            <div className="grid grid-cols-1 xl:grid-cols-3 gap-10 px-8">
                 {listToRender?.map((item) => (
                     <div key={item.id} className="bg-white p-4 w-full rounded-xl shadow-xl text-black flex flex-col mb-5">
                         {type === "utenti" && (
@@ -190,24 +195,27 @@ export default function AdminInfoContainer({ data, type }: { data: any[] | null,
 
                         {type === "contratti" && (
                             <div className="flex flex-col gap-3 mb-5">
-                                <div className="flex flex-col w-full">
+                                <div className="flex flex-row flex-wrap w-full">
 
                                     <div className="w-full">
                                         <p className="font-bold">Cliente:</p>
-                                        <p className="text-zinc-600">{item.nomeUtente} {item.cognomeUtente}</p>
+                                        <p className="text-zinc-600">{item.nome} {item.cognome}</p>
                                     </div>
-                                    <div className="w-full">
+                                    <div className="w-1/2">
                                         <p className="font-bold">Data contratto:</p>
                                         <p className="text-zinc-600">
-                                            {item.dataContratto?.slice(0, 10).replace(/-/g, "/")} alle {item.dataContratto?.slice(11, 16)}
+                                            {item.dataContratto?.slice(0, 10).replace(/-/g, "/")}
                                         </p>
                                     </div>
-                                    <div className="w-full">
+                                    <div className="w-1/2">
                                         <p className="font-bold">Data scadenza:</p>
                                         <p className="text-zinc-600">
-                                            {item.dataScadenzaContratto?.slice(0, 10).replace(/-/g, "/")} alle {item.dataScadenzaContratto?.slice(11, 16)}
+                                            {item.dataScadenzaContratto?.slice(0, 10).replace(/-/g, "/")}
                                         </p>
 
+                                    </div>
+                                    <div className="w-full">
+                                        <p className="font-bold">Tipo: <span className="text-zinc-600">{item.tipoContratto || "N/A"}</span></p>
                                     </div>
 
                                     <Button className="mt-4 w-full" onClick={() => handleClick(item.idImmobile)}>

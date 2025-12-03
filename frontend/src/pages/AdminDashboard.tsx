@@ -7,11 +7,7 @@ export default function AdminDashboard({ type }: { type: string }) {
   const {
     user,
     adminUtenti,
-    adminImmobili,
     adminContratti,
-    adminRichieste,
-    adminVendite,
-    adminImmagini,
 
     loadAdminUtenti,
     loadAdminImmobili,
@@ -22,7 +18,6 @@ export default function AdminDashboard({ type }: { type: string }) {
   } = useAuthStore();
 
 
-  const [activeTab, setActiveTab] = useState<"utenti" | "immobili" | "contratti" | "richieste" | "vendite" | "immagini">("utenti");
 
   const [adminImmobiliDettagli, setAdminImmobiliDettagli] = useState(null);
   // Caricamento automatico una volta entrati nella dashboard
