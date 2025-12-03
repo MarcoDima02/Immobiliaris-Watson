@@ -117,6 +117,25 @@ public class AmministratoreDashboard {
         return ResponseEntity.ok(dtos);
     }
 
+    @PostMapping("/utenti")
+    public ResponseEntity<Utente> createUtente(@RequestBody Utente utente, HttpSession session) {
+        // TODO: Riattivare dopo login
+        // if (!isAmministratore(session)) return ResponseEntity.status(403).build();
+        
+        Utente saved = utentiService.salvaUtente(utente);
+        return ResponseEntity.ok(saved);
+    }
+
+    @PutMapping("/utenti/{id}")
+    public ResponseEntity<Utente> updateUtente(@PathVariable Integer id, @RequestBody Utente utente, HttpSession session) {
+        // TODO: Riattivare dopo login
+        // if (!isAmministratore(session)) return ResponseEntity.status(403).build();
+        
+        utente.setIdUtente(id);
+        Utente updated = utentiService.aggiornaUtente(utente);
+        return ResponseEntity.ok(updated);
+    }
+
     @GetMapping("/immobili")
     public ResponseEntity<List<ImmobileDto>> getImmobili(HttpSession session,
                               @RequestParam(value = "citta", required = false) String citta,
