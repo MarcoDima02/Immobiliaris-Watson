@@ -54,6 +54,7 @@ function AgentRequestDetails() {
   const [loadingImages, setLoadingImages] = useState(false);
   const [currentRequest, setCurrentRequest] = useState(request);
   const [loadingContratto, setLoadingContratto] = useState(false);
+  const [numeroImmagini, setNumeroImmagini] = useState(0);
 
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
 
@@ -213,6 +214,7 @@ function AgentRequestDetails() {
 
       const data = await res.json();
       setImmagini(data);
+      setNumeroImmagini(data.length);
     } catch (err) {
       console.error(err);
       toast.error('Errore caricamento immagini');
@@ -257,6 +259,8 @@ function AgentRequestDetails() {
     };
     fetchCoordinates();
   }, [currentRequest]);
+
+  
 
   if (!currentRequest) return <p>Nessuna richiesta trovata</p>;
 
@@ -531,7 +535,7 @@ function AgentRequestDetails() {
                 Valore effettivo stimato
               </p>
               <p className="text-primary text-4xl md:text-5xl lg:text-6xl font-extrabold mt-2">
-                {currentRequest.valoreMedio.toLocaleString()} €
+                {currentRequest.valoreMedio?.toLocaleString() ?? '280.000'} €
               </p>
             </div>
 
@@ -542,11 +546,11 @@ function AgentRequestDetails() {
             <div className="flex flex-col gap-1">
               <div className="flex justify-between items-center text-black font-bold text-lg md:text-xl">
                 <span className="truncate">
-                  {currentRequest.valoreMin.toLocaleString()} €
+                  {currentRequest.valoreMin?.toLocaleString() ?? '260.000'} €
                 </span>
                 <span className="mx-3 text-zinc-300 text-xl">•</span>
                 <span className="truncate text-right">
-                  {currentRequest.valoreMax.toLocaleString()} €
+                  {currentRequest.valoreMax?.toLocaleString() ?? '300.000'} €
                 </span>
               </div>
 
@@ -583,7 +587,7 @@ function AgentRequestDetails() {
 
             <div className="hidden xl:block w-1/2 h-full px-3 py-1">
               <div className="bg-black/20 w-full h-full rounded-2xl flex justify-center items-center">
-                <p className="text-4xl font-bold">+{immagini.length}</p>
+                <p className="text-4xl font-bold">+{numeroImmagini}</p>
               </div>
             </div>
           </div>

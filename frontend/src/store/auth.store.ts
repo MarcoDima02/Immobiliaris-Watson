@@ -113,6 +113,8 @@ export const useAuthStore = create<AuthState>()(
 
         const data = await fetchAgentDashboardApi(user.idUtente);
         console.log('Dashboard fetch result:', data);
+
+        
         set({ agentDashboard: data });
       },
 

@@ -41,6 +41,16 @@ const AgentMyRequests = () => {
     ? agentDashboard.filter((req: any) => statuses.includes(req.statoRichiesta))
     : agentDashboard;
 
+  console.log(
+    filtered.map((req) => ({
+      id: req.idContratto,
+      stato: req.statoRichiesta,
+      min: req.valoreMin,
+      max: req.valoreMax,
+      medio: req.valoreMedio,
+    }))
+  );
+
   return (
     <>
       <Button onClick={() => history.back()}>Indietro</Button>
