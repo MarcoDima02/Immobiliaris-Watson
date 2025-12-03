@@ -198,8 +198,8 @@ export default function AdminInfoContainer({ data, type }: { data: any[] | null,
                                 <div className="flex flex-row flex-wrap w-full">
 
                                     <div className="w-full">
-                                        <p className="font-bold">Cliente:</p>
-                                        <p className="text-zinc-600">{item.nome} {item.cognome}</p>
+                                        <p className="font-bold">Agente:</p>
+                                        <p className="text-zinc-600">{item.nomeAgente} {item.cognomeAgente}</p>
                                     </div>
                                     <div className="w-1/2">
                                         <p className="font-bold">Data contratto:</p>
