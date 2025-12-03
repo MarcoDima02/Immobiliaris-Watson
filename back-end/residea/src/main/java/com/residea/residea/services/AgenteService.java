@@ -1,21 +1,25 @@
 package com.residea.residea.services;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.stereotype.Service;
+
 import com.residea.residea.dto.AgenteRichiestaDTO;
 import com.residea.residea.entities.Contratto;
 import com.residea.residea.entities.DettagliImmobile;
 import com.residea.residea.entities.Richiesta;
 import com.residea.residea.entities.Superficie;
 import com.residea.residea.entities.ValutazioneImmobile;
+import com.residea.residea.events.RichiestaPresaInCaricoEvent;
 import com.residea.residea.repos.ContrattoRepo;
 import com.residea.residea.repos.DettagliImmobileRepo;
 import com.residea.residea.repos.RichiestaRepo;
 import com.residea.residea.repos.SuperficiRepo;
+import com.residea.residea.repos.UtenteRepo;
 import com.residea.residea.repos.ValutazioneImmobileRepo;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Service per la dashboard dell'agente immobiliare.
@@ -37,24 +41,119 @@ public class AgenteService {
     private SuperficiRepo superficieRepo;
 
     @Autowired
-    private ValutazioneImmobileRepo valutatzioneRepo;
+    private ValutazioneImmobileRepo valutazioneRepo;
+
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
+
+    @Autowired
+    private UtenteRepo utenteRepo;
 
     /**
      * Restituisce i dati aggregati per la dashboard dell'agente.
-     * Include: Contratti, Immobili, Richieste, Superfici, Valutazioni
+     * Include: Richieste IN_ATTESA (disponibili per tutti), Contratti dell'agente, Immobili, Richieste, Superfici, Valutazioni
      */
     public List<AgenteRichiestaDTO> getDashboardData(Integer idAgente) {
         List<AgenteRichiestaDTO> result = new ArrayList<>();
 
-        // 1. Trovare tutti i contratti dell'agente
-        List<Contratto> contratti = contrattoRepo.findByAgente_IdUtente(idAgente);
+        // 0. PRIMA: Aggiungere tutte le richieste IN_ATTESA che NON hanno un contratto con questo agente
+        List<Richiesta> richiesteInAttesa = richiestaRepo.findByStato(Richiesta.Stato.IN_ATTESA);
+        List<Contratto> contrattiAgente = contrattoRepo.findByAgente_IdUtente(idAgente);
+        List<Integer> immobiliConContratto = contrattiAgente.stream()
+            .map(c -> c.getIdImmobile().getIdImmobile())
+            .toList();
+        
+        for (Richiesta richiesta : richiesteInAttesa) {
+            // Salta questa richiesta se l'immobile ha già un contratto con questo agente
+            if (immobiliConContratto.contains(richiesta.getImmobile().getIdImmobile())) {
+                continue;
+            }
+            
+            AgenteRichiestaDTO dto = new AgenteRichiestaDTO();
+            
+            // Dati Richiesta
+            dto.setIdRichiesta(richiesta.getIdRichiesta());
+            dto.setStatoRichiesta(richiesta.getStato() != null ? richiesta.getStato().name() : null);
+            dto.setDataRichiesta(richiesta.getDataRichiesta());
+            dto.setDataAppuntamento(richiesta.getDataAppuntamento());
+            dto.setNoteUtente(richiesta.getNoteUtente());
+            dto.setMotivoAnnullamento(richiesta.getMotivoAnnullamento());
+            
+            // Dati Immobile
+            com.residea.residea.entities.Immobile immobile = richiesta.getImmobile();
+            dto.setIdImmobile(immobile.getIdImmobile());
+            dto.setTipologia(immobile.getTipologia() != null ? immobile.getTipologia().name() : null);
+            dto.setIndirizzo(immobile.getIndirizzo());
+            dto.setCitta(immobile.getCitta());
+            dto.setProvincia(immobile.getProvincia());
+            dto.setCap(immobile.getCap());
+            dto.setStato(immobile.getStato() != null ? immobile.getStato().name() : null);
+            
+            // Dati DettagliImmobile
+            DettagliImmobile dettagli = dettagliRepo.findById(immobile.getIdImmobile()).orElse(null);
+            if (dettagli != null) {
+                dto.setNStanze(dettagli.getNStanze());
+                dto.setNBagni(dettagli.getNBagni());
+                dto.setNPiano(dettagli.getNPiano());
+                dto.setNPianiImmobile(dettagli.getNPianiImmobile());
+                dto.setAscensore(dettagli.isAscensore());
+                dto.setGarage(dettagli.isGarage());
+                dto.setBalconeTerrazzo(dettagli.isBalconeTerrazzo());
+                dto.setGiardino(dettagli.isGiardino());
+                dto.setCantina(dettagli.isCantina());
+                dto.setAnnoCostruzione(dettagli.getAnnoCostruzione());
+                dto.setCondizioneImmobile(dettagli.getCondizioneImmobile() != null ? dettagli.getCondizioneImmobile().name() : null);
+                dto.setTipoRiscaldamento(dettagli.getTipoRiscaldamento() != null ? dettagli.getTipoRiscaldamento().name() : null);
+                dto.setClasseEnergetica(dettagli.getClasseEnergetica() != null ? dettagli.getClasseEnergetica().name() : null);
+            }
+            
+            // Dati Superficie
+            Superficie superficie = superficieRepo.findById(immobile.getIdImmobile()).orElse(null);
+            if (superficie != null) {
+                dto.setSuperficieMq(superficie.getSuperficieMq());
+                dto.setSuperficieBalconeTerrazzo(superficie.getSuperficieBalconeTerrazzo());
+                dto.setSuperficieGarage(superficie.getSuperficieGarage());
+                dto.setSuperficieGiardino(superficie.getSuperficieGiardino());
+                dto.setSuperficieCantina(superficie.getSuperficieCantina());
+            }
+            
+            // Dati Utente (proprietario)
+            if (richiesta.getUtente() != null) {
+                dto.setIdUtente(richiesta.getUtente().getIdUtente());
+                dto.setNomeUtente(richiesta.getUtente().getNome());
+                dto.setCognomeUtente(richiesta.getUtente().getCognome());
+                dto.setEmailUtente(richiesta.getUtente().getEmail());
+                dto.setTelefonoUtente(richiesta.getUtente().getTelefono());
+            }
+            
+            // Dati Valutazione (se presente)
+            java.util.Optional<ValutazioneImmobile> valutazioneOpt = valutazioneRepo.findByIdImmobile(immobile.getIdImmobile());
+            if (valutazioneOpt.isPresent()) {
+                ValutazioneImmobile valutazione = valutazioneOpt.get();
+                dto.setIdValutazione(valutazione.getIdValutazione());
+                dto.setValoreBase(valutazione.getValoreBase() != null ? valutazione.getValoreBase().longValue() : null);
+                dto.setFattoreAggiustamento(valutazione.getFattoreAggiustamento());
+                dto.setValoreMedio(valutazione.getValoreMedio() != null ? valutazione.getValoreMedio().longValue() : null);
+                dto.setValoreMin(valutazione.getValoreMin() != null ? valutazione.getValoreMin().longValue() : null);
+                dto.setValoreMax(valutazione.getValoreMax() != null ? valutazione.getValoreMax().longValue() : null);
+                dto.setConfidence(valutazione.getConfidence());
+            }
+            
+            // NO contratto per richieste in attesa
+            dto.setIdContratto(null);
+            dto.setTipoContratto(null);
+            
+            result.add(dto);
+        }
 
-        // 2. Per ogni contratto, aggregare i dati
-        for (Contratto contratto : contratti) {
+        // 1. POI: Per ogni contratto dell'agente, aggregare i dati
+        for (Contratto contratto : contrattiAgente) {
             Integer idImmobile = contratto.getIdImmobile().getIdImmobile();
 
-            // Trovare tutte le richieste per questo immobile
-            List<Richiesta> richieste = richiestaRepo.findByImmobile_IdImmobile(idImmobile);
+            // Trovare tutte le richieste per questo immobile (ESCLUSE quelle IN_ATTESA già caricate)
+            List<Richiesta> richieste = richiestaRepo.findByImmobile_IdImmobile(idImmobile).stream()
+                .filter(r -> r.getStato() != Richiesta.Stato.IN_ATTESA)
+                .toList();
 
             // Se non ci sono richieste, aggiungere il contratto da solo
             if (richieste.isEmpty()) {
@@ -127,7 +226,7 @@ public class AgenteService {
                     }
 
                     // Dati ValutazioneImmobile
-                    ValutazioneImmobile valutazione = valutatzioneRepo.findByIdImmobile(idImmobile).orElse(null);
+                    ValutazioneImmobile valutazione = valutazioneRepo.findByIdImmobile(idImmobile).orElse(null);
                     if (valutazione != null) {
                         dto.setIdValutazione(valutazione.getIdValutazione());
                         dto.setValoreBase(valutazione.getValoreBase() != null ? valutazione.getValoreBase().longValue() : null);
@@ -198,7 +297,7 @@ public class AgenteService {
         }
 
         // Dati ValutazioneImmobile
-        ValutazioneImmobile valutazione = valutatzioneRepo.findByIdImmobile(idImmobile).orElse(null);
+        ValutazioneImmobile valutazione = valutazioneRepo.findByIdImmobile(idImmobile).orElse(null);
         if (valutazione != null) {
             dto.setIdValutazione(valutazione.getIdValutazione());
             dto.setValoreBase(valutazione.getValoreBase() != null ? valutazione.getValoreBase().longValue() : null);
@@ -302,7 +401,7 @@ public class AgenteService {
         }
 
         // Dati ValutazioneImmobile
-        ValutazioneImmobile valutazione = valutatzioneRepo.findByIdImmobile(idImmobile).orElse(null);
+        ValutazioneImmobile valutazione = valutazioneRepo.findByIdImmobile(idImmobile).orElse(null);
         if (valutazione != null) {
             dto.setIdValutazione(valutazione.getIdValutazione());
             dto.setValoreBase(valutazione.getValoreBase() != null ? valutazione.getValoreBase().longValue() : null);
@@ -449,7 +548,7 @@ public class AgenteService {
             }
             
             // Dati Valutazione
-            ValutazioneImmobile valutazione = valutatzioneRepo.findByIdImmobile(idImmobile).orElse(null);
+            ValutazioneImmobile valutazione = valutazioneRepo.findByIdImmobile(idImmobile).orElse(null);
             if (valutazione != null) {
                 dto.setIdValutazione(valutazione.getIdValutazione());
                 dto.setValoreMin(valutazione.getValoreMin() != null ? 
@@ -478,9 +577,9 @@ public class AgenteService {
             throw new RuntimeException("La richiesta non è in stato IN_ATTESA");
         }
         
-        // Trova l'agente
-        com.residea.residea.entities.Utente agente = new com.residea.residea.entities.Utente();
-        agente.setIdUtente(idAgente);
+        // Recupera l'agente completo dal database
+        com.residea.residea.entities.Utente agenteCompleto = utenteRepo.findById(idAgente)
+            .orElseThrow(() -> new RuntimeException("Agente non trovato"));
         
         // Verifica se esiste già un contratto per questo immobile con questo agente
         List<Contratto> contrattiEsistenti = contrattoRepo.findByAgente_IdUtente(idAgente);
@@ -491,7 +590,7 @@ public class AgenteService {
             // Crea un nuovo contratto
             Contratto contratto = new Contratto();
             contratto.setIdImmobile(richiesta.getImmobile());
-            contratto.setAgente(agente);
+            contratto.setAgente(agenteCompleto);
             contratto.setTipoContratto(Contratto.TipoContratto.ESCLUSIVO);
             contratto.setDataContratto(java.time.LocalDate.now());
             contratto.setDataScadenzaContratto(java.time.LocalDate.now().plusYears(1));
@@ -502,6 +601,32 @@ public class AgenteService {
         // Aggiorna lo stato della richiesta
         richiesta.setStato(Richiesta.Stato.IN_ELABORAZIONE);
         richiestaRepo.save(richiesta);
+        
+        // Pubblica evento per l'invio email al proprietario
+        try {
+            com.residea.residea.entities.Utente proprietario = richiesta.getUtente();
+            com.residea.residea.entities.Immobile immobile = richiesta.getImmobile();
+            
+            RichiestaPresaInCaricoEvent event = new RichiestaPresaInCaricoEvent(
+                richiesta.getIdRichiesta(),
+                idAgente,
+                proprietario.getIdUtente(),
+                proprietario.getEmail(),
+                proprietario.getNome(),
+                proprietario.getCognome(),
+                agenteCompleto.getNome(),
+                agenteCompleto.getCognome(),
+                agenteCompleto.getEmail(),
+                agenteCompleto.getTelefono(),
+                immobile.getIndirizzo(),
+                immobile.getCitta()
+            );
+            
+            eventPublisher.publishEvent(event);
+        } catch (Exception e) {
+            // Log ma non bloccare il processo se l'email fallisce
+            System.err.println("Errore nell'invio email presa in carico: " + e.getMessage());
+        }
     }
     
     /**
@@ -546,46 +671,45 @@ public class AgenteService {
                 dto.setNomeProprietario(proprietario.getNome());
                 dto.setCognomeProprietario(proprietario.getCognome());
             }
-        }
-        
-        // Trova la richiesta associata tramite il contratto
-        java.util.Optional<Richiesta> richiestaOpt = richiestaRepo.findByImmobile_IdImmobile(immobile.getIdImmobile())
-            .stream()
-            .findFirst();
-        
-        if (richiestaOpt.isPresent()) {
-            Richiesta richiesta = richiestaOpt.get();
             
-            // Dati cliente (utente che ha fatto la richiesta)
-            com.residea.residea.entities.Utente cliente = richiesta.getUtente();
-            if (cliente != null) {
-                dto.setIdCliente(cliente.getIdUtente());
-                dto.setNomeCliente(cliente.getNome());
-                dto.setCognomeCliente(cliente.getCognome());
-                dto.setEmailCliente(cliente.getEmail());
-                dto.setTelefonoCliente(cliente.getTelefono());
+            // Trova la richiesta associata tramite il contratto
+            java.util.Optional<Richiesta> richiestaOpt = richiestaRepo.findByImmobile_IdImmobile(immobile.getIdImmobile())
+                .stream()
+                .findFirst();
+            
+            if (richiestaOpt.isPresent()) {
+                Richiesta richiesta = richiestaOpt.get();
+                
+                // Dati cliente (utente che ha fatto la richiesta)
+                com.residea.residea.entities.Utente cliente = richiesta.getUtente();
+                if (cliente != null) {
+                    dto.setIdCliente(cliente.getIdUtente());
+                    dto.setNomeCliente(cliente.getNome());
+                    dto.setCognomeCliente(cliente.getCognome());
+                    dto.setEmailCliente(cliente.getEmail());
+                    dto.setTelefonoCliente(cliente.getTelefono());
+                }
+            }
+            
+            // Superficie totale
+            java.util.Optional<com.residea.residea.entities.Superficie> superficieOpt = superficieRepo.findById(immobile.getIdImmobile());
+            if (superficieOpt.isPresent()) {
+                com.residea.residea.entities.Superficie superficie = superficieOpt.get();
+                Double totale = 0.0;
+                if (superficie.getSuperficieMq() != null) totale += superficie.getSuperficieMq().doubleValue();
+                dto.setSuperficieTotale(totale);
+            }
+            
+            // Valutazione finale
+            java.util.Optional<ValutazioneImmobile> valutazioneOpt = valutazioneRepo.findByImmobile(immobile);
+            if (valutazioneOpt.isPresent()) {
+                ValutazioneImmobile valutazione = valutazioneOpt.get();
+                // Usa valoreMedio invece di valutazioneStimata
+                if (valutazione.getValoreMedio() != null) {
+                    dto.setValutazioneFinale(valutazione.getValoreMedio().doubleValue());
+                }
             }
         }
-        
-        // Superficie totale
-        java.util.Optional<com.residea.residea.entities.Superficie> superficieOpt = superficieRepo.findById(immobile.getIdImmobile());
-        if (superficieOpt.isPresent()) {
-            com.residea.residea.entities.Superficie superficie = superficieOpt.get();
-            Double totale = 0.0;
-            if (superficie.getSuperficieMq() != null) totale += superficie.getSuperficieMq().doubleValue();
-            dto.setSuperficieTotale(totale);
-        }
-        
-        // Valutazione finale
-        java.util.Optional<ValutazioneImmobile> valutazioneOpt = valutatzioneRepo.findByImmobile(immobile);
-        if (valutazioneOpt.isPresent()) {
-            ValutazioneImmobile valutazione = valutazioneOpt.get();
-            // Usa valoreMedio invece di valutazioneStimata
-            if (valutazione.getValoreMedio() != null) {
-                dto.setValutazioneFinale(valutazione.getValoreMedio().doubleValue());
-            }
-        }
-        
         return dto;
     }
     
