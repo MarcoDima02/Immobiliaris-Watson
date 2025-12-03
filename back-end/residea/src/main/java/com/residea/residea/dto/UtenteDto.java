@@ -1,12 +1,14 @@
 package com.residea.residea.dto;
 
+import com.residea.residea.entities.Utente;
+
 public class UtenteDto {
     private Integer idUtente;
     private String nome;
     private String cognome;
     private String email;
     private String telefono;
-    private String ruolo;
+    private Utente.Ruolo ruolo;
     private Boolean verificaEmail;
     private Boolean consensoPrivacy;
 
@@ -50,11 +52,11 @@ public class UtenteDto {
         this.telefono = telefono;
     }
 
-    public String getRuolo() {
+    public Utente.Ruolo getRuolo() {
         return ruolo;
     }
 
-    public void setRuolo(String ruolo) {
+    public void setRuolo(Utente.Ruolo ruolo) {
         this.ruolo = ruolo;
     }
 
