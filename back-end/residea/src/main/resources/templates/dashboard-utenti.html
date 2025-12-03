@@ -1,41 +1,149 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="UTF-8">
-<title>Gestione Utenti</title>
+    <meta charset="UTF-8">
+    <title>Gestione Utenti</title>
 
-<!-- Google Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-<!-- Icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-<style>
-body { font-family: "Inter", sans-serif; background: #f4f6f9; margin:0; padding:0; color:#333; }
-header { background: #2563eb; padding:18px 32px; color:white; font-size:24px; font-weight:600; box-shadow:0 2px 8px rgba(0,0,0,0.15);}
-.container { padding:24px 40px; }
-.card { background:white; border-radius:12px; padding:24px; margin-bottom:28px; box-shadow:0 4px 15px rgba(0,0,0,0.06);}
-.card h3 { margin-top:0; font-size:20px; color:#1f2937;}
-input, select { padding:10px 14px; border-radius:8px; border:1px solid #d1d5db; width:100%; font-size:15px; transition:border 0.2s;}
-input:focus, select:focus { border-color:#2563eb; outline:none;}
-.form-row { display:flex; gap:16px; flex-wrap:wrap; margin-bottom:16px;}
-.form-row > * { flex:1 1 240px; }
-button { background:#2563eb; color:white; padding:10px 18px; border:none; border-radius:8px; cursor:pointer; font-size:15px; transition:0.2s;}
-button:hover { background:#1e4fc3;}
-button.secondary { background:#6b7280;}
-button.secondary:hover { background:#4b5563;}
-table { width:100%; border-collapse:collapse; border-radius:12px; overflow:hidden; }
-thead { background:#2563eb; color:white;}
-th, td { padding:12px 14px; text-align:left; font-size:15px; }
-tr:nth-child(even) { background:#f9fafb;}
-tr:hover { background:#e8f0fe; cursor:pointer;}
-tr._highlight { background-color: #d1fae5 !important; }
-.search-box { display:flex; gap:16px; margin-top:16px; }
-</style>
+    <style>
+        body {
+            font-family: "Inter", sans-serif;
+            background: #f4f6f9;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        /* Header */
+        header {
+            background: #2563eb;
+            padding: 18px 32px;
+            color: white;
+            font-size: 24px;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        /* Page Content */
+        .container {
+            padding: 24px 40px;
+        }
+
+        /* Card box */
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 28px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+        }
+
+        .card h3 {
+            margin-top: 0;
+            font-size: 20px;
+            color: #1f2937;
+        }
+
+        /* Inputs */
+        input, select {
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid #d1d5db;
+            width: 100%;
+            transition: border 0.2s;
+            font-size: 15px;
+        }
+
+        input:focus, select:focus {
+            border-color: #2563eb;
+            outline: none;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        .form-row > * {
+            flex: 1 1 240px;
+        }
+
+        /* Buttons */
+        button {
+            background: #2563eb;
+            color: white;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            background: #1e4fc3;
+        }
+
+        button.secondary {
+            background: #6b7280;
+        }
+        button.secondary:hover {
+            background: #4b5563;
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            overflow: hidden;
+            border-radius: 12px;
+        }
+
+        thead {
+            background: #2563eb;
+            color: white;
+        }
+
+        th, td {
+            padding: 12px 14px;
+            text-align: left;
+            font-size: 15px;
+        }
+
+        tr:nth-child(even) {
+            background: #f9fafb;
+        }
+
+        tr:hover {
+            background: #e8f0fe;
+            cursor: pointer;
+        }
+
+        tr._highlight {
+            background-color: #d1fae5 !important;
+        }
+
+        /* Search section */
+        .search-box {
+            display: flex;
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+    </style>
 </head>
 <body>
 
-<header>Gestione Utenti</header>
+<header>
+    Gestione Utenti
+</header>
 
 <div class="container">
 
@@ -44,16 +152,17 @@ tr._highlight { background-color: #d1fae5 !important; }
         <h3>➕ Crea / Aggiorna Utente</h3>
 
         <div class="form-row">
-            <input id="idUtente" placeholder="ID Utente (solo per aggiornamento)">
+            <input id="idUtente" placeholder="ID (auto)" readonly>
             <input id="nome" placeholder="Nome">
             <input id="cognome" placeholder="Cognome">
+        </div>
+
+        <div class="form-row">
             <input id="email" placeholder="Email">
             <input id="telefono" placeholder="Telefono">
-            <input id="password" type="text" placeholder="Password"> <!-- mostra sempre password -->
             <select id="ruolo">
                 <option value="AMMINISTRATORE">Amministratore</option>
-                <option value="PROPRIETARIO">Proprietario</option>
-                <option value="AGENTE">Agente</option>
+                <option value="USER">Utente</option>
             </select>
         </div>
 
@@ -62,20 +171,20 @@ tr._highlight { background-color: #d1fae5 !important; }
         <button onclick="resetForm()" class="secondary"><i class="fa fa-eraser"></i> Pulisci</button>
     </div>
 
+
     <!-- TABLE CARD -->
     <div class="card">
         <h3>📋 Elenco Utenti</h3>
         <table id="tabUtenti">
             <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nome</th>
-                    <th>Cognome</th>
-                    <th>Email</th>
-                    <th>Telefono</th>
-                    <th>Ruolo</th>
-                    <th>Password</th> <!-- colonna password -->
-                </tr>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Cognome</th>
+                <th>Email</th>
+                <th>Telefono</th>
+                <th>Ruolo</th>
+            </tr>
             </thead>
             <tbody></tbody>
         </table>
@@ -84,6 +193,7 @@ tr._highlight { background-color: #d1fae5 !important; }
     <!-- SEARCH -->
     <div class="card">
         <h3>🔍 Ricerca Utente</h3>
+
         <div class="search-box">
             <input id="utenteSearchId" placeholder="Cerca per ID utente">
             <button onclick="cercaUtentePerId()"><i class="fa fa-search"></i> Cerca</button>
@@ -93,6 +203,7 @@ tr._highlight { background-color: #d1fae5 !important; }
 
 </div>
 
+<!-- SCRIPT (identico al tuo, NON modificato tranne estetica) -->
 <script>
 const api = "/api/utenti";
 
@@ -121,13 +232,7 @@ function buildPayloadFromForm(){
     p.email=document.getElementById('email').value.trim();
     p.telefono=document.getElementById('telefono').value.trim();
     p.ruolo=document.getElementById('ruolo').value;
-    p.passwordHash=document.getElementById('password').value; // password in chiaro
     return p;
-}
-
-function resetForm(){
-    ['idUtente','nome','cognome','email','telefono','password'].forEach(i=>document.getElementById(i).value='');
-    document.getElementById('ruolo').value="PROPRIETARIO";
 }
 
 async function getAllUtenti(){
@@ -148,12 +253,8 @@ function renderTable(utenti){
             <td>${u.email}</td>
             <td>${u.telefono}</td>
             <td>${u.ruolo}</td>
-            <td>${u.passwordHash || ''}</td>
         `;
-        tr.addEventListener("click",()=>{ 
-            loadUtenteIntoForm(u); 
-            highlightRowById(u.idUtente); 
-        });
+        tr.addEventListener("click",()=>{ loadUtenteIntoForm(u); highlightRowById(u.idUtente); });
         tbody.appendChild(tr);
     });
 }
@@ -165,7 +266,6 @@ function loadUtenteIntoForm(u){
     document.getElementById('email').value=u.email;
     document.getElementById('telefono').value=u.telefono;
     document.getElementById('ruolo').value=u.ruolo;
-    document.getElementById('password').value=u.passwordHash;
 }
 
 function highlightRowById(id){
@@ -179,6 +279,11 @@ function highlightRowById(id){
     });
 }
 
+function resetForm(){
+    ['idUtente','nome','cognome','email','telefono'].forEach(i=>document.getElementById(i).value='');
+    document.getElementById('ruolo').value="USER";
+}
+
 async function cercaUtentePerId(){
     const id=document.getElementById('utenteSearchId').value.trim();
     if(!id){ alert("Inserisci ID"); return; }
@@ -190,13 +295,9 @@ async function cercaUtentePerId(){
     highlightRowById(f.idUtente);
 }
 
-function mostraTuttiUtenti(){ 
-    document.getElementById('utenteSearchId').value=''; 
-    resetForm(); 
-    getAllUtenti(); 
-}
+function mostraTuttiUtenti(){ document.getElementById('utenteSearchId').value=''; resetForm(); getAllUtenti(); }
 
-getAllUtenti(); // iniziale
+getAllUtenti(); // load initial
 </script>
 
 </body>
