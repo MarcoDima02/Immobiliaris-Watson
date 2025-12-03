@@ -28,6 +28,9 @@ function AgentRequestDetails() {
   const { request } = location.state || {};
   const [loadingStato, setLoadingStato] = useState(false);
   const [showPdf, setShowPdf] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [nuovoStato, setNuovoStato] = useState(request.statoRichiesta);
+
 
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
 
@@ -85,10 +88,10 @@ function AgentRequestDetails() {
       const file = input.files[0];
 
       try {
-        const percorsoFile = await uploadContrattoPDF(file); 
+        const percorsoFile = await uploadContrattoPDF(file);
         alert('Contratto caricato!');
 
-        
+
         request.pathContrattoPDF = percorsoFile;
       } catch (err) {
         console.error(err);
@@ -172,10 +175,70 @@ function AgentRequestDetails() {
     fetchCoordinates();
   }, [request]);
 
+  const confermaModificaStato = async () => {
+    setLoadingStato(true);
+
+    try {
+      await aggiornaStatoRichiesta(request.idRichiesta, nuovoStato);
+      setShowModal(false);
+    } catch (err) {
+      console.error(err);
+      alert("Errore nell'aggiornamento dello stato");
+    } finally {
+      setLoadingStato(false);
+    }
+  };
+
+
   if (!request) return <p>Nessuna richiesta trovata</p>;
 
   return (
     <>
+
+      {showModal && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center z-50 animate-fadeIn">
+          <div className="bg-white rounded-xl shadow-xl p-6 w-96 relative animate-scaleIn">
+
+            {/* X chiusura */}
+            <button
+              onClick={() => setShowModal(false)}
+              className="absolute top-3 right-3 text-zinc-500 hover:text-zinc-700 transition"
+            >
+              ✕
+            </button>
+
+            <h2 className="text-xl font-bold text-black mb-4">
+              Modifica stato richiesta
+            </h2>
+
+            {/* Select stato */}
+            <label className="text-sm font-medium text-zinc-700">
+              Seleziona nuovo stato:
+            </label>
+            <select
+              value={nuovoStato}
+              onChange={(e) => setNuovoStato(e.target.value)}
+              className="w-full mt-2 p-2 border border-zinc-300 rounded-lg focus:ring-2 focus:ring-primary/50 outline-none"
+            >
+              <option value="IN_ELABORAZIONE">In elaborazione</option>
+              <option value="COMPLETATA">Completata</option>
+              <option value="ANNULLATA">Annullata</option>
+            </select>
+
+            {/* Bottoni */}
+            <div className="flex justify-end gap-3 mt-6">
+              <Button variant="outline" onClick={() => setShowModal(false)}>
+                Annulla
+              </Button>
+              <Button onClick={confermaModificaStato}>
+                Conferma
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+
       <Button onClick={() => history.back()}>Indietro</Button>
 
       <div className="flex flex-col lg:flex-row flex-wrap pb-5">
@@ -281,16 +344,17 @@ function AgentRequestDetails() {
             {/* Bottone modifica stato */}
             <Button
               className="w-auto min-w-50"
-              onClick={handleModificaStato}
+              onClick={() => setShowModal(true)}
             >
               {loadingStato ? 'Caricamento...' : 'Modifica stato'}
             </Button>
+
 
             {/* Stato attuale */}
             <div className="flex flex-col">
               <p className="text-black font-bold">Stato attuale:</p>
               <p className="text-primary font-medium">
-                {request.statoRichiesta.replace(/_/g, ' ')}
+                {nuovoStato || request.statoRichiesta.replace(/_/g, ' ')}
               </p>
             </div>
 
