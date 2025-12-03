@@ -30,7 +30,8 @@ public class ValutazioneEmailListener {
             Map<String,Object> vars = new HashMap<>();
             vars.put("id", ev.getIdValutazione());
             vars.put("nome", ev.getUserName() == null ? "utente" : ev.getUserName());
-            vars.put("valoreMedio", ev.getValoreMedio());
+            vars.put("valoreMin", ev.getValoreMin());
+            vars.put("valoreMax", ev.getValoreMassimo());
 
             emailService.sendHtmlEmail(ev.getUserEmail(), "La tua valutazione è pronta", "emails/valutazione-created", vars);
         } catch (Exception ex) {

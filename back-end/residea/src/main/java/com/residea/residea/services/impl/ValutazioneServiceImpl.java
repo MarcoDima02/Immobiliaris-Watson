@@ -493,7 +493,7 @@ public class ValutazioneServiceImpl implements ValutazioneImmobileService {
             }
 
             if (email != null && !email.isBlank()) {
-                publisher.publishEvent(new ValutazioneCreatedEvent(valutazione.getIdValutazione(), email, name, result.getValoreMedio()));
+                publisher.publishEvent(new ValutazioneCreatedEvent(valutazione.getIdValutazione(), email, name, result.getValoreMin(), result.getValoreMax()));
             }
         } catch (Exception ex) {
             // non-blocking: log and continue
