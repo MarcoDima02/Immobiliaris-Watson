@@ -372,7 +372,7 @@ function AgentRequestDetails() {
             <div className="flex flex-col">
               <p className="text-black font-bold">Stato attuale:</p>
               <p className="text-primary font-medium">
-                {/* {nuovoStato || request.statoRichiesta.replace(/_/g, ' ')} */}
+                {nuovoStato || request.statoRichiesta.replace(/_/g, ' ')}
               </p>
             </div>
 
