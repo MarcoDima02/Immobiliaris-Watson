@@ -47,6 +47,9 @@ function AgentRequestDetails() {
   const [showPdf, setShowPdf] = useState(false);
   const [statoDialogOpen, setStatoDialogOpen] = useState(false);
   const [nuovoStato, setNuovoStato] = useState('');
+  const [showImages, setShowImages] = useState(false);
+  const [immagini, setImmagini] = useState<any[]>([]);
+  const [loadingImages, setLoadingImages] = useState(false);
 
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
 
@@ -176,6 +179,34 @@ function AgentRequestDetails() {
   //   input.click();
   // };
 
+  // const handleUploadImages = async () => {
+  //   const input = document.createElement('input');
+  //   input.type = 'file';
+  //   input.accept = 'image/*';
+  //   input.multiple = true;
+
+  //   input.onchange = async () => {
+  //     const files = input.files;
+  //     if (!files?.length) return;
+
+  //     const formData = new FormData();
+  //     for (let f of files) formData.append('files', f);
+
+  //     try {
+  //       await fetch(
+  //         `http://localhost:8080/api/immobili/${request.idImmobile}/immagini`,
+  //         { method: 'POST', body: formData }
+  //       );
+  //       toast.success('Immagini caricate!');
+  //     } catch (err) {
+  //       console.error(err);
+  //       toast.error('Errore caricamento immagini');
+  //     }
+  //   };
+
+  //   input.click();
+  // };
+
   const handleUploadImages = async () => {
     const input = document.createElement('input');
     input.type = 'file';
@@ -194,7 +225,10 @@ function AgentRequestDetails() {
           `http://localhost:8080/api/immobili/${request.idImmobile}/immagini`,
           { method: 'POST', body: formData }
         );
-        toast.success('Immagini caricate!');
+        toast.success('Immagine caricate!');
+
+        // Aggiorna lista immagini dopo upload
+        fetchImmagini();
       } catch (err) {
         console.error(err);
         toast.error('Errore caricamento immagini');
@@ -204,13 +238,28 @@ function AgentRequestDetails() {
     input.click();
   };
 
+  const fetchImmagini = async () => {
+    if (!request?.idImmobile) return;
+
+    setLoadingImages(true);
+    try {
+      const res = await fetch(
+        `http://localhost:8080/api/immagini/immobile/${request.idImmobile}`
+      );
+      if (!res.ok) throw new Error('Errore caricamento immagini');
+      const data = await res.json();
+      setImmagini(data);
+    } catch (err) {
+      console.error(err);
+      toast.error('Errore caricamento immagini');
+    } finally {
+      setLoadingImages(false);
+    }
+  };
+
   // const handleViewImages = () => {
   //   window.location.href = `/immobile/${request.idImmobile}/immagini`;
   // };
-
-  const handleViewImages = () => {
-    window.location.href = `/immobile/${request.idImmobile}/immagini`;
-  };
 
   useEffect(() => {
     if (!request) return;
@@ -300,19 +349,49 @@ function AgentRequestDetails() {
       <Dialog
         open={showPdf}
         onOpenChange={setShowPdf}
-        
       >
-        <DialogContent 
-        className="w-4/5 h-4/5 max-w-5xl max-h-[90vh]" 
-        closeButtonClassName="text-white bg-primary p-1 cursor-pointer opacity-100 hover:bg-white hover:text-primary">
-
+        <DialogContent
+          className="w-4/5 h-4/5 max-w-5xl max-h-[90vh]"
+          closeButtonClassName="text-white bg-primary p-1 cursor-pointer opacity-100 hover:bg-white hover:text-primary"
+        >
           <div className="relative w-full h-full">
-          
             {request.pathContrattoPDF && (
               <iframe
                 src={`http://localhost:8080/api/contratti/pdf/${request.pathContrattoPDF.split('/').pop()}`}
                 className="w-full h-full"
               />
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={showImages}
+        onOpenChange={setShowImages}
+      >
+        <DialogContent
+          className="w-4/5 h-4/5 max-w-5xl max-h-[90vh]"
+          closeButtonClassName="text-white bg-primary p-1 cursor-pointer opacity-100 hover:bg-white hover:text-primary"
+        >
+          <DialogHeader>
+            <DialogTitle>Immagini Immobile</DialogTitle>
+          </DialogHeader>
+          <div className="grid grid-cols-3 gap-4 overflow-auto h-full mt-4">
+            {loadingImages ? (
+              <p>Caricamento immagini...</p>
+            ) : immagini.length ? (
+              immagini.map((img) => (
+                <img
+                  key={img.idImmagine}
+                  src={`http://localhost:8080/api/immagini/immobile/${request.idImmobile}/${img.filename}`}
+                  alt="immobile"
+                  className="w-full h-auto object-cover rounded"
+                />
+              ))
+            ) : (
+              <p className="col-span-3 text-center text-zinc-500">
+                Nessuna immagine disponibile
+              </p>
             )}
           </div>
         </DialogContent>
@@ -535,6 +614,10 @@ function AgentRequestDetails() {
               <Button
                 className="h-1/2"
                 variant={'outline'}
+                onClick={() => {
+                  fetchImmagini();
+                  setShowImages(true);
+                }}
               >
                 Visualizza immagini
               </Button>
