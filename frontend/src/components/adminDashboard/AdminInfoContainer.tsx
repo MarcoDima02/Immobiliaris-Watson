@@ -43,7 +43,7 @@ export default function AdminInfoContainer({ data, type }: { data: any[] | null,
         const dettagli = await getDettagliImmobile(id);
         console.log(dettagli)
         navigate("/backoffice/admin/richiesta", {
-            state: { item: dettagli }
+            state: { request: dettagli }
         });
     }
 
@@ -186,7 +186,7 @@ export default function AdminInfoContainer({ data, type }: { data: any[] | null,
                                         </p>
                                     </div>
 
-                                    <Link to="/backoffice/admin/richiesta" state={{ item }}>
+                                    <Link to="/backoffice/admin/richiesta" state={{ request: item }}>
                                         <Button className="mt-4 w-full">Visualizza dettagli</Button>
                                     </Link>
                                 </div>
