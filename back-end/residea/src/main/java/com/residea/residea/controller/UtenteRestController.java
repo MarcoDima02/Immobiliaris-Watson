@@ -146,4 +146,28 @@ public class UtenteRestController {
         }
     }
 
+        @PostMapping
+    public Utente creaUtente(@RequestBody Utente utente) {
+        if (utente.getPasswordHash() == null || utente.getPasswordHash().isBlank()) {
+            throw new IllegalArgumentException("La password è obbligatoria");
+        }
+        if (utente.getRuolo() != null) {
+            utente.setRuolo(Utente.Ruolo.valueOf(utente.getRuolo().name().toUpperCase()));
+        }
+        // salva password in chiaro
+        return utentiService.salvaUtente(utente);
+    }
+
+    @PutMapping
+    public Utente aggiornaUtente(@RequestBody Utente utente) {
+        if (utente.getPasswordHash() == null || utente.getPasswordHash().isBlank()) {
+            throw new IllegalArgumentException("La password è obbligatoria");
+        }
+        if (utente.getRuolo() != null) {
+            utente.setRuolo(Utente.Ruolo.valueOf(utente.getRuolo().name().toUpperCase()));
+        }
+        return utentiService.salvaUtente(utente);
+    }
+
+
 }
