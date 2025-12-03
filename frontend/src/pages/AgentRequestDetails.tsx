@@ -1,7 +1,7 @@
 /**
  * Node modules
  */
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router';
 import mapboxgl from 'mapbox-gl';
 
@@ -10,14 +10,130 @@ import mapboxgl from 'mapbox-gl';
  */
 import { Button } from '@/components/ui/button';
 
+/**
+ * Fetch functions
+ */
+import { aggiornaStatoRichiesta, uploadContrattoPDF } from '@/api';
+
+/**
+ * Store
+ */
+import { useAuthStore } from '@/store/auth.store';
+
 mapboxgl.accessToken = mapboxgl.accessToken =
   import.meta.env.VITE_MAPBOX_ACCESS_TOKEN ?? 'MAPBOX_TOKEN';
 
 function AgentRequestDetails() {
   const location = useLocation();
   const { request } = location.state || {};
+  const [loadingStato, setLoadingStato] = useState(false);
+  const [showPdf, setShowPdf] = useState(false);
 
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
+
+  const handleModificaStato = async () => {
+    const nuovoStato = prompt(
+      'Nuovo stato (IN_ELABORAZIONE, COMPLETATA, ANNULLATA)'
+    );
+    if (!nuovoStato) return;
+
+    try {
+      await aggiornaStatoRichiesta(request.idRichiesta, nuovoStato);
+      alert('Stato aggiornato!');
+      window.location.reload();
+    } catch (err) {
+      console.error(err);
+      alert("Errore nell'aggiornamento dello stato");
+    }
+  };
+
+  // const handleUploadContratto = async () => {
+  //   if (!request.idContratto) {
+  //     return alert('La richiesta non ha ancora un contratto!');
+  //   }
+
+  //   const input = document.createElement('input');
+  //   input.type = 'file';
+  //   input.accept = 'application/pdf';
+
+  //   input.onchange = async () => {
+  //     if (!input.files?.length) return;
+  //     const file = input.files[0];
+
+  //     try {
+  //       const percorsoFile = await uploadContrattoPDF(file);
+  //       alert('Contratto caricato! Percorso: ' + percorsoFile);
+  //     } catch (err) {
+  //       console.error(err);
+  //       alert('Errore durante upload contratto');
+  //     }
+  //   };
+
+  //   input.click();
+  // };
+
+  const handleUploadContratto = async () => {
+    if (!request.idContratto)
+      return alert('La richiesta non ha ancora un contratto!');
+
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'application/pdf';
+
+    input.onchange = async () => {
+      if (!input.files?.length) return;
+      const file = input.files[0];
+
+      try {
+        const percorsoFile = await uploadContrattoPDF(file); 
+        alert('Contratto caricato!');
+
+        
+        request.pathContrattoPDF = percorsoFile;
+      } catch (err) {
+        console.error(err);
+        alert('Errore durante upload contratto');
+      }
+    };
+
+    input.click();
+  };
+
+  const handleVisualizzaContratti = () => {
+    if (!request.pathContrattoPDF) return alert('Nessun contratto disponibile');
+    setShowPdf(true);
+  };
+
+  const handleUploadImages = async () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.multiple = true;
+
+    input.onchange = async () => {
+      const files = input.files;
+      if (!files?.length) return;
+
+      const formData = new FormData();
+      for (let f of files) formData.append('files', f);
+
+      await fetch(
+        `http://localhost:8080/api/immobili/${request.idImmobile}/immagini`,
+        {
+          method: 'POST',
+          body: formData,
+        }
+      );
+
+      alert('Immagini caricate');
+    };
+
+    input.click();
+  };
+
+  const handleViewImages = () => {
+    window.location.href = `/immobile/${request.idImmobile}/immagini`;
+  };
 
   useEffect(() => {
     if (!request) return;
@@ -163,7 +279,12 @@ function AgentRequestDetails() {
         <div className="w-full lg:w-[40%] h-full mt-4">
           <div className="flex flex-wrap justify-start items-center lg:px-4 px-0 gap-4 h-full w-full">
             {/* Bottone modifica stato */}
-            <Button className="w-auto min-w-50">Modifica stato</Button>
+            <Button
+              className="w-auto min-w-50"
+              onClick={handleModificaStato}
+            >
+              {loadingStato ? 'Caricamento...' : 'Modifica stato'}
+            </Button>
 
             {/* Stato attuale */}
             <div className="flex flex-col">
@@ -175,13 +296,35 @@ function AgentRequestDetails() {
 
             {/* Contratti */}
             <div className="flex flex-wrap gap-4">
-              <Button className="w-auto min-w-50">Allega contratto</Button>
+              <Button
+                className="w-auto min-w-50"
+                onClick={handleUploadContratto}
+              >
+                Allega contratto
+              </Button>
               <Button
                 variant={'outline'}
                 className="w-auto min-w-50"
+                onClick={handleVisualizzaContratti}
               >
                 Visualizza contratti
               </Button>
+              {showPdf && (
+                <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
+                  <div className="bg-white w-4/5 h-4/5 p-4 relative">
+                    <button
+                      className="absolute top-2 right-2 text-red-500"
+                      onClick={() => setShowPdf(false)}
+                    >
+                      Chiudi
+                    </button>
+                    <iframe
+                      src={`http://localhost:8080/api/contratti/pdf/${request.pathContrattoPDF.split('/').pop()}`}
+                      className="w-full h-full"
+                    />
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* MAPPA */}
@@ -243,7 +386,12 @@ function AgentRequestDetails() {
         <div className="w-full lg:w-[40%] px-4 wrap">
           <div className="bg-white rounded-xl h-48 shadow-md mt-5 p-4 flex flex-wrap">
             <div className="flex flex-col w-full xl:w-1/2 py-3 gap-3 justify-center h-full">
-              <Button className="h-1/2">Aggiungi immagini</Button>
+              <Button
+                className="h-1/2"
+                onClick={handleUploadImages}
+              >
+                Aggiungi immagini
+              </Button>
               <Button
                 className="h-1/2"
                 variant={'outline'}
