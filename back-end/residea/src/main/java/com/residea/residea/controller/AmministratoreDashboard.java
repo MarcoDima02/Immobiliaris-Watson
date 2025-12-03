@@ -547,4 +547,35 @@ public ResponseEntity<Vendita> updateVendita(@PathVariable Integer id, @RequestB
         return ResponseEntity.ok(dtos);
     }
 
+    /**
+     * GET /api/admin/dashboard/richieste/{id}/dettagli
+     * 
+     * Ritorna una singola richiesta con i dettagli completi dell'immobile associato.
+     * Combina dati da: Richiesta, Immobile, DettagliImmobile, Superfici, Utente
+     * 
+     * @param id ID della richiesta
+     * @param session Session HTTP
+     * @return RichiestaDettagliImmobileDto con dati aggregati, oppure 404 se non trovata
+     */
+    @GetMapping("/richieste/{id}/dettagli")
+    public ResponseEntity<RichiestaDettagliImmobileDto> getRichiestaConDettagli(
+            @PathVariable Integer id,
+            HttpSession session) {
+        
+        // TODO: Riattivare dopo login
+        // if (!isAmministratore(session)) {
+        //     return ResponseEntity.status(403).build();
+        // }
+
+        java.util.Optional<Richiesta> opt = richiestaService.getRichiestaById(id);
+        if (opt.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Richiesta richiesta = opt.get();
+        RichiestaDettagliImmobileDto dto = toRichiestaDettagliImmobileDto(richiesta);
+        
+        return ResponseEntity.ok(dto);
+    }
+
 }

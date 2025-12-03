@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/button';
 /**
  * Fetch functions
  */
-import { aggiornaStatoRichiesta, uploadContrattoPDF } from '@/api';
+import { aggiornaStatoRichiesta, uploadContrattoPDF, allegaContrattoPDF } from '@/api';
 
 /**
  * Store
@@ -106,6 +106,7 @@ function AgentRequestDetails() {
       const file = input.files[0];
 
       try {
+        // 1. Upload del file sul server
         const percorsoFile = await uploadContrattoPDF(file);
         alert('Contratto caricato!');
 
@@ -158,7 +159,9 @@ function AgentRequestDetails() {
 
   useEffect(() => {
     if (!request) return;
+    if (!request) return;
 
+    const address = `${request.indirizzo}, ${request.citta}, ${request.provincia}`;
     const address = `${request.indirizzo}, ${request.citta}, ${request.provincia}`;
 
     const fetchCoordinates = async () => {
@@ -270,6 +273,7 @@ function AgentRequestDetails() {
               <p className="font-bold">Nome e cognome:</p>
               <p className="text-zinc-600">
                 {request.nomeUtente} {request.cognomeUtente}
+                {request.nomeUtente} {request.cognomeUtente}
               </p>
             </div>
 
@@ -277,11 +281,13 @@ function AgentRequestDetails() {
             <div className="w-1/2 py-2">
               <p className="font-bold">Numero di cellulare:</p>
               <p className="text-zinc-600">{request.telefonoUtente}</p>
+              <p className="text-zinc-600">{request.telefonoUtente}</p>
             </div>
 
             {/* Email */}
             <div className="w-full py-2">
               <p className="font-bold">Email:</p>
+              <p className="text-zinc-600">{request.emailUtente}</p>
               <p className="text-zinc-600">{request.emailUtente}</p>
             </div>
 
@@ -295,6 +301,7 @@ function AgentRequestDetails() {
               <p className="font-bold">Indirizzo:</p>
               <p className="text-zinc-600">
                 {request.indirizzo}, {request.citta}
+                {request.indirizzo}, {request.citta}
               </p>
             </div>
 
@@ -302,11 +309,13 @@ function AgentRequestDetails() {
             <div className="w-1/2 py-2">
               <p className="font-bold">Tipo di immobile:</p>
               <p className="text-zinc-600">{request.tipologia}</p>
+              <p className="text-zinc-600">{request.tipologia}</p>
             </div>
 
             {/* CAP */}
             <div className="w-1/2 py-2">
               <p className="font-bold">CAP:</p>
+              <p className="text-zinc-600">{request.cap}</p>
               <p className="text-zinc-600">{request.cap}</p>
             </div>
 
@@ -314,11 +323,13 @@ function AgentRequestDetails() {
             <div className="w-1/2 py-2">
               <p className="font-bold">Provincia:</p>
               <p className="text-zinc-600">{request.provincia}</p>
+              <p className="text-zinc-600">{request.provincia}</p>
             </div>
 
             {/* MQ */}
             <div className="w-1/2 py-2">
               <p className="font-bold">Metri quadri:</p>
+              <p className="text-zinc-600">{request.superficieMq} mq</p>
               <p className="text-zinc-600">{request.superficieMq} mq</p>
             </div>
 
@@ -326,11 +337,13 @@ function AgentRequestDetails() {
             <div className="w-1/2 py-2">
               <p className="font-bold">Numero di locali:</p>
               <p className="text-zinc-600">{request.nstanze}</p>
+              <p className="text-zinc-600">{request.nstanze}</p>
             </div>
 
             {/* Bagni */}
             <div className="w-1/2 py-2">
               <p className="font-bold">Numero di bagni:</p>
+              <p className="text-zinc-600">{request.nbagni}</p>
               <p className="text-zinc-600">{request.nbagni}</p>
             </div>
 
@@ -346,11 +359,13 @@ function AgentRequestDetails() {
             <div className="w-1/2 py-2">
               <p className="font-bold">Garage:</p>
               <p className="text-zinc-600">{request.garage ? 'Sì' : 'No'}</p>
+              <p className="text-zinc-600">{request.garage ? 'Sì' : 'No'}</p>
             </div>
 
             {/* Classe energetica */}
             <div className="w-1/2 py-2">
               <p className="font-bold">Classe energetica:</p>
+              <p className="text-zinc-600">{request.classeEnergetica}</p>
               <p className="text-zinc-600">{request.classeEnergetica}</p>
             </div>
           </div>
@@ -401,6 +416,7 @@ function AgentRequestDetails() {
                       Chiudi
                     </button>
                     <iframe
+                      src={`http://localhost:8080/api/contratti/pdf/${request.pathContrattoPDF.split('/').pop()}`}
                       src={`http://localhost:8080/api/contratti/pdf/${request.pathContrattoPDF.split('/').pop()}`}
                       className="w-full h-full"
                     />
