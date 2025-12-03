@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useAuthStore } from "@/store/auth.store";
 import AdminInfoContainer from "@/components/adminDashboard/AdminInfoContainer";
 
-export default function AdminDashboard({type} : {type : string}) {
+export default function AdminDashboard({ type }: { type: string }) {
   const {
     user,
     adminUtenti,
@@ -23,6 +23,7 @@ export default function AdminDashboard({type} : {type : string}) {
 
   const [activeTab, setActiveTab] = useState<"utenti" | "immobili" | "contratti" | "richieste" | "vendite" | "immagini">("utenti");
 
+  const [adminImmobiliDettagli, setAdminImmobiliDettagli] = useState(null);
   // Caricamento automatico una volta entrati nella dashboard
   useEffect(() => {
     if (user?.ruolo !== "AMMINISTRATORE") return;
@@ -33,6 +34,25 @@ export default function AdminDashboard({type} : {type : string}) {
     loadAdminRichieste();
     loadAdminVendite();
     loadAdminImmagini();
+
+    async function fetchAdminRichiesteDettagli() {
+      try {
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/admin/dashboard/richieste/dettagli`,
+          {
+            credentials: 'include',
+          }
+        );
+
+
+        setAdminImmobiliDettagli(await response.json())
+
+      } catch (error) {
+        console.error('Errore nella fetch:', error);
+      }
+    }
+
+    fetchAdminRichiesteDettagli();
 
   }, [user]);
 
@@ -52,7 +72,7 @@ export default function AdminDashboard({type} : {type : string}) {
       )}
 
       {type === "richiesta" && (
-        <AdminInfoContainer data={adminImmobili} type="richieste" />
+        <AdminInfoContainer data={adminImmobiliDettagli} type="richieste" />
       )}
 
       {type === "contratto" && (

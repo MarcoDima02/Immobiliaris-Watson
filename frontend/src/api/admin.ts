@@ -134,7 +134,7 @@ export async function fetchAdminRichiesteDettagli(
   filters?: AdminRichiesteFilters
 ): Promise<RichiestaDto[]> {
   const response = await fetch(
-    `${API_URL}/admin/dashboard/richieste/dettagli${buildQuery(filters)}`,
+    `${API_URL}/admin/dashboard/richieste/con-dettagli`,
     {
       credentials: 'include',
     }

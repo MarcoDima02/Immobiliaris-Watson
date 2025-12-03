@@ -1,6 +1,11 @@
+import { Link } from "react-router";
 import { Button } from "../ui/button";
+import { useState } from "react";
+import { useAuthStore } from "@/store/auth.store";
 
 export default function AdminInfoContainer({ data, type }: { data: any[] | null, type: string }) {
+
+
     console.log(data);
     return (
         <>
@@ -8,10 +13,11 @@ export default function AdminInfoContainer({ data, type }: { data: any[] | null,
                 {data && (data.map((item) => (
                     <>
                         <div className="bg-white p-4 w-full rounded-xl shadow-xl text-black flex flex-col">
-                            <div className="grid flex-col flex-wrap grid-cols-2 gap-3 mb-5 ">
 
-                                {type === "utenti" && (
-                                    <>
+
+                            {type === "utenti" && (
+                                <>
+                                    <div className="grid flex-col flex-wrap grid-cols-2 gap-3 mb-5 ">
                                         <div>
                                             <p className="font-bold">Nome:</p>
                                             <p className="text-zinc-600">{item.nome}</p>
@@ -32,36 +38,64 @@ export default function AdminInfoContainer({ data, type }: { data: any[] | null,
                                             <p className="font-bold">Email:</p>
                                             <p className="text-zinc-600">{item.email}</p>
                                         </div>
-                                    </>
+                                    </div>
+                                </>
+                            )}
+
+                            {type === "richieste" &&
+
+                                (
+                                    <div className="flex flex-col gap-3 mb-5 ">
+                                        <div className="flex flex-col w-full">
+                                            <div className="w-full flex justify-evenly mb-4">
+                                                <div className="w-full">
+                                                    <p className="font-bold">Cliente:</p>
+                                                    <p className="text-zinc-600">
+                                                        {item.nomeUtente} {item.cognomeUtente}
+                                                    </p>
+                                                </div>
+                                                <div className="w-full">
+                                                    <p className="font-bold">Data:</p>
+                                                    <p className="text-zinc-600">
+                                                        {item.dataRichiesta?.slice(0, 10).replace(/-/g, "/")} alle{" "}
+                                                        {item.dataRichiesta?.slice(11, 16)}
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex flex-col my-3 text-zinc-600">
+                                                <p className="font-bold text-black mb-2">Immobile:</p>
+                                                <p>{item.nstanze} stanze</p>
+                                                <p>{item.nbagni} bagni</p>
+
+
+                                                <p className="mt-3 font-bold w-full">
+                                                    Stato:{" "}
+                                                    <span className="text-primary">
+                                                        {item.stato?.replace(/_/g, " ")}
+                                                    </span>
+                                                </p>
+                                            </div>
+
+                                            <Link to="/backoffice/admin/request" state={{ item }}>
+                                                <Button className="mt-4 w-full">Visualizza dettagli</Button>
+                                            </Link>
+                                        </div>
+                                    </div>
+
                                 )}
 
-                                {type === "richieste" && (
-                                    <>
-                                        <div>
-                                            <p className="font-bold">Indirizzo:</p>
-                                            <p className="text-zinc-600">{item.indirizzo}</p>
-                                        </div>
-                                        <div>
-                                            <p className="font-bold">Città:</p>
-                                            <p className="text-zinc-600">{item.citta}</p>
-                                        </div>
-                                        <div>
-                                            <p className="font-bold">CAP:</p>
-                                            <p className="text-zinc-600">{item.cap}</p>
-                                        </div>
-  
-
-                                    </>
-                                )}
 
 
-                            </div>
+
+
                             <Button variant={"default"} className="mt-auto w-full">Modifica</Button>
                         </div>
 
                     </>
-                )))}
-            </div>
+                )))
+                }
+            </div >
         </>
     );
 }   
