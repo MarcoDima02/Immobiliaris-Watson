@@ -81,8 +81,8 @@ function AgentRequestDiv({ request, key }: AgentRequestDivProps) {
 
       <div className="my-4 flex flex-col text-zinc-600">
         <p className="font-bold text-black">Dettagli dell'immobile:</p>
-        <p>{request.nStanze} stanze</p>
-        <p>{request.nBagni} bagni</p>
+        <p>{request.nstanze} stanze</p>
+        <p>{request.nbagni} bagni</p>
         <p>{request.superficieMq} metri quadri</p>
       </div>
 
