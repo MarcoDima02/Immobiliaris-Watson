@@ -87,6 +87,10 @@ const router = createBrowserRouter([
         Component: AdminProtected,
         children: [
           {
+            path: 'dashboard',
+            element: <AdminDashboard type={"dashboard"} />
+          },
+          {
             path: 'utenti',
             element: <AdminDashboard type={"utente"} />
           },
