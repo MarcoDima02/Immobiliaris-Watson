@@ -6,21 +6,21 @@ import { Link } from 'react-router';
 interface AgentRequestProps {
   children: React.ReactNode;
   num: number;
-  type?: 'completato' | 'archiviato' | 'annullato' | 'default';
+  type?: 'completato' | 'in_attesa' | 'annullato' | 'default';
   requests?: any[];
 }
 
 const colorByType = {
   default: 'text-primary',
   completato: 'text-secondary',
-  archiviato: 'text-neutral-400',
+  in_attesa: 'text-neutral-400',
   annullato: 'text-red-500',
 };
 
 const filterByType = {
   default: 'in_elaborazione',
   completato: 'completate',
-  archiviato: 'in_attesa',
+  in_attesa: 'in_attesa',
   annullato: 'annullate',
 };
 

@@ -49,10 +49,10 @@ function AgentRequestContainer({
 
       <AgentRequest
         num={inAttesa.length}
-        type="archiviato"
+        type="in_attesa"
         requests={inAttesa}
       >
-        Archiviate
+        In attesa
       </AgentRequest>
 
       <AgentRequest
