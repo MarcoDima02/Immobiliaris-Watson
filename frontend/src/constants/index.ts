@@ -21,7 +21,7 @@ export const links = [
   },
   {
     href: '#inizia-gratis',
-    label: 'Inizia gratis',
+    label: 'Scopri il valore',
   },
 ];
 

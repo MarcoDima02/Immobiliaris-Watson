@@ -51,7 +51,7 @@ export const propertySchema = z.object({
     .min(1800, "L'anno deve essere superiore al 1800")
     .max(new Date().getFullYear()),
   condizione: z.string().optional(),
-  esposizione: z.enum(['Nord', 'Sud', 'Ovest', 'Est']) .optional()
+  esposizione: z.enum(['Nord', 'Sud', 'Ovest', 'Est']).optional(),
 });
 
 export const ownerSchema = z.object({
@@ -61,4 +61,7 @@ export const ownerSchema = z.object({
   telefonoUtente: z
     .string('Inserisci un numero telefonico valido')
     .max(10, 'Il numero deve essere di 10 cifre'),
+  accettazioneTrattamentoDati: z.literal(true, {
+    error: () => ({ message: 'Devi accettare la privacy' }),
+  }),
 });

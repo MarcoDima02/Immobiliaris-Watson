@@ -57,4 +57,7 @@ public class FormValutazioneRequest {
     private String cognomeUtente;
     private String emailUtente;
     private String telefonoUtente;
+    
+    // Consenso privacy (GDPR) - obbligatorio
+    private Boolean accettazioneTrattamentoDati;
 }

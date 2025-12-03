@@ -6,19 +6,32 @@ import { Link } from 'react-router';
 interface AgentRequestProps {
   children: React.ReactNode;
   num: number;
-  type?: 'completato' | 'archiviato' | 'annullato';
+  type?: 'completato' | 'in_attesa' | 'annullato' | 'default';
   requests?: any[];
 }
 
 const colorByType = {
   default: 'text-primary',
   completato: 'text-secondary',
-  archiviato: 'text-neutral-400',
+  in_attesa: 'text-neutral-400',
   annullato: 'text-red-500',
 };
 
-function AgentRequest({ children, num, type, requests }: AgentRequestProps) {
+const filterByType = {
+  default: 'in_elaborazione',
+  completato: 'completate',
+  in_attesa: 'in_attesa',
+  annullato: 'annullate',
+};
+
+function AgentRequest({
+  children,
+  num,
+  type = 'default',
+  requests,
+}: AgentRequestProps) {
   const color = colorByType[type ?? 'default'];
+   const filter = filterByType[type];
 
   const content = (
     <div className="bg-white rounded-2xl shadow-md flex flex-col pb-3 pt-6 px-6 gap-5 w-64 opacity-100">
@@ -33,7 +46,7 @@ function AgentRequest({ children, num, type, requests }: AgentRequestProps) {
 
   return (
     <Link
-      to="/backoffice/agent/myRequests"
+      to={`/backoffice/agent/myRequests/${filter}`}
       state={{ requests }}
       className="hover:scale-[1.02] transition-all"
     >

@@ -23,7 +23,6 @@ import {
 import { Button } from '@/components/ui/button';
 import { Field, FieldLabel, FieldGroup } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
-import Loader from '@/components/Loader';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -34,6 +33,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
 
 /**
  * Types
@@ -71,6 +72,7 @@ const StepUserType = ({
       cognomeUtente: data.cognomeUtente ?? '',
       emailUtente: data.emailUtente ?? '',
       telefonoUtente: data.telefonoUtente ?? '',
+      accettazioneTrattamentoDati: data.accettazioneTrattamentoDati,
     },
     shouldUnregister: false,
   });
@@ -111,16 +113,16 @@ const StepUserType = ({
     }
   };
 
-  if (loading) {
+ if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 gap-4">
-        <Loader />
+      <div className="flex flex-col items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-4 border-primary border-t-transparent my-6" />
         <p className="text-primary text-lg">
-          Stiamo calcolando la valutazione del tuo immobile...
+          Stiamo valutando il tuo immobile...
         </p>
       </div>
     );
-  }
+ }
 
   if (valuation) {
     const { valoreMin, valoreMax } = valuation;
@@ -287,6 +289,36 @@ const StepUserType = ({
                       </p>
                     )}
                   </Field>
+                )}
+              />
+
+              <Controller
+                name="accettazioneTrattamentoDati"
+                control={control}
+                render={({ field, fieldState }) => (
+                  <div
+                    className="flex items-center space-x-2 mt-4"
+                    data-invalid={fieldState.invalid}
+                  >
+                    <Checkbox
+                      id="privacy"
+                      checked={field.value}
+                      onCheckedChange={(checked) =>
+                        field.onChange(checked === true)
+                      }
+                    />
+                    <Label
+                      htmlFor="privacy"
+                      className="text-sm"
+                    >
+                      Acconsento al trattamento dei miei dati personali
+                    </Label>
+                    {fieldState.error && (
+                      <p className="text-red-500 text-sm">
+                        {fieldState.error.message}
+                      </p>
+                    )}
+                  </div>
                 )}
               />
             </FieldGroup>

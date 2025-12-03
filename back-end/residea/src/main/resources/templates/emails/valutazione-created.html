@@ -1,16 +1,294 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Valutazione pronta</title>
-  </head>
-  <body>
-    <p>Ciao [[${nome}]]!</p>
-    <p>La valutazione per il tuo immobile è stata completata.</p>
-    <p>Valore medio stimato: <strong>€[[${valoreMedio}]]</strong></p>
-    <p>Entro 72 ore riceverai una mail con i dati di contatto di uno dei nostri agenti, che successivamente la contatterà per proseguire con una valutazione più precisa.</p>
-    <hr />
-    <p>Grazie — Il team Residea</p>
-  </body>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La tua valutazione è pronta - Residea</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #f3f3f6;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #5e223e 0%, #7a2f52 100%);
+            color: #ffffff;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .header img {
+            max-width: 180px;
+            height: auto;
+            margin-bottom: 15px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin: 0;
+            color: #ffffff;
+        }
+
+        .content {
+            padding: 40px 30px;
+            color: #333333;
+        }
+
+        .greeting {
+            font-size: 18px;
+            font-weight: 600;
+            color: #5e223e;
+            margin-bottom: 20px;
+        }
+
+        .message {
+            font-size: 15px;
+            color: #555555;
+            margin-bottom: 25px;
+            line-height: 1.7;
+        }
+
+        .valuation-box {
+            background: linear-gradient(135deg, #f2e9e4 0%, #faf7f5 100%);
+            border-left: 5px solid #5e223e;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .valuation-label {
+            font-size: 14px;
+            color: #777777;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .valuation-range {
+            font-size: 32px;
+            font-weight: 700;
+            color: #5e223e;
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .valuation-range .separator {
+            font-size: 24px;
+            color: #c9ada7;
+            font-weight: 400;
+        }
+
+        .valuation-range .amount {
+            white-space: nowrap;
+        }
+
+        .valuation-note {
+            font-size: 13px;
+            color: #888888;
+            margin-top: 10px;
+            font-style: italic;
+        }
+
+        .info-box {
+            background-color: #fff8e6;
+            border: 1px solid #ffd966;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+        }
+
+        .info-box p {
+            font-size: 14px;
+            color: #666666;
+            margin: 0;
+        }
+
+        .info-box strong {
+            color: #5e223e;
+        }
+
+        .next-steps {
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+        }
+
+        .next-steps h3 {
+            font-size: 16px;
+            color: #5e223e;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .next-steps p {
+            font-size: 14px;
+            color: #555555;
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        .next-steps ul {
+            margin: 10px 0 0 20px;
+            padding: 0;
+        }
+
+        .next-steps li {
+            font-size: 14px;
+            color: #555555;
+            margin-bottom: 8px;
+        }
+
+        .footer {
+            background-color: #f2e9e4;
+            padding: 30px;
+            text-align: center;
+            border-top: 3px solid #5e223e;
+        }
+
+        .footer-logo {
+            max-width: 120px;
+            height: auto;
+            margin-bottom: 15px;
+            opacity: 0.8;
+        }
+
+        .footer p {
+            font-size: 13px;
+            color: #777777;
+            margin: 8px 0;
+            line-height: 1.5;
+        }
+
+        .footer strong {
+            color: #5e223e;
+        }
+
+        .footer-id {
+            font-size: 11px;
+            color: #999999;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #d4c4bd;
+        }
+
+        @media only screen and (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+
+            .header {
+                padding: 30px 20px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .content {
+                padding: 30px 20px;
+            }
+
+            .valuation-range {
+                font-size: 26px;
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .valuation-range .separator {
+                transform: rotate(90deg);
+            }
+
+            .footer {
+                padding: 25px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header con logo -->
+        <div class="header">
+            <img src="cid:logo" alt="Residea" />
+            <h1>Valutazione Completata</h1>
+        </div>
+
+        <!-- Contenuto principale -->
+        <div class="content">
+            <p class="greeting">Ciao <span th:text="${nome}">utente</span>!</p>
+            
+            <p class="message">
+                Siamo lieti di informarti che la <strong>valutazione preliminare</strong> del tuo immobile è stata completata con successo.
+            </p>
+
+            <!-- Box con la fascia di valutazione -->
+            <div class="valuation-box">
+                <div class="valuation-label">Fascia di valutazione stimata</div>
+                <div class="valuation-range">
+                    <span class="amount">€<span th:text="${#numbers.formatInteger(valoreMin, 0, 'POINT')}">150000</span></span>
+                    <span class="separator">—</span>
+                    <span class="amount">€<span th:text="${#numbers.formatInteger(valoreMax, 0, 'POINT')}">180000</span></span>
+                </div>
+                <p class="valuation-note">Stima basata sui dati forniti e sulle condizioni di mercato attuali</p>
+            </div>
+
+            <!-- Info box con note importanti -->
+            <div class="info-box">
+                <p>
+                    📌 <strong>Nota importante:</strong> Questa è una valutazione preliminare automatica. Per una stima più accurata e personalizzata, uno dei nostri agenti esperti ti contatterà a breve.
+                </p>
+            </div>
+
+            <!-- Prossimi passi -->
+            <div class="next-steps">
+                <h3>Cosa succede ora?</h3>
+                <p><strong>Entro 72 ore</strong> riceverai una email con:</p>
+                <ul>
+                    <li>I dati di contatto del tuo agente dedicato</li>
+                    <li>La possibilità di fissare un appuntamento</li>
+                    <li>Informazioni dettagliate sui nostri servizi</li>
+                </ul>
+                <p style="margin-top: 15px;">
+                    Il nostro agente sarà a tua disposizione per una <strong>valutazione approfondita</strong> dell'immobile, 
+                    considerando tutti i dettagli specifici e le caratteristiche uniche della tua proprietà.
+                </p>
+            </div>
+
+            <p class="message" style="margin-top: 30px;">
+                Se hai domande o desideri maggiori informazioni, non esitare a contattarci.
+            </p>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <img src="cid:logo" alt="Residea" class="footer-logo" />
+            <p>Grazie per aver scelto <strong>Residea</strong></p>
+            <p>Il tuo partner di fiducia nel settore immobiliare</p>
+            <p class="footer-id">Valutazione ID: <span th:text="${id}">0</span></p>
+        </div>
+    </div>
+</body>
 </html>

@@ -26,15 +26,15 @@ const Hero = ({ id }: HeroProps) => {
 
       {/* Contenuto hero */}
       <div className="relative z-20 container mx-auto flex flex-col justify-center items-center xl:items-start xl:justify-start xl:mt-20 h-full px-6 md:px-8 xl:px-20 text-start">
-        <h1 className="text-3xl md:text-4xl xl:text-6xl 2xl:text-7xl font-extrabold leading-tight text-white drop-shadow-lg">
+        <h1 className="text-3xl md:text-4xl xl:text-6xl 2xl:text-7xl font-extrabold leading-tight drop-shadow-lg xl:text-white">
           Vuoi{' '}
-          <span className="text-primary text-shadow-primary">
+          <span className="text-white xl:text-primary text-shadow-primary">
             vendere casa
           </span>
           <br />
           senza stress <span className='text-primary'>?</span>
         </h1>
-        <p className="mt-4 md:mt-6 text-md md:text-lg xl:text-2xl text-primary max-w-xl drop-shadow-md">
+        <p className="mt-4 md:mt-6 text-md md:text-lg xl:text-2xl text-white xl:text-primary max-w-xl drop-shadow-md">
           Con noi, il tuo immobile trova presto il suo nuovo proprietario.
         </p>
         <div className="mt-6 md:mt-8">

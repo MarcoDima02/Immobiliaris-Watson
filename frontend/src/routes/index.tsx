@@ -113,7 +113,7 @@ const router = createBrowserRouter([
             Component: AgentDashboard
           },
           {
-            path: 'myRequests',
+            path: 'myRequests/:filter',
             Component: AgentMyRequests
           },
           {

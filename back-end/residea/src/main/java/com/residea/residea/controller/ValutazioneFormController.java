@@ -13,10 +13,12 @@ import com.residea.residea.dto.FormValutazioneRequest;
 import com.residea.residea.dto.ValutazioneResultResponse;
 import com.residea.residea.entities.DettagliImmobile;
 import com.residea.residea.entities.Immobile;
+import com.residea.residea.entities.Richiesta;
 import com.residea.residea.entities.Superficie;
 import com.residea.residea.entities.Utente;
 import com.residea.residea.repos.DettagliImmobileRepo;
 import com.residea.residea.repos.ImmobileRepo;
+import com.residea.residea.repos.RichiestaRepo;
 import com.residea.residea.repos.SuperficiRepo;
 import com.residea.residea.repos.UtenteRepo;
 import com.residea.residea.services.ValutazioneImmobileService;
@@ -33,22 +35,32 @@ public class ValutazioneFormController {
     private final DettagliImmobileRepo dettagliRepo;
     private final SuperficiRepo superficiRepo;
     private final UtenteRepo utenteRepo;
+    private final RichiestaRepo richiestaRepo;
     private final ValutazioneImmobileService valutazioneService;
 
     @PostMapping(consumes = "application/json", produces = "application/json")
     @Transactional
     public ResponseEntity<ValutazioneResultResponse> submit(@RequestBody FormValutazioneRequest request) {
-        
+    
         
         // Validazioni minime lato backend 
         if (request.getSuperficie() == null || request.getSuperficie().compareTo(BigDecimal.ZERO) <= 0) {
+            System.out.println("ERRORE: Superficie non valida");
             return ResponseEntity.badRequest().build();
         }
         if (request.getCap() == null || !request.getCap().matches("\\d{5}")) {
+            System.out.println("ERRORE: CAP non valido");
             return ResponseEntity.badRequest().build();
         }
         // Validazione campi obbligatori
         if (request.getNStanze() == null || request.getNBagni() == null || request.getAnnoCostruzione() == null) {
+            System.out.println("ERRORE: Campi obbligatori mancanti - nStanze: " + request.getNStanze() + ", nBagni: " + request.getNBagni() + ", annoCostruzione: " + request.getAnnoCostruzione());
+            return ResponseEntity.badRequest().build();
+        }
+        
+        // Validazione consenso privacy (GDPR) - obbligatorio
+        if (!Boolean.TRUE.equals(request.getAccettazioneTrattamentoDati())) {
+            System.out.println("ERRORE: Consenso privacy non accettato - valore: " + request.getAccettazioneTrattamentoDati());
             return ResponseEntity.badRequest().build();
         }
 
@@ -124,6 +136,19 @@ public class ValutazioneFormController {
             .superficieCantina(Boolean.TRUE.equals(request.getCantina()) ? request.getSuperficieCantina() : null)
             .build();
         superficiRepo.save(superfici);
+
+        // Creazione richiesta di valutazione associata
+        Richiesta richiesta = new Richiesta();
+        richiesta.setUtente(proprietario);
+        richiesta.setImmobile(immobile);
+        richiesta.setDataRichiesta(java.time.LocalDateTime.now());
+        richiesta.setStato(Richiesta.Stato.IN_ATTESA);
+        richiesta.setNoteUtente(request.getFinalitaRichiesta() != null 
+            ? "Finalità: " + request.getFinalitaRichiesta() 
+            : null);
+        richiestaRepo.save(richiesta);
+        
+        System.out.println("Richiesta creata con ID: " + richiesta.getIdRichiesta() + " - Stato: " + richiesta.getStato());
 
         // ========================================
         // CALCOLO VALUTAZIONE DOPO SALVATAGGIO

@@ -6,7 +6,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
+
 import org.springframework.beans.factory.annotation.Value;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
@@ -22,6 +24,7 @@ public class UploadPdfController {
 
     @PostMapping("/pdf")
     public ResponseEntity<?> uploadPdf(@RequestParam("file") MultipartFile file) {
+
         if (file.isEmpty()) {
             return ResponseEntity.badRequest().body("File vuoto");
         }
@@ -53,4 +56,10 @@ public class UploadPdfController {
                     .body("Errore salvataggio file: " + e.getMessage());
         }
     }
+
+
+
+    
 }
+
+
