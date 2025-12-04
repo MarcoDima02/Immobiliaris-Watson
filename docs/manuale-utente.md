@@ -38,7 +38,7 @@
 
 ### 1. Accesso alla Pagina di Valutazione
 
-![Screenshot 1: Homepage]()
+![Screenshot 1: Homepage](screenshots/Homepage.PNG)
 *Inserire screenshot della homepage con il pulsante "Richiedi Valutazione"*
 
 **Passi:**
@@ -50,8 +50,8 @@
 
 ### 2. Compilazione Form - Step 1: Indirizzo
 
-![Screenshot 4: Form Step 3 - Indirizzo]()
-*Inserire screenshot dello step 3 del form*
+![Screenshot 2: Form Step 1 - Indirizzo](screenshots/form1.PNG)
+*Inserire screenshot dello step 1 del form*
 
 **Campi Obbligatori:**
 - **Indirizzo**: Via e numero civico
@@ -71,7 +71,7 @@
 
 ### 3. Compilazione Form - Step 2: Dati Proprietà
 
-![Screenshot 3: Form Step 2 - Dati Proprietà]()
+![Screenshot 3: Form Step 2 - Dati Proprietà](screenshots/form2.PNG)
 *Inserire screenshot dello step 2 del form*
 
 **Campi Obbligatori:**
@@ -106,8 +106,8 @@
 
 ### 4. Compilazione Form - Step 3: Informazioni Opzionali
 
-![Screenshot 5: Form Step 4 - Informazioni Opzionali]()
-*Inserire screenshot dello step 4 del form*
+![Screenshot 4: Form Step 3 - Informazioni Opzionali](screenshots/form3.PNG)
+*Inserire screenshot dello step 3 del form*
 
 **Campi:**
 - **Superfici Aggiuntive**: Se hai balcone, giardino, garage o cantina, inserisci le metrature
@@ -122,8 +122,8 @@
 
 ### 5. Compilazione Form - Step 4: Dati Personali
 
-![Screenshot 2: Form Step 1 - Dati Personali]()
-*Inserire screenshot dello step 1 del form*
+![Screenshot 5: Form Step 4 - Dati Personali](screenshots/form4.PNG)
+*Inserire screenshot dello step 4 del form*
 
 **Campi Obbligatori:**
 - **Nome**: Il tuo nome
@@ -139,7 +139,7 @@
 
 ### 6. Visualizzazione Risultato Valutazione
 
-![Screenshot 6: Risultato Valutazione]()
+![Screenshot 6: Risultato Valutazione](screenshots/risultato.PNG)
 *Inserire screenshot della pagina con il risultato della valutazione*
 
 **Informazioni Mostrate:**
@@ -160,7 +160,7 @@
 
 ### 1. Login Agente
 
-![Screenshot 7: Pagina Login]()
+![Screenshot 7: Pagina Login](screenshots/paginaLogin.PNG)
 *Inserire screenshot della pagina di login*
 
 **Credenziali di Accesso:**
@@ -176,13 +176,12 @@
 
 ### 2. Dashboard Principale Agente
 
-![Screenshot 8: Dashboard Agente]()
+![Screenshot 8: Dashboard Agente](screenshots/homeAgente.PNG)
 *Inserire screenshot della dashboard agente con lista richieste*
 
 **Sezioni della Dashboard:**
 - **Lista Richieste**: Tutte le richieste assegnate all'agente
 - **Filtri**: Filtra per stato (Da Valutare, In Lavorazione, Completata, Annullata)
-- **Ricerca**: Cerca per nome, email o ID richiesta
 
 **Informazioni per Ogni Richiesta:**
 - ID Richiesta
@@ -197,7 +196,7 @@
 
 ### 3. Visualizzazione Dettagli Richiesta
 
-![Screenshot 9: Dettagli Richiesta]()
+![Screenshot 9: Dettagli Richiesta](screenshots/dettagliRichiesta.PNG)
 *Inserire screenshot della pagina dettagli richiesta*
 
 **Istruzioni:**
@@ -217,7 +216,7 @@
 
 ### 4. Gestione Stato Richiesta
 
-![Screenshot 10: Cambio Stato]()
+![Screenshot 10: Cambio Stato](screenshots/statoRichiesta.PNG)
 *Inserire screenshot del dialog di cambio stato*
 
 **Stati Disponibili:**
