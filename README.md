@@ -56,13 +56,19 @@ Il progetto nasce dall'esigenza di modernizzare l'approccio commerciale, attualm
 ## Struttura del Progetto
 
 ```plaintext
-/backend          → API REST e logica server (Java + Spring Boot)
-/frontend         → Interfaccia utente e UX (HTML/CSS/SCSS/JS/TypeScript)
-/database         → Script SQL, schema e migrazioni (MySQL)
-/docs             → Documentazione tecnica (Swagger, JSDoc)
-/assets           → Immagini, loghi, risorse statiche
-/marketing        → Materiali campagne, visual identity, PED
-/.github          → Configurazione GitHub Projects e Actions
+/back-end         → API REST e logica server (Java + Spring Boot)
+  /residea        → Applicazione Spring Boot principale
+    /src          → Codice sorgente backend
+    /uploads      → File caricati (immagini, contratti)
+/frontend         → Interfaccia utente (React + TypeScript + Vite)
+  /src            → Codice sorgente frontend
+  /public         → Asset statici
+/database         → Script SQL e migrazioni
+  /init           → Schema iniziale database
+  /seeds          → Dati di esempio
+/docs             → Documentazione tecnica
+/assets           → Loghi e risorse grafiche
+/marketing        → Materiali campagne e strategia
 ```
 
 ---
@@ -70,17 +76,19 @@ Il progetto nasce dall'esigenza di modernizzare l'approccio commerciale, attualm
 ## Stack Tecnologico
 
 ```plaintext
-Backend:          Java 21 + Spring Boot
-Frontend:         React, TypeScript, HTML, CSS, SCSS
-Database:         MySQL
-Marketing:        Facebook Ads, Google Ads, Performance Max
-Automation:       CRM, DEM/Newsletter, Marketing Automation
+Backend:          Java 21 + Spring Boot 3.x
+Frontend:         React 18 + TypeScript + Vite
+Styling:          Tailwind CSS + shadcn/ui
+Database:         MySQL 8.0+
+ORM:              JPA/Hibernate
+Security:         Spring Security + BCrypt
+Email:            Spring Mail (MailHog per sviluppo)
+File Upload:      Multipart con storage locale
+Build Tools:      Maven (backend) + npm (frontend)
+Dev Tools:        Docker Compose (MailHog)
 Versionamento:    Git + GitHub
 Project Mgmt:     GitHub Projects
-Documentazione:   README.md, Swagger, JSDoc
-Testing:          JUnit, Jest
-Performance:      Lighthouse, PageSpeed Insights
-```
+
 
 Note tecniche:
 
@@ -150,60 +158,84 @@ Sistema di valutazione basato su:
 - Architettura backend e database
 - Sviluppo API REST con Spring Boot
 - Gestione repository e CI/CD
-- Integrazione servizi e deployment
+- Integrazione servizi esterni
+- Contribuzione generale al codice backend
+- Revisione codice
 
 **Alessandro Grotta** – Software Developer – [@Grottino](https://github.com/Grottino)
 - Sviluppo backend Java + Spring Boot
-- Implementazione business logic
-- Gestione autenticazione e sicurezza
-- Testing e debugging backend
-- Ottimizzazione query database
+- Contribuzione database MySQL
+- Contribuzione creazione entità e repository
+- Contribuzione scrittura task
+- Testing API e validazione dati
+- Creazione dashboard agenti
+
 
 **Andrea Bellissimo** – Software Developer – [@AndreaBellissimo](https://github.com/AndreaBellissimo)
 - Sviluppo backend e API REST
 - Configurazione e gestione database MySQL
-- Implementazione servizi email e automazioni
 - Testing e validazione dati
-- Documentazione tecnica
+- Creazione entità e repository
+- Creazione dashboard amministrativa (backoffice)
+
 
 #### Web Developers
 
 **Massimo Musso** – Web Developer – [@Max-HKW](https://github.com/Max-HKW)
-- Sviluppo frontend React + TypeScript
-- Implementazione UI/UX da mockup
-- Integrazione API REST
-- Form validation e gestione stato
-- Responsive design e accessibility
+- Design, prototipo dashboard agente e implementazione insieme a davide
+- Design, prototipo e implementazione form di valutazione
+- ⁠Implementazione login
+- Design, prototipo e implementazione homepage insieme a davide
+- ⁠gestione logica, creazione contesti e servizi e collegamento con backend
+- ⁠gestione rotte
+- ⁠refactor del codice
 
 **Davide Martinelli** – Web Developer – [@davide-its](https://github.com/davide-its)
-- Sviluppo frontend e componenti React
-- Ottimizzazione performance frontend
-- SEO on-page e technical (meta tag, structured data)
-- Testing cross-browser e responsive
-- Implementazione design system
+- Design, prototipo dashboard agente e implementazione insieme a Massimo
+- Design, prototipo e implementazione dashboard amministratore
+- Design, prototipo e implementazione scheda dettagli immobile 
+- Design, prototipo e implementazione homepage insieme a massimo
+- Contribuzione alla presentazione iniziale
 
 #### Digital Strategists
 
 **Alessia Valendino** – Digital Strategist – [@alessiavalendino](https://github.com/alessiavalendino)
-- Analisi buyer persona e competitor
-- Definizione strategia di comunicazione
-- Gestione campagne Meta Ads
-- Content strategy e copywriting
-- Analytics e reportistica
+- Creazione Nome/Logo Prisma Studio(agenzia fittizia)
+- Logo Immobiliaris
+- Logo Rebranding (Residea)
+- Creazione prima presentazione
+- Presentazione FINALE 
+- Realizzazione reel (riprese)
+- Creazione Carosello
 
 **Irene Dabusti** – Digital Strategist – [@irenedabusti](https://github.com/irenedabusti)
-- Definizione TOV e linee editoriali
-- Proposta visual identity e branding
-- Copywriting sito e ottimizzazione SEO
-- Social media strategy
-- Lead generation e funnel
+- Creazione Prisma Studio(agenzia fittizia)
+- Logo Immobiliaris (inizialmente)
+- Palette + Tov Immobiliaris 
+- Creazione del Rebranding e logo +palette(Residea)
+- Strategia multi canale e pianificazione campagne paid
+- Distribuzione Budget
+- Proiezioni Lead
+- Prima Presentazione Immobiliaris
+- Analisi Residea
+- Presentazione SAL
+- Creazione contenuto gamification
+- Realizzazione Reel
+- Influencer Marketing
+
 
 **Asmaa Tantaoui** – Digital Strategist – [@AsmaaTantaoui](https://github.com/AsmaaTantaoui)
-- Gestione campagne Google Ads e Performance Max
-- Strategia di conversione lead
-- PED (Piano Editoriale Digitale)
-- Marketing automation
-- A/B testing e ottimizzazione conversioni
+- Analisi Immobiliaris 
+- Prima bozza presentazione
+- Analisi Residea 
+- Benchmark 
+- Buyer Personas
+- Creazione contenuti 
+- Presentazione SAL
+- Influencer Marketing
+- Creazione Video YouTube
+- Editing Video
+
 
 ---
 
@@ -364,25 +396,69 @@ Note: Alla fine del progetto il cliente valuterà il rinnovo e il budget per gli
 
 ## Stato del Progetto
 
-In sviluppo - sviluppo frontend e backend, strategia in definizione
+**Status:** 🚀 In fase di completamento  
+**Versione:** 1.0.0 Beta  
+**Ultimo aggiornamento:** Dicembre 2024
 
 ### Milestone Completate
 
-1. Briefing iniziale ricevuto
-2. Team assemblato
-3. Repository GitHub creato
-4. Documentazione README iniziale
-5. Discussione e individuazione stile e logo per il sito
-6. Proposta di rebranding accettata da parte del cliente
-7. Inizializzazione e definizione database
-8. Sviluppo in fase iniziale/intermedia lato backend e frontend
-9. Testing primo endpoint
+ **Fase 1 - Setup e Progettazione**
+1. Briefing iniziale e analisi requisiti
+2. Team assemblato e ruoli definiti
+3. Repository GitHub creato e configurato
+4. Proposta di rebranding accettata (Residea)
+5. Design system e mockup approvati
 
-### Prossimi Step
+ **Fase 2 - Sviluppo Database**
+1. Schema database MySQL progettato
+2. Entità JPA e repository creati
+3. Relazioni e vincoli implementati
+4. Script di popolazione dati creati
+5. Migrazioni e seed funzionanti
 
-1. Finalizzazione backend
-2. Finalizzazione frontend
-3. definizione strategia e lead
+ **Fase 3 - Backend API**
+1. Architettura Spring Boot configurata
+2. API REST complete per tutte le entità
+3. Autenticazione e autorizzazione implementate
+4. Sistema valutazione immobili funzionante
+5. Upload immagini e gestione file
+6. Email automation con template HTML
+7. Dashboard amministratore con CRUD completo
+8. Dashboard agente con gestione richieste
+9. Endpoint per statistiche e reportistica
+
+ **Fase 4 - Frontend**
+1. Setup React + TypeScript + Vite
+2. Componenti UI con Tailwind e shadcn/ui
+3. Form multi-step valutazione immobile
+4. Dashboard amministratore interattiva
+5. Dashboard agente con gestione richieste
+6. Sistema di autenticazione e routing protetto
+7. Integrazione completa con API backend
+8. Responsive design per mobile/tablet
+
+### Funzionalità Implementate
+
+**Per gli Utenti:**
+-  Form di valutazione immobile multi-step
+-  Calcolo automatico valutazione immobiliare
+-  Notifiche email automatiche
+-  Visualizzazione dettagli immobile
+
+**Per gli Agenti:**
+-  Dashboard con lista richieste
+-  Gestione richieste (accetta/rifiuta/completa)
+-  Dettagli completi immobili e valutazioni
+-  Upload immagini immobili
+-  Statistiche personali
+
+**Per gli Amministratori:**
+-  Dashboard completa backoffice
+-  CRUD utenti, immobili, contratti, richieste, vendite
+-  Filtri avanzati e ricerca
+-  Gestione permessi e ruoli
+-  Visualizzazione dati aggregati
+-  Export e reportistica
 
 ---
 
@@ -627,17 +703,64 @@ Una volta avviato il progetto, puoi accedere a:
 
 ## Documentazione
 
-### API Documentation
+### Swagger API Documentation
 
-- Swagger UI: `http://localhost:8080/swagger-ui.html` (Coming soon)
-- API Endpoints: Vedi `/docs/api-reference.md` (Coming soon)
+**Swagger UI disponibile:** `http://localhost:8080/swagger-ui/index.html`  
+**OpenAPI JSON:** `http://localhost:8080/v3/api-docs`
 
-### Guides
+Swagger fornisce documentazione interattiva di tutte le API REST con possibilità di testare gli endpoint direttamente dal browser.
 
-- Setup Guide: `/docs/setup-guide.md` (Coming soon)
-- Contributing: `/docs/CONTRIBUTING.md` (Coming soon)
-- Style Guide: `/docs/style-guide.md` (Coming soon)
-- SEO Checklist: `/docs/seo-checklist.md` (Coming soon)
+### API Endpoints Principali
+
+#### Autenticazione
+- `POST /api/login` - Login utente
+- `POST /api/logout` - Logout utente
+- `GET /api/session` - Verifica sessione corrente
+
+#### Utenti
+- `GET /api/utenti` - Lista utenti
+- `GET /api/utenti/{id}` - Dettagli utente
+- `POST /api/utenti/registrazione` - Registrazione nuovo utente
+- `PUT /api/utenti/{id}` - Aggiorna utente
+
+#### Immobili
+- `GET /api/immobili` - Lista immobili
+- `GET /api/immobili/{id}` - Dettagli immobile
+- `POST /api/immobili` - Crea immobile
+- `PUT /api/immobili/{id}` - Aggiorna immobile
+- `POST /api/immobili/{id}/immagini` - Upload immagini
+
+#### Richieste Valutazione
+- `GET /api/richieste` - Lista richieste
+- `GET /api/richieste/{id}` - Dettagli richiesta
+- `POST /api/richieste` - Crea richiesta
+- `PUT /api/richieste/{id}` - Aggiorna richiesta
+
+#### Dashboard Amministratore
+- `GET /api/admin/dashboard/utenti` - Gestione utenti
+- `GET /api/admin/dashboard/immobili` - Gestione immobili
+- `GET /api/admin/dashboard/contratti` - Gestione contratti
+- `GET /api/admin/dashboard/richieste` - Gestione richieste
+- `GET /api/admin/dashboard/richieste/{id}/dettagli` - Richiesta con dettagli completi
+- `GET /api/admin/dashboard/vendite` - Gestione vendite
+- `POST /api/admin/dashboard/utenti` - Crea utente
+- `PUT /api/admin/dashboard/utenti/{id}` - Aggiorna utente
+
+#### Dashboard Agente
+- `GET /api/agenti/{idAgente}/richieste` - Richieste assegnate
+- `GET /api/agenti/{idAgente}/contratti` - Contratti gestiti
+- `PUT /api/richieste/{id}/stato` - Aggiorna stato richiesta
+
+#### Valutazioni
+- `POST /api/valutazione/calcola` - Calcola valutazione immobile
+- `GET /api/valutazione/immobile/{id}` - Ottieni valutazione esistente
+
+### Documentazione Tecnica Disponibile
+- `/docs/EndpointsList.md` - Lista completa endpoint
+- `/docs/FormulaValutazione.md` - Algoritmo valutazione
+- `/docs/CampiFormValutazione.md` - Campi form valutazione
+- `/docs/docker.md` - Configurazione Docker
+- `/docs/backup.md` - Procedura backup database
 
 ---
 
@@ -768,33 +891,97 @@ develop (staging) ────────────────────�
 
 ## Licenza
 
-[Da definire con l'azienda cliente]
+Progetto sviluppato per scopi didattici nell'ambito del Laboratorio Integrato ITS.  
+**Cliente:** Immobiliaris / Gruppo Indomus  
+**Studio di Sviluppo:** Prisma Studio (team fittizio)
 
 ---
 
 ## Note di Sviluppo
 
-### Tecnologie da Approfondire
+### Stack Implementato
 
-- Spring Security per autenticazione
-- React Query per state management (se si usa React)
-- MySQL ottimizzazioni e indexing
-- Redis per caching (se necessario)
-- Docker per containerizzazione
-- CI/CD con GitHub Actions
+ **Backend:**
+- Spring Boot 3.x con Java 21
+- Spring Security + BCrypt per autenticazione
+- JPA/Hibernate per persistenza dati
+- Spring Mail per invio email
+- Maven per build management
+- MySQL 8.0+ come database
 
-### Integrazioni Future Possibili
+ **Frontend:**
+- React 18 con TypeScript
+- Vite come build tool
+- Tailwind CSS per styling
+- shadcn/ui per componenti UI
+- React Router per navigazione
+- Fetch API per chiamate REST
 
-- Google Maps API per geolocalizzazione
-- Stripe/PayPal per pagamenti online
-- Twilio per notifiche SMS
-- SendGrid per email transazionali
-- Zapier per automazioni avanzate
+ **DevOps:**
+- Docker Compose per MailHog
+- Git/GitHub per version control
+- Struttura multi-branch (main, develop, feature branches)
+
+### Funzionalità Avanzate Implementate
+
+-  Sistema valutazione immobili con algoritmo personalizzato
+-  Upload multiplo immagini con preview
+-  Email automation con template HTML
+-  Dashboard amministratore con filtri e ricerca
+-  Dashboard agente con gestione richieste
+-  Autenticazione basata su sessione
+-  Routing protetto per ruoli (admin, agente, utente)
+-  Validazione dati lato client e server
+-  Gestione errori centralizzata
+
+### Compatibilità Browser e Dispositivi
+
+Il progetto è stato testato e verificato sui seguenti browser e dispositivi:
+
+**Browser Desktop:**
+-  Google Chrome (versione 120+)
+-  Mozilla Firefox (versione 121+)
+-  Microsoft Edge (versione 120+)
+-  Safari (versione 17+)
+
+**Browser Mobile:**
+-  Chrome Mobile (Android 12+)
+-  Safari Mobile (iOS 16+)
+-  Samsung Internet
+
+**Dispositivi Testati:**
+-  Desktop (1920x1080, 2560x1440)
+-  Laptop (1366x768, 1920x1080)
+-  Tablet (iPad, Android tablet 10")
+-  Mobile (iPhone 12/13/14/15, Samsung Galaxy S21+)
+
+**Note sulla Compatibilità:**
+- Design completamente responsive grazie a Tailwind CSS
+- Ottimizzato per schermi da 320px a 2560px
+- Supporto touch per dispositivi mobili e tablet
+- Performance ottimali su connessioni 4G/5G e WiFi
+
+### Possibili Miglioramenti Futuri
+
+- [ ] Aggiungere annotazioni OpenAPI ai controller per documentazione completa
+- [ ] Aggiungere test unitari e integration test
+- [ ] Implementare caching con Redis
+- [ ] Aggiungere logging strutturato
+- [ ] Integrare Google Maps per geolocalizzazione
+- [ ] Implementare notifiche real-time (WebSocket)
+- [ ] Aggiungere export PDF per contratti e report
+- [ ] Implementare sistema di backup automatico
+- [ ] Aggiungere metriche e monitoring (Prometheus/Grafana)
+- [ ] Deploy su cloud (AWS/Azure/GCP)
 
 ---
 
-**Ultimo aggiornamento:** Dicembre 2025
-**Versione:** 0.1.0 (Alpha)
-**Status:** 🚀 In Development
+**Ultimo aggiornamento:** Dicembre 2024  
+**Versione:** 1.0.0 Beta  
+**Status:** 🚀 In fase di completamento
+
+**Contatti Team:**
+- Team Leader: Marco Dima - [@MarcoDima02](https://github.com/MarcoDima02)
+- Repository: [Immobiliaris-Watson](https://github.com/MarcoDima02/Immobiliaris-Watson)
 
 ---
