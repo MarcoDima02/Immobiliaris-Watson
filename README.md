@@ -976,7 +976,7 @@ Il progetto è stato testato e verificato sui seguenti browser e dispositivi:
 
 ---
 
-**Ultimo aggiornamento:** Dicembre 2024  
+**Ultimo aggiornamento:** Dicembre 2025  
 **Versione:** 1.0.0 Beta  
 **Status:** 🚀 In fase di completamento
 
