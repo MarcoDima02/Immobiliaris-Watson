@@ -6,6 +6,8 @@ public class ContrattoDto {
     private Integer idContratto;
     private Integer idImmobile;
     private Integer idAgente;
+    private String nomeAgente;      // Nome dell'agente
+    private String cognomeAgente;   // Cognome dell'agente
     private String tipoContratto;  // String invece di enum per semplic ità nel frontend
     private LocalDate dataContratto;
     private LocalDate dataScadenzaContratto;
@@ -33,6 +35,22 @@ public class ContrattoDto {
 
     public void setIdAgente(Integer idAgente) {
         this.idAgente = idAgente;
+    }
+
+    public String getNomeAgente() {
+        return nomeAgente;
+    }
+
+    public void setNomeAgente(String nomeAgente) {
+        this.nomeAgente = nomeAgente;
+    }
+
+    public String getCognomeAgente() {
+        return cognomeAgente;
+    }
+
+    public void setCognomeAgente(String cognomeAgente) {
+        this.cognomeAgente = cognomeAgente;
     }
 
     public String getTipoContratto() {

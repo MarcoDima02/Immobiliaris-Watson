@@ -67,18 +67,27 @@ public class UtentiServiceImpl implements UtentiService {
     // --- UPDATE ---
     @Override
     public Utente aggiornaUtente(Utente utenteAggiornato) {
+        // Recupera l'utente esistente dal database
+        Utente utenteEsistente = utenteRepo.findById(utenteAggiornato.getIdUtente())
+                .orElseThrow(() -> new RuntimeException("Utente non trovato"));
+        
         // Se viene fornita una nuova password, la hashamo
         if (utenteAggiornato.getPasswordHash() != null && !utenteAggiornato.getPasswordHash().isEmpty()) {
             utenteAggiornato.setPasswordHash(
                 passwordEncoder.encode(utenteAggiornato.getPasswordHash())
             );
+        } else {
+            // Se non viene fornita una nuova password, mantieni quella esistente
+            utenteAggiornato.setPasswordHash(utenteEsistente.getPasswordHash());
         }
+        
         // Se il ruolo aggiornato richiede credenziali, assicurarsi che una password sia presente
         if (utenteAggiornato.getRuolo() == Ruolo.AGENTE || utenteAggiornato.getRuolo() == Ruolo.AMMINISTRATORE) {
             if (utenteAggiornato.getPasswordHash() == null || utenteAggiornato.getPasswordHash().isEmpty()) {
                 throw new IllegalArgumentException("Password richiesta per ruolo AGENTE o AMMINISTRATORE");
             }
         }
+        
         return utenteRepo.save(utenteAggiornato);
     }
 

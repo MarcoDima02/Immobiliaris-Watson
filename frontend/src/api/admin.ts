@@ -40,6 +40,12 @@ export interface AdminRichiesteFilters {
   immobile?: number;
 }
 
+export interface AdminRichiesteDettagliFilters {
+  stato?: RichiestaDto['stato'];
+  utente?: number;
+  immobile?: number;
+}
+
 export interface AdminVenditeFilters {
   contratto?: number;
   immobile?: number;
@@ -115,6 +121,20 @@ export async function fetchAdminRichieste(
 ): Promise<RichiestaDto[]> {
   const response = await fetch(
     `${API_URL}/admin/dashboard/richieste${buildQuery(filters)}`,
+    {
+      credentials: 'include',
+    }
+  );
+
+  if (!response.ok) throw new Error('Errore durante il fetch degli richieste');
+  return response.json();
+}
+
+export async function fetchAdminRichiesteDettagli(
+  filters?: AdminRichiesteFilters
+): Promise<RichiestaDto[]> {
+  const response = await fetch(
+    `${API_URL}/admin/dashboard/richieste/con-dettagli`,
     {
       credentials: 'include',
     }
