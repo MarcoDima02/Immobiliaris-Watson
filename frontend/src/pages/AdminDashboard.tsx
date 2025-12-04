@@ -1,15 +1,13 @@
 import { useEffect, useState } from "react";
 import { useAuthStore } from "@/store/auth.store";
+import AdminInfoContainer from "@/components/adminDashboard/AdminInfoContainer";
+import { Link } from "react-router";
 
-export default function AdminDashboard() {
+export default function AdminDashboard({ type }: { type: string }) {
   const {
     user,
     adminUtenti,
-    adminImmobili,
     adminContratti,
-    adminRichieste,
-    adminVendite,
-    adminImmagini,
 
     loadAdminUtenti,
     loadAdminImmobili,
@@ -19,8 +17,9 @@ export default function AdminDashboard() {
     loadAdminImmagini,
   } = useAuthStore();
 
-  const [activeTab, setActiveTab] = useState<"utenti" | "immobili" | "contratti" | "richieste" | "vendite" | "immagini">("utenti");
 
+
+  const [adminImmobiliDettagli, setAdminImmobiliDettagli] = useState(null);
   // Caricamento automatico una volta entrati nella dashboard
   useEffect(() => {
     if (user?.ruolo !== "AMMINISTRATORE") return;
@@ -31,97 +30,120 @@ export default function AdminDashboard() {
     loadAdminRichieste();
     loadAdminVendite();
     loadAdminImmagini();
+
+    async function fetchAdminRichiesteDettagli() {
+      try {
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/admin/dashboard/richieste/dettagli`,
+          {
+            credentials: 'include',
+          }
+        );
+
+
+        setAdminImmobiliDettagli(await response.json())
+
+      } catch (error) {
+        console.error('Errore nella fetch:', error);
+      }
+    }
+
+    fetchAdminRichiesteDettagli();
+
   }, [user]);
 
   if (!user) return <div>Non autenticato…</div>;
   if (user.ruolo !== "AMMINISTRATORE") return <div>Accesso negato</div>;
 
+
+
   return (
-     <div style={{ padding: "20px" }}>
-      <h1 className="mb-6">Benvenut* Admin: {user.nome} {user.cognome}</h1>
-
-      {/* MENU TABS */}
-      <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
-        {["utenti", "immobili", "contratti", "richieste", "vendite", "immagini"].map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab as any)}
-            style={{
-              padding: "10px",
-              borderRadius: "6px",
-              border: "1px solid #ccc",
-              background: activeTab === tab ? "#333" : "white",
-              color: activeTab === tab ? "white" : "black",
-              cursor: "pointer",
-            }}
-          >
-            {tab.toUpperCase()}
-          </button>
-        ))}
-      </div>
-
+    <div style={{ padding: "20px" }}>
       {/* SEZIONI */}
 
-      {activeTab === "utenti" && (
-        <Section title="Utenti" data={adminUtenti} empty="Nessun utente trovato" />
-      )}
+      {type === "dashboard" && (
+        <div className="w-full p-6">
+          <h1 className="text-3xl font-bold text-black mb-4">
+            Ciao {user.nome}!
+            <br />
+            <span className="text-xl">Esplora la dashboard da amministratore</span>
+          </h1>
 
-      {activeTab === "immobili" && (
-        <Section title="Immobili" data={adminImmobili} empty="Nessun immobile trovato" />
-      )}
+          <p className="text-zinc-600 mb-6">
+            Da qui puoi gestire richieste, utenti e immobili.
+          </p>
 
-      {activeTab === "contratti" && (
-        <Section title="Contratti" data={adminContratti} empty="Nessun contratto trovato" />
-      )}
 
-      {activeTab === "richieste" && (
-        <Section title="Richieste" data={adminRichieste} empty="Nessuna richiesta trovata" />
-      )}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
 
-      {activeTab === "vendite" && (
-        <Section title="Vendite" data={adminVendite} empty="Nessuna vendita trovata" />
-      )}
+            {/* Richieste */}
+            <Link
+              to="/backoffice/admin/richieste"
+              className="bg-white shadow-md rounded-xl p-5 hover:shadow-lg hover:-translate-y-1 transition-all"
+            >
+              <p className="text-xl font-semibold text-black mb-1">Richieste</p>
+              <p className="text-zinc-500 text-sm">
+                Controlla e gestisci le nuove richieste.
+              </p>
+            </Link>
 
-      {activeTab === "immagini" && (
-        <Section title="Immagini" data={adminImmagini} empty="Nessuna immagine trovata" />
-      )}
+            {/* Utenti */}
+            <Link
+              to="/backoffice/admin/utenti"
+              className="bg-white shadow-md rounded-xl p-5 hover:shadow-lg hover:-translate-y-1 transition-all"
+            >
+              <p className="text-xl font-semibold text-black mb-1">Utenti</p>
+              <p className="text-zinc-500 text-sm">
+                Gestisci gli utenti registrati.
+              </p>
+            </Link>
 
-    </div>
-  );
-}
+            {/* Immobili */}
+            <Link
+              to="/backoffice/admin/contratti"
+              className="bg-white shadow-md rounded-xl p-5 hover:shadow-lg hover:-translate-y-1 transition-all"
+            >
+              <p className="text-xl font-semibold text-black mb-1">Contratti</p>
+              <p className="text-zinc-500 text-sm">
+                Visualizza e aggiorna i contratti.
+              </p>
+            </Link>
 
-function Section({ title, data, empty }: { title: string; data: any[] | null; empty: string }) {
-  return (
-    <div>
-      <h2 style={{ marginBottom: "10px" }}>{title}</h2>
+          </div>
+        </div>
 
-      {!data || data.length === 0 ? (
-        <p>{empty}</p>
-      ) : (
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
-          <thead>
-            <tr>
-              {Object.keys(data[0]).map((key) => (
-                <th key={key} style={{ borderBottom: "1px solid #ccc", textAlign: "left", padding: "8px" }}>
-                  {key}
-                </th>
-              ))}
-            </tr>
-          </thead>
 
-          <tbody>
-            {data.map((item, idx) => (
-              <tr key={idx}>
-                {Object.values(item).map((value: any, i) => (
-                  <td key={i} style={{ borderBottom: "1px solid #eee", padding: "8px" }}>
-                    {typeof value === "object" ? JSON.stringify(value) : String(value)}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
-    </div>
+      )
+      }
+
+      {
+        type === "utente" && (
+          <>
+            <h2 className="text-2xl font-bold mb-5"> Gestisci gli utenti</h2>
+            <AdminInfoContainer data={adminUtenti} type="utenti" />
+          </>
+        )
+      }
+
+      {
+        type === "richiesta" && (
+          <>
+            <h2 className="text-2xl font-bold mb-5"> Gestisci le richieste</h2>
+            <AdminInfoContainer data={adminImmobiliDettagli} type="richieste" />
+          </>
+        )
+      }
+
+      {
+        type === "contratto" && (
+          <>
+            <h2 className="text-2xl font-bold mb-5"> Gestisci i contratti</h2>
+            <AdminInfoContainer data={adminContratti} type="contratti" />
+          </>
+        )
+      }
+
+
+    </div >
   );
 }

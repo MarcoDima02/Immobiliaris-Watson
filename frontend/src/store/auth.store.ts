@@ -53,8 +53,6 @@ interface AuthState {
   adminVendite: VenditaDto[] | null;
   adminImmagini: ImmagineDto[] | null;
 
-  dettaglioRichiesta: AgenteRichiestaDTO | null;
-
   // Actions
   login: (user: User) => void;
   logout: () => void;
@@ -68,9 +66,6 @@ interface AuthState {
   loadAdminRichieste: (filters?: AdminRichiesteFilters) => Promise<void>;
   loadAdminVendite: (filters?: AdminVenditeFilters) => Promise<void>;
   loadAdminImmagini: (filters?: AdminImmaginiFilters) => Promise<void>;
-
-  setDettaglioRichiesta: (r: AgenteRichiestaDTO | null) => void;
-  updateDettaglioRichiesta: (data: Partial<AgenteRichiestaDTO>) => void;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -89,8 +84,6 @@ export const useAuthStore = create<AuthState>()(
       adminVendite: null,
       adminImmagini: null,
 
-      dettaglioRichiesta: null,
-
       login: (user) => set({ user, isAuthenticated: true }),
       logout: () =>
         set({
@@ -105,7 +98,7 @@ export const useAuthStore = create<AuthState>()(
         }),
       setLoading: (value) => set({ isLoading: value }),
 
-      // --- LOADERS Agent ---
+        // --- LOADERS Agent ---
       loadAgentDashboard: async () => {
         const user = get().user;
 
@@ -113,6 +106,8 @@ export const useAuthStore = create<AuthState>()(
 
         const data = await fetchAgentDashboardApi(user.idUtente);
         console.log('Dashboard fetch result:', data);
+
+        
         set({ agentDashboard: data });
       },
 
@@ -120,51 +115,38 @@ export const useAuthStore = create<AuthState>()(
       loadAdminUtenti: async (filters) => {
         if (get().user?.ruolo !== 'AMMINISTRATORE') return;
         const data = await fetchAdminUtenti(filters);
-        set({ adminUtenti: data });
+        set({ adminUtenti: data })
       },
 
       loadAdminImmobili: async (filters) => {
         if (get().user?.ruolo !== 'AMMINISTRATORE') return;
         const data = await fetchAdminImmobili(filters);
-        set({ adminImmobili: data });
+        set({ adminImmobili: data })
       },
 
       loadAdminContratti: async (filters) => {
         if (get().user?.ruolo !== 'AMMINISTRATORE') return;
         const data = await fetchAdminContratti(filters);
-        set({ adminContratti: data });
+        set({ adminContratti: data })
       },
 
       loadAdminRichieste: async (filters) => {
         if (get().user?.ruolo !== 'AMMINISTRATORE') return;
         const data = await fetchAdminRichieste(filters);
-        set({ adminRichieste: data });
+        set({ adminRichieste: data })
       },
 
       loadAdminVendite: async (filters) => {
         if (get().user?.ruolo !== 'AMMINISTRATORE') return;
         const data = await fetchAdminVendite(filters);
-        set({ adminVendite: data });
+        set({ adminVendite: data })
       },
 
       loadAdminImmagini: async (filters) => {
         if (get().user?.ruolo !== 'AMMINISTRATORE') return;
         const data = await fetchAdminImmagini(filters);
-        set({ adminImmagini: data });
-      },
-
-      setDettaglioRichiesta: (r) => set({ dettaglioRichiesta: r }),
-      updateDettaglioRichiesta: (data) =>
-        set((state) => {
-          if (!state.dettaglioRichiesta) return {};
-
-          return {
-            dettaglioRichiesta: {
-              ...state.dettaglioRichiesta,
-              ...data,
-            },
-          };
-        }),
+        set({ adminImmagini: data })
+      }
     }),
     {
       name: 'auth-storage',

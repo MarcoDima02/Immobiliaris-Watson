@@ -1,11 +1,7 @@
 package com.residea.residea.controller;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.List;
 
-import org.hibernate.boot.model.relational.Database;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,7 +34,9 @@ import com.residea.residea.services.DettagliImmobileService;
 import com.residea.residea.services.ImmagineService;
 import com.residea.residea.services.ImmobileService;
 import com.residea.residea.services.RichiestaService;
+import com.residea.residea.services.SuperficieService;
 import com.residea.residea.services.UtentiService;
+import com.residea.residea.services.ValutazioneImmobileService;
 import com.residea.residea.services.VenditaService;
 
 import jakarta.servlet.http.HttpSession;
@@ -62,11 +60,17 @@ public class AmministratoreDashboard {
         @Autowired
         private RichiestaService richiestaService;
 
-        @Autowired
-        private DettagliImmobileService dettagliImmobileService;
+    @Autowired
+    private DettagliImmobileService dettagliImmobileService;
 
         @Autowired
         private ImmagineService immagineService;
+
+        @Autowired
+        private SuperficieService superficieService;
+
+        @Autowired
+        private ValutazioneImmobileService valutazioneImmobileService;
 
         // Controllo amministratore
     private boolean isAmministratore(HttpSession session) {
@@ -115,6 +119,25 @@ public class AmministratoreDashboard {
 
         List<UtenteDto> dtos = utenti.stream().map(this::toUtenteDto).toList();
         return ResponseEntity.ok(dtos);
+    }
+
+    @PostMapping("/utenti")
+    public ResponseEntity<Utente> createUtente(@RequestBody Utente utente, HttpSession session) {
+        // TODO: Riattivare dopo login
+        // if (!isAmministratore(session)) return ResponseEntity.status(403).build();
+        
+        Utente saved = utentiService.salvaUtente(utente);
+        return ResponseEntity.ok(saved);
+    }
+
+    @PutMapping("/utenti/{id}")
+    public ResponseEntity<Utente> updateUtente(@PathVariable Integer id, @RequestBody Utente utente, HttpSession session) {
+        // TODO: Riattivare dopo login
+        // if (!isAmministratore(session)) return ResponseEntity.status(403).build();
+        
+        utente.setIdUtente(id);
+        Utente updated = utentiService.aggiornaUtente(utente);
+        return ResponseEntity.ok(updated);
     }
 
     @GetMapping("/immobili")
@@ -344,7 +367,7 @@ public ResponseEntity<Vendita> updateVendita(@PathVariable Integer id, @RequestB
         d.setCognome(u.getCognome());
         d.setEmail(u.getEmail());
         d.setTelefono(u.getTelefono());
-        d.setRuolo(u.getRuolo() == null ? null : u.getRuolo());
+        d.setRuolo(u.getRuolo() == null ? null : u.getRuolo().name());
         d.setVerificaEmail(u.isVerificaEmail());
         d.setConsensoPrivacy(u.isConsensoPrivacy());
         return d;
@@ -372,6 +395,13 @@ public ResponseEntity<Vendita> updateVendita(@PathVariable Integer id, @RequestB
         d.setIdContratto(c.getIdContratto());
         d.setIdImmobile(c.getIdImmobile() == null ? null : c.getIdImmobile().getIdImmobile());
         d.setIdAgente(c.getAgente() == null ? null : c.getAgente().getIdUtente());
+        
+        // Aggiungi nome e cognome dell'agente
+        if (c.getAgente() != null) {
+            d.setNomeAgente(c.getAgente().getNome());
+            d.setCognomeAgente(c.getAgente().getCognome());
+        }
+        
         d.setTipoContratto(c.getTipoContratto() == null ? null : c.getTipoContratto().name());
         d.setDataContratto(c.getDataContratto());
         d.setDataScadenzaContratto(c.getDataScadenzaContratto());
@@ -476,6 +506,33 @@ public ResponseEntity<Vendita> updateVendita(@PathVariable Integer id, @RequestB
                 d.setEsposizione(dettagli.getEsposizione());
                 d.setPrezzo(dettagli.getPrezzo() == null ? null : dettagli.getPrezzo().doubleValue());
             }
+            
+            // Dati Superfici
+            java.util.Optional<com.residea.residea.entities.Superficie> supOpt = superficieService.getSuperficieById(immobile.getIdImmobile());
+            if (supOpt.isPresent()) {
+                com.residea.residea.entities.Superficie sup = supOpt.get();
+                d.setSuperficieMq(sup.getSuperficieMq());
+                d.setSuperficieBalconeTerrazzo(sup.getSuperficieBalconeTerrazzo());
+                d.setSuperficieGiardino(sup.getSuperficieGiardino());
+                d.setSuperficieGarage(sup.getSuperficieGarage());
+                d.setSuperficieCantina(sup.getSuperficieCantina());
+            }
+            
+            // Dati Valutazione
+            try {
+                com.residea.residea.entities.ValutazioneImmobile valutazione = valutazioneImmobileService.getValutazioneByIdImmobile(immobile.getIdImmobile());
+                if (valutazione != null) {
+                    d.setIdValutazione(valutazione.getIdValutazione());
+                    d.setValoreBase(valutazione.getValoreBase() == null ? null : valutazione.getValoreBase().longValue());
+                    d.setFattoreAggiustamento(valutazione.getFattoreAggiustamento());
+                    d.setValoreMedio(valutazione.getValoreMedio() == null ? null : valutazione.getValoreMedio().longValue());
+                    d.setValoreMin(valutazione.getValoreMin() == null ? null : valutazione.getValoreMin().longValue());
+                    d.setValoreMax(valutazione.getValoreMax() == null ? null : valutazione.getValoreMax().longValue());
+                    d.setConfidence(valutazione.getConfidence());
+                }
+            } catch (Exception e) {
+                // Valutazione non trovata - campi rimangono null
+            }
         }
         
         return d;
@@ -545,6 +602,37 @@ public ResponseEntity<Vendita> updateVendita(@PathVariable Integer id, @RequestB
                 .toList();
         
         return ResponseEntity.ok(dtos);
+    }
+
+    /**
+     * GET /api/admin/dashboard/richieste/{id}/dettagli
+     * 
+     * Ritorna una singola richiesta con i dettagli completi dell'immobile associato.
+     * Combina dati da: Richiesta, Immobile, DettagliImmobile, Superfici, Utente
+     * 
+     * @param id ID della richiesta
+     * @param session Session HTTP
+     * @return RichiestaDettagliImmobileDto con dati aggregati, oppure 404 se non trovata
+     */
+    @GetMapping("/richieste/{id}/dettagli")
+    public ResponseEntity<RichiestaDettagliImmobileDto> getRichiestaConDettagli(
+            @PathVariable Integer id,
+            HttpSession session) {
+        
+        // TODO: Riattivare dopo login
+        // if (!isAmministratore(session)) {
+        //     return ResponseEntity.status(403).build();
+        // }
+
+        java.util.Optional<Richiesta> opt = richiestaService.getRichiestaById(id);
+        if (opt.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Richiesta richiesta = opt.get();
+        RichiestaDettagliImmobileDto dto = toRichiestaDettagliImmobileDto(richiesta);
+        
+        return ResponseEntity.ok(dto);
     }
 
 }
